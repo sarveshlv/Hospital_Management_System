@@ -23,6 +23,7 @@ public class User {
         this.emailId = emailId;
         this.password = password;
         this.role = role;
+		this.referenceId = null;
     }
 
 	public String getUserId() {
