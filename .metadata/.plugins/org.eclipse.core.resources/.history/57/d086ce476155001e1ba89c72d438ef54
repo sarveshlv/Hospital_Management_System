@@ -1,0 +1,13 @@
+package com.hms.hospitalms.service;
+
+import com.hms.hospitalms.dto.AddHospitalRequest;
+import com.hms.hospitalms.dto.UpdateHospitalRequest;
+import com.hms.hospitalms.entities.Hospital;
+import java.util.List;
+
+public interface IHospitalService {
+	Hospital addHosiptal(AddHospitalRequest addHospitalRequest);
+	Hospital updateHospital(UpdateHospitalRequest updateHospitalRequest);
+	Hospital verifyHospital(String id);
+	List<Hospital> getNearbyHospitals(Long pincode);
+}

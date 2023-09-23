@@ -1,0 +1,5 @@
+package com.hms.patientms.dto;
+
+public class AddPatientRequest {
+
+}

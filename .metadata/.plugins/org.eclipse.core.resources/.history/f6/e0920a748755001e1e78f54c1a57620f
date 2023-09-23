@@ -1,0 +1,117 @@
+package com.hms.hospitalms.controller;
+
+import com.hms.hospitalms.dto.AddHospitalRequest;
+import com.hms.hospitalms.entities.Hospital;
+import com.hms.hospitalms.exception.HospitalNotFoundException;
+import com.hms.hospitalms.service.IHospitalService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
+
+/**
+ * Controller class for managing hospital-related endpoints.
+ * Author: @prateek
+ */
+@RestController
+@RequestMapping("/api/hospitals")
+public class HospitalController {
+
+    @Autowired
+    private IHospitalService hospitalService;
+
+    /**
+     * Endpoint for adding a new hospital.
+     *
+     * @param addHospitalRequest The request containing hospital information.
+     * @return The newly added hospital.
+     */
+    @PostMapping
+    public ResponseEntity<Hospital> addHospital(@Valid @RequestBody AddHospitalRequest addHospitalRequest) {
+        Hospital hospital = hospitalService.addHospital(addHospitalRequest);
+        return ResponseEntity.ok(hospital);
+    }
+
+    /**
+     * Endpoint for updating an existing hospital.
+     *
+     * @param id                 The ID of the hospital to update.
+     * @param addHospitalRequest The request containing updated hospital information.
+     * @return The updated hospital.
+     * @throws HospitalNotFoundException If the hospital with the specified ID is not found.
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<Hospital> updateHospital(
+            @PathVariable String id,
+            @Valid @RequestBody AddHospitalRequest addHospitalRequest
+    ) throws HospitalNotFoundException {
+        Hospital hospital = hospitalService.updateHospital(id, addHospitalRequest);
+        return ResponseEntity.ok(hospital);
+    }
+
+    /**
+     * Endpoint for finding a hospital by its ID.
+     *
+     * @param id The ID of the hospital to find.
+     * @return The found hospital.
+     * @throws HospitalNotFoundException If the hospital with the specified ID is not found.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<Hospital> findHospitalById(@PathVariable String id) throws HospitalNotFoundException {
+        Hospital hospital = hospitalService.findHospitalById(id);
+        return ResponseEntity.ok(hospital);
+    }
+
+    /**
+     * Endpoint for deleting a hospital by its ID.
+     *
+     * @param id The ID of the hospital to delete.
+     * @return The deleted hospital.
+     * @throws HospitalNotFoundException If the hospital with the specified ID is not found.
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Hospital> deleteHospitalById(@PathVariable String id) throws HospitalNotFoundException {
+        Hospital hospital = hospitalService.deleteHospitalById(id);
+        return ResponseEntity.ok(hospital);
+    }
+
+    /**
+     * Endpoint for checking if a hospital is verified.
+     *
+     * @param id The ID of the hospital to check.
+     * @return True if the hospital is verified, false otherwise.
+     * @throws HospitalNotFoundException If the hospital with the specified ID is not found.
+     */
+    @GetMapping("/{id}/is-verified")
+    public ResponseEntity<Boolean> isHospitalVerified(@PathVariable String id) throws HospitalNotFoundException {
+        Boolean isVerified = hospitalService.isHospitalVerified(id);
+        return ResponseEntity.ok(isVerified);
+    }
+
+    /**
+     * Endpoint for verifying a hospital by its ID.
+     *
+     * @param id The ID of the hospital to verify.
+     * @return The verified hospital.
+     * @throws HospitalNotFoundException If the hospital with the specified ID is not found.
+     */
+    @PostMapping("/{id}/verify")
+    public ResponseEntity<Hospital> verifyHospital(@PathVariable String id) throws HospitalNotFoundException {
+        Hospital hospital = hospitalService.verifyHospital(id);
+        return ResponseEntity.ok(hospital);
+    }
+
+    /**
+     * Endpoint for finding nearby hospitals based on a given pincode.
+     *
+     * @param pincode The pincode to use as a reference for finding nearby hospitals.
+     * @return A list of nearby hospitals.
+     */
+    @GetMapping("/nearby")
+    public ResponseEntity<List<Hospital>> getNearbyHospitals(@RequestParam Long pincode) {
+        List<Hospital> nearbyHospitals = hospitalService.getNearbyHospitals(pincode);
+        return ResponseEntity.ok(nearbyHospitals);
+    }
+}

@@ -1,0 +1,23 @@
+package com.hms.bedms.exceptions;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+/**
+ * Exception class representing a situation where a hospital is not found.
+ * This exception is annotated with Spring's @ResponseStatus to indicate that it should result in a NOT_FOUND HTTP response.
+ * Author: @prateek
+ */
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class HospitalNotFoundException extends RuntimeException {
+    private static final long serialVersionUID = -5039752930885494280L;
+
+    /**
+     * Constructor that takes the ID of the missing hospital and constructs an informative error message.
+     *
+     * @param id The ID of the missing hospital.
+     */
+    public HospitalNotFoundException(String id) {
+        super("Hospital not found for : " + id);
+    }
+}

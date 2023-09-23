@@ -1,0 +1,18 @@
+package com.hms.bookingms.clients;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+
+import com.hms.bookingms.dto.Bed;
+import com.hms.bookingms.entities.Booking;
+
+@FeignClient(name = "booking-service", url = "http://localhost:8080/api/bookings")
+public interface BookingServiceClient {
+	
+	@PutMapping("/find/{bookingId}")
+    ResponseEntity<Booking> bookBed(@PathVariable String bookingId);
+
+
+}

@@ -1,0 +1,59 @@
+package com.hms.authms.controller;
+
+import java.util.Collection;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.hms.authms.dto.LoginRequest;
+import com.hms.authms.dto.UserDetailsResponse;
+import com.hms.authms.dto.AddUserRequest;
+import com.hms.authms.service.IAuthenticationService;
+
+import lombok.extern.slf4j.Slf4j;
+
+@RestController
+@RequestMapping("/api/auth")
+@Slf4j
+public class AuthController {
+
+	@Autowired
+	private IAuthenticationService authenticationService;
+
+	@Autowired
+	private AuthenticationManager authenticationManager;
+
+	@PostMapping("/signup")
+	public UserDetailsResponse addNewUser(@RequestBody AddUserRequest registerRequest) {
+		return authenticationService.saveUser(registerRequest);
+	}
+
+	@PostMapping("/login")
+	public ResponseEntity<String> getToken(@RequestBody LoginRequest loginRequest) {
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
+				loginRequest.getPassword());
+		Authentication authentication = authenticationManager.authenticate(token);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+
+		String email = authentication.getName().toString();
+		Collection<? extends GrantedAuthority> authorites = authentication.getAuthorities();
+		String jwtToken = authenticationService.generateToken(email, authorites);
+
+		return ResponseEntity.ok(jwtToken);
+
+	}
+
+	@GetMapping("/validate")
+	public String validateToken(@RequestParam("token") String token) {
+		String suthentication = SecurityContextHolder.getContext().getAuthentication();
+
+		authenticationService.validateToken(token);
+		return "Token is valid";
+	}
+}

@@ -1,0 +1,112 @@
+/**
+ * This interface defines the service contract for managing beds in the Bed Management System (BedMS).
+ * It specifies the methods for adding, updating, booking, unbooking, and retrieving beds, as well as
+ * finding nearby beds and beds by specific criteria.
+ *
+ * @author prateek
+ */
+package com.hms.bedms.service;
+
+import java.util.List;
+
+import com.hms.bedms.dtos.AddBedRequest;
+import com.hms.bedms.dtos.UpdateBedRequest;
+import com.hms.bedms.entities.Bed;
+import com.hms.bedms.exceptions.BedNotFoundException;
+import com.hms.bedms.exceptions.HospitalNotFoundException;
+
+/**
+ * The {@code IBedService} interface defines the contract for interacting with
+ * bed-related operations in BedMS.
+ */
+public interface IBedService {
+	/**
+	 * Adds a new bed to the system based on the provided {@link AddBedRequest}.
+	 *
+	 * @param addBedRequest The request containing information about the new bed to
+	 *                      be added.
+	 * @return The added bed.
+	 * @throws HospitalNotFoundException if the hospital specified in the request is
+	 *                                   not found.
+	 */
+	Bed addBed(AddBedRequest addBedRequest) throws HospitalNotFoundException;
+
+	/**
+	 * Updates the details of a bed based on the provided ID and
+	 * {@link UpdateBedRequest}.
+	 *
+	 * @param id               The unique identifier of the bed to be updated.
+	 * @param updateBedRequest The request containing updated bed information.
+	 * @return The updated bed.
+	 * @throws BedNotFoundException if the bed with the specified ID is not found.
+	 */
+	Bed updateBed(String id, UpdateBedRequest updateBedRequest) throws BedNotFoundException;
+
+	/**
+	 * Retrieves a bed by its unique identifier.
+	 *
+	 * @param id The unique identifier of the bed to be retrieved.
+	 * @return The retrieved bed.
+	 * @throws BedNotFoundException if the bed with the specified ID is not found.
+	 */
+	Bed findBedById(String id) throws BedNotFoundException;
+
+	/**
+	 * Books a bed with the specified ID.
+	 *
+	 * @param id The unique identifier of the bed to be booked.
+	 * @return The booked bed.
+	 * @throws BedNotFoundException if the bed with the specified ID is not found.
+	 */
+	Bed bookBed(String id) throws BedNotFoundException;
+
+	/**
+	 * Unbooks a bed with the specified ID.
+	 *
+	 * @param id The unique identifier of the bed to be unbooked.
+	 * @return The unbooked bed.
+	 * @throws BedNotFoundException if the bed with the specified ID is not found.
+	 */
+	Bed unbookBed(String id) throws BedNotFoundException;
+
+	/**
+	 * Makes a bed with the specified ID available.
+	 *
+	 * @param id The unique identifier of the bed to be made available.
+	 * @return The bed marked as available.
+	 * @throws BedNotFoundException if the bed with the specified ID is not found.
+	 */
+	Bed makeBedAvailable(String id) throws BedNotFoundException;
+
+	/**
+	 * Retrieves a list of all beds in the system.
+	 *
+	 * @return A list of all beds.
+	 */
+	List<Bed> getAllBeds();
+
+	/**
+	 * Retrieves a list of nearby beds based on the provided pincode.
+	 *
+	 * @param pincode The pincode used to find nearby beds.
+	 * @return A list of nearby beds.
+	 */
+	List<Bed> getNearbyBeds(@Valid Long pincode);
+
+	/**
+	 * Retrieves a list of beds based on the specified bed type.
+	 *
+	 * @param bedType The type of beds to retrieve.
+	 * @return A list of beds of the specified type.
+	 */
+	List<Bed> getBedsByType(String bedType);
+
+	/**
+	 * Retrieves a list of beds associated with a specific hospital based on the
+	 * hospital's ID.
+	 *
+	 * @param hospitalId The unique identifier of the hospital.
+	 * @return A list of beds associated with the specified hospital.
+	 */
+	List<Bed> getBedsByHospitalId(String hospitalId);
+}

@@ -1,0 +1,9 @@
+package com.hms.bookingms.exceptions;
+
+public class InvalidBookingRequest extends RuntimeException {
+
+	public InvalidBookingRequest(String bookingStatus) {
+		super("Booking status already approved or rejected. Booking status : " + bookingStatus);
+	}
+
+}

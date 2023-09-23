@@ -1,0 +1,5 @@
+package com.hms.bookingms.config;
+
+public class RestTemplateConfig {
+
+}

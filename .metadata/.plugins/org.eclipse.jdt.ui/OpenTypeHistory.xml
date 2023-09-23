@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<typeInfoHistroy>
+    <typeInfo handle="=Hospitalms/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.hms.hospitalms.service{IHospitalService.java[IHospitalService" modifiers="513" timestamp="1695383342507"/>
+    <typeInfo handle="=Bedms/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.hms.bedms.service{IBedService.java[IBedService" modifiers="513" timestamp="1695384275191"/>
+    <typeInfo handle="=Patientms/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.hms.patientms.service{IPatientService.java[IPatientService" modifiers="513" timestamp="1695202424787"/>
+    <typeInfo handle="=Bookingms/C:\/Users\/psing120\/Downloads\/sts-4.19.0.RELEASE\/plugins\/org.eclipse.justj.openjdk.hotspot.jre.full.win32.x86_64_17.0.7.v20230425-1502\/jre\/lib\/jrt-fs.jar`java.base=/javadoc_location=/https:\/\/docs.oracle.com\/en\/java\/javase\/17\/docs\/api\/=/=/maven.pomderived=/true=/&lt;java.lang(RuntimeException.class[RuntimeException" modifiers="33" timestamp="1688971905722"/>
+    <typeInfo handle="=Bookingms/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.hms.bookingms.service{IBookingService.java[IBookingService" modifiers="513" timestamp="1695384726809"/>
+</typeInfoHistroy>

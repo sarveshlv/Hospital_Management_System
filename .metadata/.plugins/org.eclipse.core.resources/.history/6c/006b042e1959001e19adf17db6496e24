@@ -1,0 +1,11 @@
+package com.hms.billingms.entities;
+
+public class Billing {
+	private String id;
+	private String bookingId;
+	private PaymentStatus paymentStatus;
+	
+	public enum PaymentStatus {
+		PENDING, COMPLETED
+	}
+}

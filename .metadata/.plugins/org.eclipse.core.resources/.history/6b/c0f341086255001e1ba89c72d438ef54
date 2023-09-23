@@ -1,0 +1,5 @@
+package com.hms.hospitalms.dto;
+
+public class UpdateHospitalRequest {
+
+}

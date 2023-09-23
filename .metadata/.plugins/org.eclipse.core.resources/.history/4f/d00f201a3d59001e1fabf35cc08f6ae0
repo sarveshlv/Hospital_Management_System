@@ -1,0 +1,14 @@
+server.port = 8500
+
+# Spring application Configurations
+spring.application.name = billingms
+spring.data.mongodb.host=localhost
+spring.data.mongodb.port=27017
+spring.data.mongodb.database=billingsdb
+
+# Eureka client registeation
+eureka.client.service-url.defaultZone=http://localhost:8761/eureka/
+
+paypal.mode = sandbox
+paypal.client.id = Abf0jMyRZANdesY3_mtktn3Nvw3veQ4tet2wkIPxCgtUYxhrQma0oeb-_Qs1W2JWmFyAK1rZBP1itAAY
+paypal.client.secret = EGmB_ff-7u_4ZeSvfhhDggNJJnpqllw_5ExxAHm0alOyZ28VsBQj7yNQyaxGkHskY6R-3qaXLdSEZVxo

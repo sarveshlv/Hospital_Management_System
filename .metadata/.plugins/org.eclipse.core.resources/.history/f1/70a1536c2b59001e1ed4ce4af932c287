@@ -1,0 +1,30 @@
+package com.hms.controller;
+
+package com.hms.billingms.controller;
+
+import com.hms.billingms.dto.Billing;
+import com.hms.billingms.exceptions.BillingNotFoundException;
+import com.hms.billingms.service.IBillingService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/billing")
+public class BillingController {
+
+    @Autowired
+    private IBillingService billingService;
+
+    // Endpoint to add billing for a booking
+    @PostMapping("/add")
+    public Billing addBilling(@RequestParam("bookingId") String bookingId) throws BillingNotFoundException {
+        return billingService.addBilling(bookingId);
+    }
+
+    // Endpoint to retrieve billing details by billingId
+    @GetMapping("/{billingId}")
+    public Billing getBillingById(@PathVariable String billingId) throws BillingNotFoundException {
+        return billingService.findById(billingId);
+    }
+}
+

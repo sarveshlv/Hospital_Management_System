@@ -1,0 +1,5 @@
+package com.hms.hospitalms.service;
+
+public class UserApiService {
+
+}

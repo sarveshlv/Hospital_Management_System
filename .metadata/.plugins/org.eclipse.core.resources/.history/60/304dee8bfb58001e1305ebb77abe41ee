@@ -1,0 +1,12 @@
+package com.hms.bookingms.service;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+@FeignClient(name = "hospital-service", url = "http://localhost:8080/api/hospitals")
+public interface HospitalServiceClient {
+
+    @GetMapping("/find/{hospitalId}")
+    RequestMapping<?> isHospitalFound(@PathVariable("hospitalId") String hospitalId);
+}

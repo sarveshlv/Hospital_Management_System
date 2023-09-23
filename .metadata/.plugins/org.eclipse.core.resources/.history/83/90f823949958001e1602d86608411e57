@@ -1,0 +1,5 @@
+ackage com.hms.bookingms.exceptions;
+
+public class Hospital {
+
+}

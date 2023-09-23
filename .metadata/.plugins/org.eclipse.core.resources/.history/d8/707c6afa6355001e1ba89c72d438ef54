@@ -1,0 +1,18 @@
+package com.hms.hospitalms.dto;
+
+import com.hms.hospitalms.entities.Hospital;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+public class AddHospitalRequest {
+	private String name;
+    private Boolean verified;
+    private Hospital.HospitalType hospitalType;
+    private Long contactNo;
+    private Hospital.Address address;
+}

@@ -1,0 +1,73 @@
+package com.hms.bedms.controller;
+
+import com.hms.bedms.dtos.AddBedRequest;
+import com.hms.bedms.dtos.UpdateBedRequest;
+import com.hms.bedms.entities.Bed;
+import com.hms.bedms.exceptions.BedNotFoundException;
+import com.hms.bedms.service.BedService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/beds")
+public class BedController {
+
+    private final BedService bedService;
+
+    @Autowired
+    public BedController(BedService bedService) {
+        this.bedService = bedService;
+    }
+
+    @PostMapping("/add")
+    public Bed addBed(@RequestBody AddBedRequest addBedRequest) throws HospitalNotFoundException{
+        return bedService.addBed(addBedRequest);
+    }
+
+    @PutMapping("/update/{id}")
+    public Bed updateBed(@PathVariable String id, @RequestBody UpdateBedRequest updateBedRequest) throws BedNotFoundException {
+        return bedService.updateBed(id, updateBedRequest);
+    }
+
+    @GetMapping("/findById/{id}")
+    public Bed findBedById(@PathVariable String id) throws BedNotFoundException {
+        return bedService.findBedById(id);
+    }
+
+    @GetMapping("/findAll")
+    public List<Bed> getAllBeds() {
+        return bedService.getAllBeds();
+    }
+
+    @GetMapping("/findNearby/{pincode}")
+    public List<Bed> getNearbyBeds(@PathVariable Long pincode) {
+        return bedService.getNearbyBeds(pincode);
+    }
+
+    @GetMapping("/findByType/{bedType}")
+    public List<Bed> getBedsByType(@PathVariable String bedType) {
+        return bedService.getBedsByType(bedType);
+    }
+
+    @GetMapping("/findByHospital/{hospitalId}")
+    public List<Bed> getBedsByHospitalId(@PathVariable String hospitalId) {
+        return bedService.getBedsByHospitalId(hospitalId);
+    }
+
+    @PostMapping("/bookBed/{id}")
+    public Bed bookBed(@PathVariable String id) throws BedNotFoundException {
+        return bedService.bookBed(id);
+    }
+
+    @PostMapping("/unbookBed/{id}")
+    public Bed unbookBed(@PathVariable String id) throws BedNotFoundException {
+        return bedService.unbookBed(id);
+    }
+
+    @PostMapping("/makeBedAvailable/{id}")
+    public Bed makeBedAvailable(@PathVariable String id) throws BedNotFoundException {
+        return bedService.makeBedAvailable(id);
+    }
+}

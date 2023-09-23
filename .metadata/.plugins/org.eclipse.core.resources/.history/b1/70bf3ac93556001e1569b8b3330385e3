@@ -1,0 +1,5 @@
+package com.hms.bedms.config;
+
+public class RestTemplateConfig {
+
+}

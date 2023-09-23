@@ -1,0 +1,16 @@
+package com.hms.authms.service;
+
+import java.security.Principal;
+
+import org.springframework.security.core.Authentication;
+
+import com.hms.authms.dto.AddUserRequest;
+import com.hms.authms.dto.UserDetailsResponse;
+
+public interface IAuthenticationService {
+	UserDetailsResponse saveUser(AddUserRequest addUserRequest);
+
+	String generateToken(Principal principal);
+
+	void validateToken(String token);
+}

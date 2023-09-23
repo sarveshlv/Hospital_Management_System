@@ -1,0 +1,16 @@
+package com.hms.userms.service;
+
+
+import com.hms.userms.dto.UpdateUserRequest;
+import com.hms.userms.dto.UserDetailsResponse;
+import com.hms.userms.exception.UserNotFoundException;
+
+public interface IUserService {
+
+	User updateUser(UpdateUserRequest updateUserRequest) throws UserNotFoundException;
+
+	User getUserDetailsByEmail(String email) throws UserNotFoundException;
+
+	User addReferenceId(String email, String referenceId) throws UserNotFoundException;
+
+}

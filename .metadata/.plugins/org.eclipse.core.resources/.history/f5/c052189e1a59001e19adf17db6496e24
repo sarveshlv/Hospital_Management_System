@@ -1,0 +1,27 @@
+package com.hms.billingms.service;
+
+import com.hms.billingms.entities.Billing;
+import com.hms.billingms.exceptions.BillingNotFoundException;
+import com.hms.billingms.exceptions.BookingNotFoundException;
+
+public class BillingService implements IBillingService {
+
+	@Override
+	public Billing addBilling(String bookingId) throws BookingNotFoundException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Billing findById(String billingId) throws BillingNotFoundException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Billing generateBill(String billingId) throws BillingNotFoundException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

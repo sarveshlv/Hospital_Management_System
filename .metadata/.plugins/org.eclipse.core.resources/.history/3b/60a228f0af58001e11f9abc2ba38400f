@@ -1,0 +1,17 @@
+package com.hms.bookingms.exceptions;
+
+import java.util.Date;
+
+public class InvalidDatesException extends RuntimeException {
+
+	private static final long serialVersionUID = -7729423867105584603L;
+
+	public InvalidDatesException(Date bookingDate, Date occupyDate, Date releaseDate) {
+		super("Release date must be before occuping date and be after current date" + "\nBooking Date : " + bookingDate + "\nOccupied Date : " + occupyDate + "\nRelease Date : "
+				+ releaseDate);
+	}
+
+	public InvalidDatesException(Date bookingDate, Date occupyDate, Date releaseDate) {
+		// TODO Auto-generated constructor stub
+	}
+}

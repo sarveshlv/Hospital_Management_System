@@ -1,0 +1,9 @@
+package com.hms.patientms.exceptions;
+
+public class PatientNotFoundException {
+
+	public PatientNotFoundException(String id) {
+		super("Patient not found for : " + id);
+	}
+	
+}

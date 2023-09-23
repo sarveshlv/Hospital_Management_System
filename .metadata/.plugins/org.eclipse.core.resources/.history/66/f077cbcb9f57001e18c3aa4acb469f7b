@@ -1,0 +1,47 @@
+package com.hms.patientms.entities;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter @Setter @ToString @EqualsAndHashCode
+@AllArgsConstructor @NoArgsConstructor
+@Document(collection = "patients")
+public class Patient {
+	@Id
+	private String id;
+	private String firstName;
+	private String lastName;
+	private Long contactNumber;
+	
+	private Long aadharCard;
+	private Address address;
+	
+	@Getter
+	@Setter
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@ToString
+	@EqualsAndHashCode
+	public static class Address {
+		@NotBlank(message = "City is required")
+		private String city;
+		@NotBlank(message = "State is required")
+		private String state;
+		@NotNull(message = "Pincode is required")
+		@Min(value = 100000L, message = "Pincode must be a 6-digit number")
+	    @Max(value = 999999L, message = "Pincode must be a 6-digit number")
+		private Long pincode;
+	}
+	
+}

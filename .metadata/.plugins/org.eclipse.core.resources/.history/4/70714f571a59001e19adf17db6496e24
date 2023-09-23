@@ -1,0 +1,8 @@
+package com.hms.billingms.exceptions;
+
+public class BillingNotFoundException extends RuntimeException {
+
+	public BillingNotFoundException(String billingId) {
+		super("Billing not found for id: " + billingId);
+	}	
+}

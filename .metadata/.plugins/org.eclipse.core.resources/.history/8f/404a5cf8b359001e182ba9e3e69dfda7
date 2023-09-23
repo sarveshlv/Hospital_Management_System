@@ -1,0 +1,18 @@
+package com.hms.authms.entity;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import lombok.Data;
+
+@Data
+@Document(collection = "users")
+public class UserCredentials {
+	@Id
+	private String id;
+	private String email;
+	private String password;
+	private String firstName;
+	private String lastName;
+	private String referenceId;
+}

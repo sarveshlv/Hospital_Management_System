@@ -1,0 +1,3 @@
+BedService.0=http://localhost:8080/api/hospitals/find/
+BedService.1=Error while checking if hospital exists: 
+BedService.2=http://localhost:8080/api/hospitals/nearby/

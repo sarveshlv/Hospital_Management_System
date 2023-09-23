@@ -1,0 +1,5 @@
+package com.hms.bedms.clients;
+
+public class FeignConfiguration {
+
+}

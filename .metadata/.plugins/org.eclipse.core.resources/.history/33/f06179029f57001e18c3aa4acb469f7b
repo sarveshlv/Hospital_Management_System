@@ -1,0 +1,19 @@
+package com.hms.patientms.service;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.client.RestTemplate;
+
+
+public class UserApiService {
+	@Autowired
+    private RestTemplate restTemplate;
+
+    public UserApiService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
+    public boolean addRefrence(String patientId)  {
+    	return true;
+    }
+}

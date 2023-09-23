@@ -1,0 +1,39 @@
+package com.hms.patientms.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
+
+
+public class UserApiService {
+	@Autowired
+    private RestTemplate restTemplate;
+
+    /**
+     * Constructor for initializing the HospitalApiService with a RestTemplate instance.
+     *
+     * @param restTemplate The RestTemplate used for making HTTP requests to the Hospital API.
+     */
+    public UserApiService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
+    public boolean addRefrence(String patientId)  {
+//        String checkHospitalUrl = "http://localhost:8080/api/hospitals/find/" + hospitalId;
+//        try {
+//            restTemplate.getForObject(checkHospitalUrl, Hospital.class);
+//            return true;
+//        } catch (HttpClientErrorException.NotFound e) {
+//            throw new RuntimeException("Service not found : " + e.getMessage());
+//        } catch (Exception e) {
+//            throw new RuntimeException("Error while checking if hospital exists: " + e.getMessage());
+//        }
+    	return true;
+    }
+
+}

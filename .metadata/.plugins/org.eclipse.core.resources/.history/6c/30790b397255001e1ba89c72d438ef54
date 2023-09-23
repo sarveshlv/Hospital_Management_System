@@ -1,0 +1,17 @@
+package com.hms.hospitalms.service;
+
+import com.hms.hospitalms.dto.AddHospitalRequest;
+import com.hms.hospitalms.entities.Hospital;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+public interface IHospitalService {
+	Hospital addHosiptal(AddHospitalRequest addHospitalRequest);
+	Hospital updateHospital(String id, AddHospitalRequest addHospitalRequest);
+	Hospital findHospitalById(String id);
+	Hospital deleteHospitalById(String id);
+	Boolean isHospitalVerfied(String id);
+	Hospital verifyHospital(String id);
+	List<Hospital> getNearbyHospitals(Long pincode);
+}

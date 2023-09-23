@@ -1,0 +1,5 @@
+package com.hms.bookingms.entities;
+
+public class Booking {
+
+}

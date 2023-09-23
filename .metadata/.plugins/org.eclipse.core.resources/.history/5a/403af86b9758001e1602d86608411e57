@@ -1,0 +1,9 @@
+package com.hms.bookingms.service;
+
+import com.hms.bookingms.dto.AddBookingRequest;
+import com.hms.bookingms.entities.Booking;
+import com.hms.bookingms.exception.PatientNotFoundException;
+
+public interface IBookingService {
+	Booking addBooking(AddBookingRequest addBookingRequest) throws PatientNotFoundException;
+}

@@ -1,0 +1,224 @@
+package com.hms.hospitalms;
+import com.hms.hospitalms.dto.AddHospitalRequest;
+import com.hms.hospitalms.entities.Hospital;
+import com.hms.hospitalms.entities.Hospital.HospitalType;
+import com.hms.hospitalms.exception.HospitalNotFoundException;
+import com.hms.hospitalms.repository.HospitalRepository;
+import com.hms.hospitalms.service.HospitalService;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+public class HospitalServiceTest {
+
+    @Mock
+    private HospitalRepository hospitalRepository;
+
+    @InjectMocks
+    private HospitalService hospitalService;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void testAddHospital() {
+        AddHospitalRequest request = createAddHospitalRequest();
+        Hospital expectedHospital = createHospital();
+
+        when(hospitalRepository.save(any(Hospital.class)))
+        	.thenReturn(expectedHospital);
+
+        assertEquals(expectedHospital, hospitalService.addHosiptal(request));
+        verify(hospitalRepository, times(1)).save(any(Hospital.class));
+    }
+
+    @Test
+    void testUpdateHospital() {
+        String hospitalId = "1";
+        AddHospitalRequest request = createAddHospitalRequest();
+        Hospital existingHospital = createHospital();
+
+        when(hospitalRepository.findById(hospitalId))
+        	.thenReturn(Optional.of(existingHospital));
+        when(hospitalRepository.save(any(Hospital.class)))
+        	.thenReturn(existingHospital);
+
+        Hospital updatedHospital = hospitalService.updateHospital(hospitalId, request);
+
+        assertEquals(request.getName(), updatedHospital.getName());
+        assertEquals(request.getHospitalType(), updatedHospital.getHospitalType().toString());
+        verify(hospitalRepository, times(1)).findById(hospitalId);
+        verify(hospitalRepository, times(1)).save(any(Hospital.class));
+    }
+
+    @Test
+    void testUpdateHospitalHospitalNotFound() {
+        String hospitalId = "1";
+        AddHospitalRequest request = createSampleAddHospitalRequest();
+
+        when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.empty());
+
+        assertThrows(HospitalNotFoundException.class, () -> hospitalService.updateHospital(hospitalId, request));
+        verify(hospitalRepository, times(1)).findById(hospitalId);
+        verify(hospitalRepository, never()).save(any(Hospital.class));
+    }
+
+    @Test
+    void testFindHospitalById() {
+        String hospitalId = "1";
+        Hospital expectedHospital = createSampleHospital();
+
+        when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.of(expectedHospital));
+
+        Hospital result = hospitalService.findHospitalById(hospitalId);
+
+        assertEquals(expectedHospital, result);
+        verify(hospitalRepository, times(1)).findById(hospitalId);
+    }
+
+    @Test
+    void testFindHospitalByIdHospitalNotFound() {
+        String hospitalId = "1";
+
+        when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.empty());
+
+        assertThrows(HospitalNotFoundException.class, () -> hospitalService.findHospitalById(hospitalId));
+        verify(hospitalRepository, times(1)).findById(hospitalId);
+    }
+
+    @Test
+    void testDeleteHospitalById() {
+        String hospitalId = "1";
+        Hospital expectedHospital = createSampleHospital();
+
+        when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.of(expectedHospital));
+
+        Hospital deletedHospital = hospitalService.deleteHospitalById(hospitalId);
+
+        assertEquals(expectedHospital, deletedHospital);
+        verify(hospitalRepository, times(1)).deleteById(hospitalId);
+    }
+
+    @Test
+    void testDeleteHospitalByIdHospitalNotFound() {
+        String hospitalId = "1";
+
+        when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.empty());
+
+        assertThrows(HospitalNotFoundException.class, () -> hospitalService.deleteHospitalById(hospitalId));
+        verify(hospitalRepository, never()).deleteById(hospitalId);
+    }
+
+    @Test
+    void testIsHospitalVerified() {
+        String hospitalId = "1";
+        Hospital hospital = createSampleHospital();
+        hospital.setVerified(true);
+
+        when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.of(hospital));
+
+        Boolean result = hospitalService.isHospitalVerfied(hospitalId);
+
+        assertTrue(result);
+        verify(hospitalRepository, times(1)).findById(hospitalId);
+    }
+
+    @Test
+    void testIsHospitalNotVerified() {
+        String hospitalId = "1";
+        Hospital hospital = createSampleHospital();
+        hospital.setVerified(false);
+
+        when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.of(hospital));
+
+        Boolean result = hospitalService.isHospitalVerfied(hospitalId);
+
+        assertFalse(result);
+        verify(hospitalRepository, times(1)).findById(hospitalId);
+    }
+
+    @Test
+    void testIsHospitalVerifiedHospitalNotFound() {
+        String hospitalId = "1";
+
+        when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.empty());
+
+        assertThrows(HospitalNotFoundException.class, () -> hospitalService.isHospitalVerfied(hospitalId));
+        verify(hospitalRepository, never()).findById(hospitalId);
+    }
+
+    @Test
+    void testVerifyHospital() {
+        String hospitalId = "1";
+        Hospital hospital = createSampleHospital();
+
+        when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.of(hospital));
+        when(hospitalRepository.save(any(Hospital.class))).thenReturn(hospital);
+
+        Hospital verifiedHospital = hospitalService.verifyHospital(hospitalId);
+
+        assertTrue(verifiedHospital.getVerified());
+        verify(hospitalRepository, times(1)).findById(hospitalId);
+        verify(hospitalRepository, times(1)).save(any(Hospital.class));
+    }
+
+    @Test
+    void testVerifyHospitalHospitalNotFound() {
+        String hospitalId = "1";
+
+        when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.empty());
+
+        assertThrows(HospitalNotFoundException.class, () -> hospitalService.verifyHospital(hospitalId));
+        verify(hospitalRepository, never()).save(any(Hospital.class));
+    }
+
+    @Test
+    void testGetNearbyHospitals() {
+        Long pincode = 123456L;
+        List<Hospital> nearbyHospitals = createSampleHospitalList();
+
+        when(hospitalRepository.findByAddressPincodeBetween(pincode - 1, pincode + 1)).thenReturn(nearbyHospitals);
+
+        List<Hospital> result = hospitalService.getNearbyHospitals(pincode);
+
+        assertEquals(nearbyHospitals, result);
+        verify(hospitalRepository, times(1)).findByAddressPincodeBetween(pincode - 1, pincode + 1);
+    }
+
+    private static AddHospitalRequest createAddHospitalRequest() {
+        AddHospitalRequest request = new AddHospitalRequest();
+        request.setName("Apollo Hospital");
+        request.setHospitalType("PRIVATE");
+        request.setContactNo(7270043813L);
+        request.setAddress(new Hospital.Address("Lucknow", "Uttar Pradesh", 226022L));
+        return request;
+    }
+
+    private static Hospital createHospital() {
+        Hospital hospital = new Hospital();
+        hospital.setId("1");
+        hospital.setName("Apollo Hospital");
+        hospital.setHospitalType(HospitalType.PRIVATE);
+        hospital.setContactNo(7270043813L);
+        hospital.setAddress(new Hospital.Address("City", "Uttar Pradesh", 226022L));
+        return hospital;
+    }
+
+    private List<Hospital> createSampleHospitalList() {
+        List<Hospital> hospitals = new ArrayList<>();
+        hospitals.add(createSampleHospital());
+        return hospitals;
+    }
+}

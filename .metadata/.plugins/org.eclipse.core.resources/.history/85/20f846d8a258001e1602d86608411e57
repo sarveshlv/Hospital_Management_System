@@ -1,0 +1,52 @@
+package com.hms.bookingms.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/bookings")
+public class BookingController {
+
+	@Autowired
+	private BookingService bookingService;
+
+	@PostMapping("/add")
+	public Booking addBooking(@RequestBody AddBookingRequest addBookingRequest)
+			throws PatientNotFoundException, HospitalNotFoundException, InvalidDatesException {
+		return bookingService.addBooking(addBookingRequest);
+	}
+
+	@GetMapping("/{bookingId}")
+	public Booking getBookingById(@PathVariable String bookingId) throws BookingNotFoundException {
+		return bookingService.findBookingById(bookingId);
+	}
+
+	@GetMapping("/patient/{patientId}")
+	public List<Booking> getBookingsByPatientId(@PathVariable String patientId) throws PatientNotFoundException {
+		return bookingService.getBookingByPatientId(patientId);
+	}
+
+	@PostMapping("/approve/{bookingId}")
+	public Booking approveBooking(@PathVariable String bookingId)
+			throws BookingNotFoundException, InvalidBookingRequest {
+		return bookingService.approveBooking(bookingId);
+	}
+
+	@PostMapping("/reject/{bookingId}")
+	public Booking rejectBooking(@PathVariable String bookingId)
+			throws BookingNotFoundException, InvalidBookingRequest {
+		return bookingService.rejectBooking(bookingId);
+	}
+
+	@PostMapping("/cancel/{bookingId}")
+	public Booking cancelBooking(@PathVariable String bookingId)
+			throws BookingNotFoundException, InvalidBookingRequest {
+		return bookingService.cancelBooking(bookingId);
+	}
+
+	@GetMapping("/check/{bookingId}")
+	public String checkBookingStatus(@PathVariable String bookingId) throws BookingNotFoundException {
+		return bookingService.checkBooking(bookingId);
+	}
+}

@@ -1,0 +1,16 @@
+package com.hms.authms.service;
+
+import java.util.Collection;
+
+import org.springframework.security.core.GrantedAuthority;
+
+import com.hms.authms.dto.AddUserRequest;
+import com.hms.authms.dto.UserDetailsResponse;
+
+public interface IAuthenticationService {
+	UserDetailsResponse saveUser(AddUserRequest addUserRequest);
+
+	String generateToken(String email, Collection<? extends GrantedAuthority> authorites);
+
+	void validateToken(String token);
+}

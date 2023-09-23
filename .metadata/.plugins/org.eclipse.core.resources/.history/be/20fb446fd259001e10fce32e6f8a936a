@@ -1,0 +1,7 @@
+package com.hms.authms.service;
+
+public interface IAuthenticationService {
+	String generateToken(String email);
+
+	void validateToken(String token);
+}

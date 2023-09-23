@@ -1,0 +1,21 @@
+package com.hms.hospitalms.repository;
+
+import java.util.List;
+
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import com.hms.hospitalms.entities.Hospital;
+
+public interface HospitalRepository extends MongoRepository<Hospital, String> {
+
+	List<Hospital> findByAddressPincode(long l, long m);
+	
+	@Query("{'address.pincode': {$gte: :startPincode, $lte: :endPincode}}")
+    List<Hospital> getHospitalByPincode(
+            @Param("startPincode") Long startPincode,
+            @Param("endPincode") Long endPincode
+    );
+
+}

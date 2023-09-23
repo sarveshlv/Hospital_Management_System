@@ -1,0 +1,45 @@
+/**
+ * This class represents a data transfer object (DTO) used for updating the details of a bed in the Bed Management System (BedMS).
+ * It contains information about the new bed type and cost per day.
+ *
+ * @author prateek
+ */
+package com.hms.bedms.dtos;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+/**
+ * The {@code UpdateBedRequest} class is a DTO (Data Transfer Object) that is used to pass data for updating bed details.
+ */
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
+@AllArgsConstructor
+@NoArgsConstructor
+public class UpdateBedRequest {
+    /**
+     * The new type of bed, which should be one of the following values:
+     * - USUAL_BED
+     * - ICU_BED
+     * - OXYGEN_BED
+     * - VENTILATOR_BED
+     */
+    @NotBlank(message = "Bed type is required")
+    @Pattern(regexp = "USUAL_BED|ICU_BED|OXYGEN_BED|VENTILATOR_BED", message = "Invalid Bed type")
+    private String bedType;
+
+    /**
+     * The new cost per day for reserving the bed, which must be a positive number.
+     */
+    @Positive(message = "Cost per day must be a positive number")
+    private Double costPerDay;
+}

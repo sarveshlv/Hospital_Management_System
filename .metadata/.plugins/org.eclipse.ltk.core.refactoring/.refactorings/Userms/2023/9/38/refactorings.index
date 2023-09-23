@@ -1,0 +1,22 @@
+1695211152838	Rename package 'com.example.config'
+1695211166727	Rename package 'com.example.constants'
+1695211178390	Rename package 'com.example.controller'
+1695211191663	Rename package 'com.example.dto'
+1695211205859	Rename package 'com.example.demo'
+1695211223121	Rename package 'com.example.entities'
+1695211234358	Rename package 'com.example.repository'
+1695211245778	Rename package 'com.example.service'
+1695211253896	Rename package 'com.example.web'
+1695212316971	Delete element
+1695212392132	Delete element
+1695463201285	Rename package 'com.hms.authms.controller'
+1695463211961	Rename package 'com.hms.authms.dto'
+1695463227784	Rename package 'com.hms.authms.service'
+1695463233943	Rename package 'com.hms.authms.repository'
+1695463240560	Rename package 'com.hms.authms.exception'
+1695463253372	Delete element
+1695463367355	Delete element
+1695463484330	Move compilation unit
+1695463486959	Delete element
+1695468901724	Rename package 'com.hms.authms'
+1695472853108	Move compilation unit

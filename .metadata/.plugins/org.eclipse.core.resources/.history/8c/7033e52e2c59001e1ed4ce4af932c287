@@ -1,0 +1,5 @@
+package com.hms.billingms.service;
+
+public class PaypalService {
+
+}

@@ -1,0 +1,24 @@
+/**
+ * This exception is thrown when a bed with a specified ID is not found in the Bed Management System (BedMS).
+ * It extends the {@link RuntimeException} class.
+ *
+ * @author prateek
+ */
+package com.hms.bedms.exceptions;
+
+/**
+ * The {@code BedNotFoundException} class is used to indicate that a bed with a specific ID is not found.
+ */
+public class BedNotFoundException extends RuntimeException {
+
+    private static final long serialVersionUID = -2858733899147715939L;
+
+    /**
+     * Constructs a new {@code BedNotFoundException} with the specified ID.
+     *
+     * @param id The unique identifier of the bed that was not found.
+     */
+    public BedNotFoundException(String id) {
+        super("Bed not found for id: " + id);
+    }
+}

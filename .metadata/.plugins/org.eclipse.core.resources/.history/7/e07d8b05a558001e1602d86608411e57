@@ -1,0 +1,21 @@
+package com.hms.bookingms.dto;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+/**
+ * The {@code Bed} class is an entity class that maps to a MongoDB collection named "beds."
+ */
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
+public class Bed {
+    private String id;
+    private String hospitalId;
+    private String bedType;
+    private String bedStatus;
+    private Double costPerDay;
+}

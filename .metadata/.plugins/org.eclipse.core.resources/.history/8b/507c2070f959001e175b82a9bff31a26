@@ -1,0 +1,49 @@
+package com.hms.userms.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.hms.userms.dto.UpdateUserRequest;
+import com.hms.userms.entity.User;
+import com.hms.userms.exception.UserNotFoundException;
+import com.hms.userms.repository.UserRepository;
+
+@Service
+public class UserService implements IUserService {
+
+	@Autowired
+	private UserRepository userRepository;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+	@Override
+	public User updateUser(UpdateUserRequest updateUserRequest) throws UserNotFoundException {
+		User user = getUserByEmail(updateUserRequest.getEmail());
+
+		user.setFirstName(updateUserRequest.getFirstName());
+		user.setLastName(updateUserRequest.getLastName());
+		user.setPassword(passwordEncoder.encode(updateUserRequest.getPassword()));
+
+		userRepository.save(user);
+
+		return ser;
+	}
+
+	
+	@Override
+	private User getUserByEmail(String email) throws UserNotFoundException {
+		return userRepository.findByEmail(email)
+				.orElseThrow(() -> new UserNotFoundException(email));
+	}
+
+	@Override
+	public UserDetailsResponse addReferenceId(String email, String referenceId) throws UserNotFoundException {
+		User user = getUserByEmail(email);
+		user.setReferenceId(referenceId);
+
+		userRepository.save(user);
+		return ServiceUtility.getUserDetailsResponse(user);
+	}
+}

@@ -1,0 +1,46 @@
+package com.hms.authms.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.hms.authms.dto.AddUserRequest;
+import com.hms.authms.dto.UserDetailsResponse;
+import com.hms.authms.entity.User;
+import com.hms.authms.repository.UserRepository;
+import com.hms.authms.utility.ServiceUtility;
+
+public class AuthenticatonService implements IAuthenticationService{
+	
+	@Autowired
+	private UserRepository userRepository;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+	@Autowired
+	private JwtService jwtService;
+	
+	@Override
+	public UserDetailsResponse saveUser(AddUserRequest addUserRequest) {
+		User user = new User();
+		user.setFirstName(addUserRequest.getFirstName());
+		user.setLastName(addUserRequest.getLastName());
+		user.setEmail(addUserRequest.getEmail());
+		user.setRole(addUserRequest.getRole());
+		user.setPassword(passwordEncoder.encode(addUserRequest.getPassword()));
+
+		userRepository.save(user);
+
+		return ServiceUtility.getUserDetailsResponse(user);
+	}
+	
+	@Override
+	public String generateToken(String email) {
+		return jwtService.generateToken(email);
+	}
+
+	@Override
+	public void validateToken(String token) {
+		jwtService.validateToken(token);
+	}
+}
