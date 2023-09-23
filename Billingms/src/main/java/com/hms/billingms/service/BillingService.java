@@ -9,6 +9,7 @@ import com.hms.billingms.dto.Bed;
 import com.hms.billingms.dto.Booking;
 import com.hms.billingms.entities.Billing;
 import com.hms.billingms.exceptions.BillingNotFoundException;
+import com.hms.billingms.exceptions.BookingNotCompletedException;
 import com.hms.billingms.exceptions.BookingNotFoundException;
 import com.hms.billingms.repository.BillingRepository;
 
@@ -25,9 +26,12 @@ public class BillingService implements IBillingService {
 	private IBedServiceClient bedServiceClient;
 
 	@Override
-	public Billing addBilling(String authroizationHeader, String bookingId) throws BookingNotFoundException {
+	public Billing addBilling(String authroizationHeader, String bookingId) throws BookingNotFoundException, BookingNotFoundException {
 		Booking booking = bookingServiceClient.completeBooking(authroizationHeader, bookingId);
-		Bed bed = bedServiceClient.makeBedAvaialbe(authroizationHeader, bookingId);
+		Bed bed = bedServiceClient.makeBedAvaialbe(authroizationHeader, booking.getBedId());
+		if(!booking.getBookingStatus().equals("COMPLETED")) {
+			throw new BookingNotCompletedException(booking.getBookingStatus());
+		}
 		
 		Billing billing = new Billing();
 		long differenceInMilliseconds = booking.getReleaseDate().getTime() - booking.getOccupyDate().getTime();

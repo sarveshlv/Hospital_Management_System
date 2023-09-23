@@ -1,0 +1,5 @@
+package com.hms.billingms.exceptions;
+
+public class BookingNotCompletedExcaption extends Exception {
+
+}

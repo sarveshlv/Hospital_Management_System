@@ -25,4 +25,8 @@ public class Booking {
 	private Date occupyDate;
 	private Date releaseDate;
 	private String bookingStatus;
+	
+	public enum BookingStatus {
+		REQUESTED, APPROVED, DECLINED, CANCELLED, COMPLETED
+	}
 }

@@ -1,0 +1,3 @@
+paypal.client.id=yourClientID
+paypal.client.secret=yourClientSecret
+paypal.mode=sandbox

@@ -25,4 +25,8 @@
 		<item key="width" value="737"/>
 		<item key="height" value="553"/>
 	</section>
+	<section name="RefactoringWizard.Externalize strings in &apos;AppConfig.java&apos;">
+		<item key="width" value="737"/>
+		<item key="height" value="553"/>
+	</section>
 </section>

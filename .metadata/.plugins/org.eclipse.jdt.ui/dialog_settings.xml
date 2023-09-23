@@ -77,11 +77,23 @@
 	<section name="nls_accessor_history">
 		<section name="0">
 			<item key="accessorName" value="Messages"/>
+			<item key="accessorPackage" value="=Billingms/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.hms.billingms.config"/>
+			<item key="bundleName" value="application.properties"/>
+			<item key="bundlePackage" value="=Billingms/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.hms.billingms.config"/>
+		</section>
+		<section name="1">
+			<item key="accessorName" value="Messages"/>
+			<item key="accessorPackage" value="=Billingms/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.hms.billingms.config"/>
+			<item key="bundleName" value="messages.properties"/>
+			<item key="bundlePackage" value="=Billingms/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.hms.billingms.config"/>
+		</section>
+		<section name="2">
+			<item key="accessorName" value="Messages"/>
 			<item key="accessorPackage" value="=Bedms/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.hms.bedms.service"/>
 			<item key="bundleName" value="messages.properties"/>
 			<item key="bundlePackage" value="=Bedms/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.hms.bedms.service"/>
 		</section>
-		<section name="1">
+		<section name="3">
 			<item key="accessorName" value="Messages"/>
 			<item key="accessorPackage" value="=Bedms/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.hms.bedms.service"/>
 			<item key="bundleName" value="application.properties"/>

@@ -39,7 +39,6 @@ public class CentralExceptionHandler {
 		errors.put("url", ex.request().url());
 		errors.put("error",
 				errorMessage.substring(errorMessage.lastIndexOf("error") + 8, errorMessage.lastIndexOf("}") - 1));
-
 		return new ResponseEntity<>(errors, httpStatus);
 	}
 
