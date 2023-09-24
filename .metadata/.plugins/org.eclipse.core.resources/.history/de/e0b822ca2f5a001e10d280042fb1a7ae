@@ -1,0 +1,6 @@
+package com.hms.billingms.dto;
+
+@Data
+public class BillingRequest {
+	private String bookingId;
+}

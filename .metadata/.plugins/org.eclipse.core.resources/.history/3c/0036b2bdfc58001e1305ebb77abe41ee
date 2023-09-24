@@ -1,0 +1,187 @@
+/**
+ * This class provides the implementation of the {@link IBedService} interface for managing beds in the Bed Management System (BedMS).
+ * It includes methods for adding, updating, booking, unbooking, and retrieving beds, as well as finding nearby beds and beds by specific criteria.
+ * It also integrates with the {@link HospitalApiService} to check the existence of hospitals.
+ *
+ * @author prateek
+ */
+package com.hms.bedms.service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.hms.bedms.dtos.AddBedRequest;
+import com.hms.bedms.dtos.Hospital;
+import com.hms.bedms.dtos.UpdateBedRequest;
+import com.hms.bedms.entities.Bed;
+import com.hms.bedms.entities.Bed.BedStatus;
+import com.hms.bedms.entities.Bed.BedType;
+import com.hms.bedms.exceptions.BedNotFoundException;
+import com.hms.bedms.exceptions.HospitalNotFoundException;
+import com.hms.bedms.repository.BedRepository;
+
+/**
+ * The {@code BedService} class is responsible for implementing the business
+ * logic for bed-related operations in BedMS.
+ */
+@Service
+public class BedService implements IBedService {
+
+	@Autowired
+	private BedRepository bedRepository;
+
+	@Autowired 
+	private HospitalServiceClient hospitalServiceClient;
+
+	/**
+	 * Adds a new bed to the system based on the provided {@link AddBedRequest}.
+	 *
+	 * @param addBedRequest The request containing information about the new bed to
+	 *                      be added.
+	 * @return The added bed.
+	 * @throws HospitalNotFoundException if the hospital specified in the request is
+	 *                                   not found.
+	 */
+	@Override
+	public Bed addBed(AddBedRequest addBedRequest) throws HospitalNotFoundException {
+		String hospitalId = addBedRequest.getHospitalId();
+
+		if (!hospitalServiceClient.isHospitalFound(hospitalId).) {
+			throw new HospitalNotFoundException(hospitalId);
+		}
+
+		Bed bed = new Bed();
+		bed.setHospitalId(hospitalId);
+		bed.setBedType(BedType.valueOf(addBedRequest.getBedType()));
+		bed.setBedStatus(BedStatus.AVAILABLE);
+		bed.setCostPerDay(addBedRequest.getCostPerDay());
+
+		return bedRepository.save(bed);
+	}
+
+	/**
+	 * Updates the details of a bed based on the provided ID and
+	 * {@link UpdateBedRequest}.
+	 *
+	 * @param id               The unique identifier of the bed to be updated.
+	 * @param updateBedRequest The request containing updated bed information.
+	 * @return The updated bed.
+	 * @throws BedNotFoundException if the bed with the specified ID is not found.
+	 */
+	@Override
+	public Bed updateBed(String id, UpdateBedRequest updateBedRequest) throws BedNotFoundException {
+		Bed bed = findBedById(id);
+
+		bed.setBedType(BedType.valueOf(updateBedRequest.getBedType()));
+		bed.setCostPerDay(updateBedRequest.getCostPerDay());
+
+		return bedRepository.save(bed);
+	}
+
+	/**
+	 * Retrieves a bed by its unique identifier.
+	 *
+	 * @param id The unique identifier of the bed to be retrieved.
+	 * @return The retrieved bed.
+	 * @throws BedNotFoundException if the bed with the specified ID is not found.
+	 */
+	@Override
+	public Bed findBedById(String id) throws BedNotFoundException {
+		return bedRepository.findById(id).orElseThrow(() -> new BedNotFoundException(id));
+	}
+
+	/**
+	 * Retrieves a list of all beds in the system.
+	 *
+	 * @return A list of all beds.
+	 */
+	@Override
+	public List<Bed> getAllBeds() {
+		return bedRepository.findAll();
+	}
+
+	/**
+	 * Retrieves a list of nearby beds based on the provided pincode.
+	 *
+	 * @param pincode The pincode used to find nearby beds.
+	 * @return A list of nearby beds.
+	 */
+	@Override
+	public List<Bed> getNearbyBeds(Long pincode) {
+		List<Bed> beds = new ArrayList<>();
+		List<Hospital> nearbyHospitals = hospitalService.getNearbyHospitals(pincode);
+		for (Hospital hospital : nearbyHospitals) {
+			String hospitalId = hospital.getId();
+			beds.addAll(getBedsByHospitalId(hospitalId));
+		}
+		return beds;
+	}
+
+	/**
+	 * Retrieves a list of beds based on the specified bed type.
+	 *
+	 * @param bedType The type of beds to retrieve.
+	 * @return A list of beds of the specified type.
+	 */
+	@Override
+	public List<Bed> getBedsByType(String bedType) {
+		return bedRepository.findByBedType(bedType);
+	}
+
+	/**
+	 * Retrieves a list of beds associated with a specific hospital based on the
+	 * hospital's ID.
+	 *
+	 * @param hospitalId The unique identifier of the hospital.
+	 * @return A list of beds associated with the specified hospital.
+	 */
+	@Override
+	public List<Bed> getBedsByHospitalId(String hospitalId) {
+		return bedRepository.findByHospitalId(hospitalId);
+	}
+
+	/**
+	 * Books a bed with the specified ID.
+	 *
+	 * @param id The unique identifier of the bed to be booked.
+	 * @return The booked bed.
+	 * @throws BedNotFoundException if the bed with the specified ID is not found.
+	 */
+	@Override
+	public Bed bookBed(String id) throws BedNotFoundException {
+		Bed bed = findBedById(id);
+		bed.setBedStatus(BedStatus.BOOKED);
+		return bedRepository.save(bed);
+	}
+
+	/**
+	 * Unbooks a bed with the specified ID.
+	 *
+	 * @param id The unique identifier of the bed to be unbooked.
+	 * @return The unbooked bed.
+	 * @throws BedNotFoundException if the bed with the specified ID is not found.
+	 */
+	@Override
+	public Bed unbookBed(String id) throws BedNotFoundException {
+		Bed bed = findBedById(id);
+		bed.setBedStatus(BedStatus.CANCELLED);
+		return bedRepository.save(bed);
+	}
+
+	/**
+	 * Makes a bed with the specified ID available.
+	 *
+	 * @param id The unique identifier of the bed to be made available.
+	 * @return The bed marked as available.
+	 * @throws BedNotFoundException if the bed with the specified ID is not found.
+	 */
+	@Override
+	public Bed makeBedAvailable(String id) throws BedNotFoundException {
+		Bed bed = findBedById(id);
+		bed.setBedStatus(BedStatus.AVAILABLE);
+		return bedRepository.save(bed);
+	}
+}

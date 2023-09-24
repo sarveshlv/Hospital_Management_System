@@ -1,0 +1,21 @@
+package com.hms.hospitalms.dto;
+
+@Getter
+@Setter
+public class AddHospitalRequest {
+	private String name;
+    private Boolean verified;
+    private Hospital.HospitalType hospitalType;
+    private Long contactNo;
+    private Address address;
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Address {
+        private String city;
+        private String state;
+        private Long pincode;
+    }
+}

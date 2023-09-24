@@ -1,0 +1,24 @@
+1695284859595	Delete element
+1695284864260	Delete element
+1695310709790	Rename package 'com.hms.bookingms.dto.controller'
+1695310715916	Rename package 'com.hms.bookingms.dto.exceptions'
+1695310722283	Rename package 'com.hms.bookingms.dto.service'
+1695310732281	Rename package 'com.hms.bookingms.dto.repository'
+1695311868231	Move compilation unit
+1695311873639	Delete element
+1695312713378	Delete element
+1695325433809	Infer generic type arguments
+1695353715907	Delete element
+1695354334827	Delete element
+1695354719939	Delete element
+1695354852570	Delete element
+1695372138847	Move compilation unit
+1695372145938	Move compilation unit
+1695372155495	Move compilation unit
+1695372166699	Move compilation unit
+1695372180654	Rename type 'PatientServiceClient'
+1695372185175	Rename type 'HospitalServiceClient'
+1695372188320	Rename type 'BookingServiceClient'
+1695372191592	Rename type 'BedServiceClient'
+1695372207692	Delete element
+1695372377498	Delete element

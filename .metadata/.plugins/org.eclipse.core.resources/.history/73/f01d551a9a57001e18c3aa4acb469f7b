@@ -1,0 +1,48 @@
+package com.hms.patientms.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.hms.patientms.dto.AddPatientRequest;
+import com.hms.patientms.entities.Patient;
+import com.hms.patientms.exceptions.PatientNotFoundException;
+import com.hms.patientms.repository.PatientRepository;
+
+public class PatientService implements IPatientService {
+	
+	@Autowired
+	private PatientRepository patientRepository;
+	
+	@Autowired
+	private UserApiService userApiService;
+	
+
+	@Override
+	public Patient addPatient(AddPatientRequest addPatientRequest) {
+		// TODO Auto-generated method stub
+		Patient patient = new Patient();
+		patient.setFirstName(addPatientRequest.getFirstName());
+		patient.setLastName(addPatientRequest.getLastName());
+		patient.setContactNumber(addPatientRequest.getContactNumber());
+		patient.setAadharCard(addPatientRequest.getAadharNumber());
+		patient.setAddress(addPatientRequest.getAddress());
+		
+		patient = patientRepository.save(patient);
+		if(userApiService.addRefrence(patient.getId()))
+			return patient;
+		else 
+			throw new RuntimeException();
+	}
+
+	@Override
+	public Patient updatePatient(String id, AddPatientRequest addPatientRequest) throws PatientNotFoundException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Patient findPatientById(String id) throws PatientNotFoundException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

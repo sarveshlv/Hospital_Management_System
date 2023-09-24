@@ -1,0 +1,9 @@
+package com.hms.hospitalms.exception;
+
+public class InvalidHospitalTypeException extends RuntimeException{
+
+    public  InvalidHospitalTypeException(String msg){
+        super(msg);
+    }
+
+}

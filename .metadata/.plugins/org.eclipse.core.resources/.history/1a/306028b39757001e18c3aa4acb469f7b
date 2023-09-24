@@ -1,0 +1,5 @@
+package com.hms.patientms.exceptions;
+
+public class PatientNotFoundException {
+
+}

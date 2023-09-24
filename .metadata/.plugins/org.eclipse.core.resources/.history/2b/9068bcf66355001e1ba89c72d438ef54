@@ -1,0 +1,13 @@
+package com.hms.hospitalms.util;
+
+import com.hms.hospitalms.dto.AddHospitalRequest;
+import com.hms.hospitalms.entities.Hospital;
+
+public class HospitalUtil {
+
+	public static Hospital gethospitalFromRequest(AddHospitalRequest addHospitalRequest) {
+		Hospital hospital = new Hospital();
+		return null;
+	}
+
+}

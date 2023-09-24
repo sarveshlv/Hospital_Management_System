@@ -1,0 +1,72 @@
+package com.hms.hospitalms;
+
+import com.hms.hospitalms.entities.Hospital;
+import com.hms.hospitalms.repository.HospitalRepository;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.context.annotation.Import;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@DataMongoTest
+@Import(TestConfig.class) // Import any configuration classes if needed
+public class HospitalRepositoryTest {
+
+    @Autowired
+    private HospitalRepository hospitalRepository;
+
+    @BeforeEach
+    void setUp() {
+        // Insert test data into the database
+        Hospital hospital1 = new Hospital();
+        hospital1.setName("Hospital 1");
+        hospital1.setContactNo(1234567890L);
+
+        Hospital hospital2 = new Hospital();
+        hospital2.setName("Hospital 2");
+        hospital2.setContactNo(9876543210L);
+
+        hospitalRepository.saveAll(List.of(hospital1, hospital2));
+    }
+
+    @AfterEach
+    void tearDown() {
+        // Remove test data from the database
+        hospitalRepository.deleteAll();
+    }
+
+    @Test
+    void testFindByAddressPincodeBetween() {
+        // Create hospitals with different pincodes
+        Hospital hospital3 = new Hospital();
+        hospital3.setName("Hospital 3");
+        hospital3.setContactNo(1111111111L);
+        hospital3.getAddress().setPincode(100000L);
+
+        Hospital hospital4 = new Hospital();
+        hospital4.setName("Hospital 4");
+        hospital4.setContactNo(2222222222L);
+        hospital4.getAddress().setPincode(200000L);
+
+        hospitalRepository.saveAll(List.of(hospital3, hospital4));
+
+        // Test finding hospitals within a range of pincodes
+        List<Hospital> hospitalsInRange = hospitalRepository.findByAddressPincodeBetween(150000L, 250000L);
+
+        assertEquals(2, hospitalsInRange.size());
+        // Assert that the hospitals with pincodes 100000 and 200000 are found
+    }
+
+    @Test
+    void testFindByAddressPincodeBetween_NoHospitalsInRange() {
+        // Test finding hospitals within a range where no hospitals exist
+        List<Hospital> hospitalsInRange = hospitalRepository.findByAddressPincodeBetween(1000L, 5000L);
+
+        assertEquals(0, hospitalsInRange.size());
+    }
+}

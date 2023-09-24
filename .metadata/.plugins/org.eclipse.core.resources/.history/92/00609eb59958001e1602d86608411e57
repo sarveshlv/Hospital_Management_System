@@ -1,0 +1,10 @@
+package com.hms.bookingms.exceptions;
+
+public class HospitalNotFoundException extends RuntimeException{
+
+	public HospitalNotFoundException(String hospitalId) {
+		super("Hospital not found for id : " + hospitalId);
+		// TODO Auto-generated constructor stub
+	}
+
+}

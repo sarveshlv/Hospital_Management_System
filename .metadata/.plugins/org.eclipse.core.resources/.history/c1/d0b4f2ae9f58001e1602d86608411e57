@@ -1,0 +1,20 @@
+package com.hms.bookingms.service;
+
+import java.util.List;
+
+import com.hms.bookingms.dto.AddBookingRequest;
+import com.hms.bookingms.entities.Booking;
+import com.hms.bookingms.exceptions.BookingNotFoundException;
+import com.hms.bookingms.exceptions.HospitalNotFoundException;
+import com.hms.bookingms.exceptions.PatientNotFoundException;
+
+public interface IBookingService {
+	Booking addBooking(AddBookingRequest addBookingRequest) throws PatientNotFoundException, HospitalNotFoundException;
+	Booking findBookingById(String bookingId) throws BookingNotFoundException;
+	List<Booking> getBookingByPatientId(String patientId) throws PatientNotFoundException;
+	
+	Booking approveBooking(String bookingId) throws BookingNotFoundException;
+	Booking rejectBooking(String bookingId);
+	Booking cancelBooking(String bookingId);
+	Booking checkBooking(String bookingId);
+}

@@ -1,0 +1,9 @@
+server.port = 8200
+
+spring.application.name = bedms
+spring.data.mongodb.host=localhost
+spring.data.mongodb.port=27017
+spring.data.mongodb.database=bedsdb
+
+# Eureka client registeation
+#eureka.client.service-url.defaultZone=http://localhost:8761/eureka/

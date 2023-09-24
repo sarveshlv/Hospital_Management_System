@@ -1,0 +1,33 @@
+package com.hms.patientms.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+
+@Component
+public class UserApiService {
+	@Autowired
+	private RestTemplate restTemplate;
+
+	public UserApiService(RestTemplate restTemplate) {
+		this.restTemplate = restTemplate;
+	}
+
+	public boolean addRefrence(String patientId) {
+//		String addReferenceUrl = "http://localhost:8080/api/users/addReference/" + patientId;
+//        try {
+//        	ResponseEntity<Boolean> responseEntity = 
+//        			restTemplate.exchange(addReferenceUrl, HttpMethod.GET, null, Boolean.class);
+//        	HttpStatus statusCode = (HttpStatus) responseEntity.getStatusCode();
+//        	Boolean responseBody = responseEntity.getBody();
+//
+////            return restTemplate.getForObject(addReferenceUrl, Boolean.class);
+//        } catch (HttpClientErrorException.NotFound e) {
+//            throw new RuntimeException("Service not found : " + e.getMessage());
+//        } catch (Exception e) {
+//            throw new RuntimeException("Error while checking if hospital exists: " + e.getMessage());
+//        }
+        return true;
+
+	}
+}

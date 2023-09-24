@@ -1,0 +1,17 @@
+package com.hms.hospitalms;
+
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import com.package1.TestClass1;
+import com.package2.TestClass2;
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    TestClass1.class,
+    TestClass2.class,
+    // Add more test classes from different packages as needed
+})
+
+public class TestSuite {
+
+}

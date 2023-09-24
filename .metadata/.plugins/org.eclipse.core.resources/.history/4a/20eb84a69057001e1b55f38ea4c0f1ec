@@ -1,0 +1,19 @@
+package com.hms.patientms.entities;
+
+import org.springframework.data.annotation.Id;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter @Setter @ToString @EqualsAndHashCode
+public class Patient {
+	@Id
+	private String id;
+	private String firstName;
+	private String lastName;
+	private Long aadhar;
+	private Address address;
+	
+}

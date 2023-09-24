@@ -1,0 +1,38 @@
+/**
+ * This interface defines a repository for managing beds in the Bed Management System (BedMS).
+ * It provides methods for performing database operations related to beds.
+ * The repository extends the MongoRepository interface, which is part of Spring Data MongoDB.
+ *
+ * @author prateek
+ */
+package com.hms.bedms.repository;
+
+import java.util.List;
+
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+import com.hms.bedms.entities.Bed;
+
+/**
+ * The {@code BedRepository} interface extends the {@link MongoRepository}
+ * interface and is used to interact with the MongoDB database to perform CRUD
+ * (Create, Read, Update, Delete) operations on beds.
+ */
+public interface IBedRepository extends MongoRepository<Bed, String> {
+	/**
+	 * Retrieves a list of beds based on the hospital ID.
+	 *
+	 * @param hospitalId The unique identifier of the hospital.
+	 * @return A list of beds associated with the specified hospital ID.
+	 */
+	List<Bed> findByHospitalId(String hospitalId);
+
+	/**
+	 * Retrieves a list of beds based on the bed type.
+	 *
+	 * @param bedType The type of bed, which can be one of the following values: -
+	 *                USUAL_BED - ICU_BED - OXYGEN_BED - VENTILATOR_BED
+	 * @return A list of beds of the specified type.
+	 */
+	List<Bed> findByBedType(String bedType);
+}

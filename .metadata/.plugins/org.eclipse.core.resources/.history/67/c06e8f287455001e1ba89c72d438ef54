@@ -1,0 +1,73 @@
+package com.hms.hospitalms.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.hms.hospitalms.dto.AddHospitalRequest;
+import com.hms.hospitalms.entities.Hospital;
+import com.hms.hospitalms.entities.Hospital.HospitalType;
+import com.hms.hospitalms.exception.HospitalNotFoundException;
+import com.hms.hospitalms.repository.HospitalRepository;
+import com.hms.hospitalms.util.HospitalUtil;
+
+@Service
+public class HospitalService implements IHospitalService {
+
+	@Autowired
+	private HospitalRepository hospitalRepository;
+
+	@Override
+	public Hospital addHosiptal(AddHospitalRequest addHospitalRequest) {
+		Hospital hospital = new Hospital();
+		hospital.setName(addHospitalRequest.getName());
+		hospital.setVerified(false);
+		hospital.setHospitalType(HospitalType.valueOf(addHospitalRequest.getHospitalType()));
+		hospital.setAddress(addHospitalRequest.getAddress());
+
+		return hospitalRepository.save(hospital);
+	}
+
+	@Override
+	public Hospital updateHospital(String id, AddHospitalRequest addHospitalRequest) {
+		Hospital hospital = findHospitalById(id);
+		hospital.setName(addHospitalRequest.getName());
+		hospital.setVerified(false);
+		hospital.setHospitalType(HospitalType.valueOf(addHospitalRequest.getHospitalType()));
+		hospital.setAddress(addHospitalRequest.getAddress());
+		return hospitalRepository.save(hospital);
+	}
+
+	@Override
+	public Hospital findHospitalById(String id) {
+		return hospitalRepository.findById(id)
+				.orElseThrow(() -> new HospitalNotFoundException("Hospital not found for : " + id));
+	}
+
+	@Override
+	public Hospital deleteHospitalById(String id) {
+		Hospital hospital = findHospitalById(id);
+		hospitalRepository.deleteById(id);
+		return hospital;
+	}
+
+	@Override
+	public Boolean isHospitalVerfied(String id) {
+		Hospital hospital = findHospitalById(id);
+		return hospital.getVerified();
+	}
+
+	@Override
+	public Hospital verifyHospital(String id) {
+		Hospital hospital = findHospitalById(id);
+		hospital.setVerified(true);
+		hospitalRepository.save(hospital);
+		return hospital;
+	}
+
+	@Override
+	public List<Hospital> getNearbyHospitals(Long pincode) {
+		return hospitalRepository.findByAddressPincodeBetween(pincode - 1, pincode + 1);
+	}
+}

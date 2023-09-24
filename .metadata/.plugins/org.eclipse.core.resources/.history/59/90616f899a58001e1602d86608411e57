@@ -1,0 +1,24 @@
+package com.hms.bookingms.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
+
+public class HospitalApiService {
+	
+	@Autowired
+	private RestTemplate restTemplate;
+	
+	public boolean isHospitalFound(String hospitalId) throws RuntimeException {
+		String checkHospitalUrl = "http://localhost:8080/api/hospitals/find/" + hospitalId;
+		try {
+			ResponseEntity<Void> responseEntity = restTemplate.getForEntity(checkHospitalUrl, Void.class);
+			return responseEntity.getStatusCode() == HttpStatus.OK;
+		} catch (HttpClientErrorException.NotFound e) {
+			return false;
+		} catch (Exception e) {
+			throw new RuntimeException("Error while checking if hospital exists: " + e.getMessage());
+		}
+	}
+}

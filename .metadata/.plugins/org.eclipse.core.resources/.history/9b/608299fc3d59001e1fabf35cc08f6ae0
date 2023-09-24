@@ -1,0 +1,72 @@
+package com.hms.hospitalms.service;
+
+import com.hms.hospitalms.dto.AddHospitalRequest;
+import com.hms.hospitalms.entities.Hospital;
+import com.hms.hospitalms.exception.HospitalNotFoundException;
+
+import java.util.List;
+
+public interface IHospitalService {
+    
+    /**
+     * Add a new hospital based on the provided request.
+     *
+     * @param addHospitalRequest The request containing hospital information.
+     * @return The newly added hospital.
+     */
+    Hospital addHospital(AddHospitalRequest addHospitalRequest);
+
+    /**
+     * Update an existing hospital based on the provided ID and request.
+     *
+     * @param id                 The ID of the hospital to update.
+     * @param addHospitalRequest The request containing updated hospital information.
+     * @return The updated hospital.
+     * @throws HospitalNotFoundException If the hospital with the specified ID is not found.
+     */
+    Hospital updateHospital(String id, AddHospitalRequest addHospitalRequest) throws HospitalNotFoundException;
+
+    /**
+     * Find a hospital by its ID.
+     *
+     * @param id The ID of the hospital to find.
+     * @return The found hospital.
+     * @throws HospitalNotFoundException If the hospital with the specified ID is not found.
+     */
+    Hospital findHospitalById(String id) throws HospitalNotFoundException;
+
+    /**
+     * Delete a hospital by its ID.
+     *
+     * @param id The ID of the hospital to delete.
+     * @return The deleted hospital.
+     * @throws HospitalNotFoundException If the hospital with the specified ID is not found.
+     */
+    Hospital deleteHospitalById(String id) throws HospitalNotFoundException;
+
+    /**
+     * Check if a hospital is verified.
+     *
+     * @param id The ID of the hospital to check.
+     * @return True if the hospital is verified, false otherwise.
+     * @throws HospitalNotFoundException If the hospital with the specified ID is not found.
+     */
+    Boolean isHospitalVerified(String id) throws HospitalNotFoundException;
+
+    /**
+     * Verify a hospital by its ID.
+     *
+     * @param id The ID of the hospital to verify.
+     * @return The verified hospital.
+     * @throws HospitalNotFoundException If the hospital with the specified ID is not found.
+     */
+    Hospital verifyHospital(String id) throws HospitalNotFoundException;
+
+    /**
+     * Get a list of nearby hospitals based on a given pincode.
+     *
+     * @param pincode The pincode to use as a reference for finding nearby hospitals.
+     * @return A list of nearby hospitals.
+     */
+    List<Hospital> getNearbyHospitals(Long pincode);
+}

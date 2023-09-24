@@ -1,0 +1,5 @@
+package com.hms.bookingms.dto;
+
+public class Bed {
+
+}

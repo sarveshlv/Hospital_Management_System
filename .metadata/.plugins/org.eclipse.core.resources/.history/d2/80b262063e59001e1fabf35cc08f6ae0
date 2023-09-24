@@ -1,0 +1,35 @@
+package com.hms.hospitalms.service;
+
+import com.hms.hospitalms.dto.AddHospitalRequest;
+import com.hms.hospitalms.entities.Hospital;
+import com.hms.hospitalms.exception.HospitalNotFoundException;
+
+import java.util.List;
+
+public interface IHospitalService {
+    
+    Hospital addHospital(AddHospitalRequest addHospitalRequest);
+
+    Hospital updateHospital(String id, AddHospitalRequest addHospitalRequest) throws HospitalNotFoundException;
+
+    Hospital findHospitalById(String id) throws HospitalNotFoundException;
+
+    Boolean isHospitalVerified(String id) throws HospitalNotFoundException;
+
+    /**
+     * Verify a hospital by its ID.
+     *
+     * @param id The ID of the hospital to verify.
+     * @return The verified hospital.
+     * @throws HospitalNotFoundException If the hospital with the specified ID is not found.
+     */
+    Hospital verifyHospital(String id) throws HospitalNotFoundException;
+
+    /**
+     * Get a list of nearby hospitals based on a given pincode.
+     *
+     * @param pincode The pincode to use as a reference for finding nearby hospitals.
+     * @return A list of nearby hospitals.
+     */
+    List<Hospital> getNearbyHospitals(Long pincode);
+}

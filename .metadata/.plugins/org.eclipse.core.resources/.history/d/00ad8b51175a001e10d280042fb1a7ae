@@ -1,0 +1,29 @@
+package com.hms.bedms.clients;
+
+import feign.Logger;
+import feign.RequestInterceptor;
+import feign.codec.Encoder;
+import feign.form.spring.SpringFormEncoder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class FeignConfiguration {
+
+    @Bean
+    public Encoder feignEncoder() {
+        return new SpringFormEncoder();
+    }
+
+    @Bean
+    public RequestInterceptor requestInterceptor() {
+        return requestTemplate -> {
+            requestTemplate.header("Authorization", "Bearer your-access-token");
+        };
+    }
+
+    @Bean
+    public Logger.Level feignLoggerLevel() {
+        return Logger.Level.FULL;
+    }
+}

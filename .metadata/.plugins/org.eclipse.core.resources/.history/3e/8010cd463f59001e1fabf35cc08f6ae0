@@ -1,0 +1,44 @@
+package com.hms.bedms.dtos;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Data
+public class Hospital {
+    private String id;
+    private String name;
+    private Boolean verified;
+    private String hospitalType;
+    private Long contactNo;
+    private Address address;
+    @Data
+    @AllArgsConstructor
+    public static class Address {
+        /**
+         * The city where the hospital is located.
+         */
+        private String city;
+
+        /**
+         * The state where the hospital is located.
+         */
+        private String state;
+
+        /**
+         * The pincode or postal code of the hospital's location.
+         */
+        private Long pincode;
+    }
+
+    /**
+     * An enumeration representing the possible types of hospitals.
+     */
+    public enum HospitalType {
+        GOVT, PRIVATE, SEMI_PRIVATE
+    }
+}

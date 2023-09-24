@@ -1,0 +1,10 @@
+package com.hms.bookingms.exceptions;
+
+public class BookingNotFoundException extends RuntimeException {
+
+	public BookingNotFoundException(String bookingId) {
+		super("Booking not found for id : " + bookingId);
+		// TODO Auto-generated constructor stub
+	}
+
+}

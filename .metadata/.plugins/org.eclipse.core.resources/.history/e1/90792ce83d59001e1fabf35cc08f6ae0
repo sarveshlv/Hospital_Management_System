@@ -1,0 +1,24 @@
+package com.hms.hospitalms.repository;
+
+import java.util.List;
+
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+import com.hms.hospitalms.entities.Hospital;
+
+/**
+ * Repository interface for managing hospital entities in the MongoDB database.
+ * Author: @prateek
+ */
+public interface HospitalRepository extends MongoRepository<Hospital, String> {
+    
+    /**
+     * Find hospitals with pincodes falling within a given range.
+     *
+     * @param startPincode The starting pincode of the range.
+     * @param endPincode   The ending pincode of the range.
+     * @return A list of hospitals with pincodes within the specified range.
+     */
+    List<Hospital> findByAddressPincodeBetween(Long startPincode, Long endPincode);
+   
+}

@@ -1,0 +1,15 @@
+package com.hms.hospitalms.dto;
+
+public class UpdateHospitalRequest {
+	private String name;
+    private Boolean verified;
+    private Hospital.HospitalType hospitalType;
+    private Long contactNo;
+    private Address address;
+
+    public static class Address {
+        private String city;
+        private String state;
+        private Long pincode;
+    }
+}

@@ -1,0 +1,46 @@
+package com.hms.userms.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.hms.authms.controller.UpdateUserRequest;
+import com.hms.authms.controller.UserService;
+import com.hms.authms.dto.UserDetailsResponse;
+
+import jakarta.validation.Valid;
+
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+
+	@Autowired
+	private UserService userService;
+
+	public User updateUser(@Valid @RequestBody UpdateUserRequest updateUserRequest)
+			throws UserNotFoundException {
+        UserDetailsResponse userDetails = userService.updateUser(updateUserRequest);
+		return ResponseEntity.ok(userDetails);
+	}
+	
+
+	@GetMapping("/findByEmail/{email}")
+	public User getUserByEmail(@Valid @PathVariable String email)
+			throws UsernameNotFoundException {
+		UserDetailsResponse userDetails = userService.getUserDetailsByEmail(email);
+		return ResponseEntity.ok(userDetails);
+	}
+
+	@GetMapping("/addReference/{emailId}/{referenceId}")
+	public ResponseEntity<UserDetailsResponse> addReference(@PathVariable String emailId, @PathVariable String referenceId) {
+		UserDetailsResponse userDetails = userService.addReferenceId(emailId, referenceId);
+		return ResponseEntity.ok(userDetails);
+	}
+}

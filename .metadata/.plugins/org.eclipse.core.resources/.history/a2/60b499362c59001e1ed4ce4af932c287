@@ -1,0 +1,14 @@
+package com.hms.billingms.service;
+
+import org.springframework.cloud.openfeign.FeignClient;
+
+import com.hms.billingms.dto.Booking;
+
+@FeignClient(name = "bed-service", url = "http://localhost:8080/api/bookings")
+public interface IBookingServiceClient {
+
+	Booking getBooking(String bookingId);
+
+	Booking completeBooking(String bookingId);
+	
+}

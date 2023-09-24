@@ -1,0 +1,5 @@
+package com.hms.bookingms.service;
+
+public class PatientApiService {
+
+}
