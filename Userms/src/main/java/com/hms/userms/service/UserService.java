@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.hms.userms.dto.AddUserRequest;
+import com.hms.userms.dto.UpdatePasswordRequest;
 import com.hms.userms.dto.UpdateUserRequest;
 import com.hms.userms.dto.UserDetails;
 import com.hms.userms.entity.User;
@@ -75,5 +76,12 @@ public class UserService implements IUserService {
 		userDetails.setRole(user.getRole());
 		userDetails.setReferenceId(user.getReferenceId());
 		return userDetails;
+	}
+
+	@Override
+	public UserDetails updatePassword( UpdatePasswordRequest updatePasswordRequest) throws UserNotFoundException {
+		User user = getUser(updatePasswordRequest.getEmail());
+		user.setLastName(updatePasswordRequest.getPassword());
+		return getUserDetailsResponse(user);
 	}
 }

@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-    <fullyQualifiedTypeName name="org.springframework.data.mongodb.core.index.Indexed"/>
-    <fullyQualifiedTypeName name="org.springframework.beans.factory.annotation.Autowired"/>
     <fullyQualifiedTypeName name="com.hms.authms.entity.User"/>
     <fullyQualifiedTypeName name="com.hms.authms.service.UserService"/>
     <fullyQualifiedTypeName name="com.hms.authms.dto.UpdateUserRequest"/>
     <fullyQualifiedTypeName name="java.lang.Override"/>
     <fullyQualifiedTypeName name="com.hms.authms.service.IUserService"/>
     <fullyQualifiedTypeName name="org.springframework.security.core.userdetails.UsernameNotFoundException"/>
-    <fullyQualifiedTypeName name="lombok.AllArgsConstructor"/>
     <fullyQualifiedTypeName name="com.hms.authms.utility.ServiceUtility"/>
     <fullyQualifiedTypeName name="com.hms.authms.dto.UserDetailsResponse"/>
     <fullyQualifiedTypeName name="com.hms.authms.service.IAuthenticationService"/>
@@ -42,11 +39,9 @@
     <fullyQualifiedTypeName name="com.hms.userms.dto.AddUserRequest"/>
     <fullyQualifiedTypeName name="com.hms.userms.dto.UserDetails"/>
     <fullyQualifiedTypeName name="org.springframework.cloud.client.discovery.EnableDiscoveryClient"/>
-    <fullyQualifiedTypeName name="com.hms.userms.exception.UserNotFoundException"/>
     <fullyQualifiedTypeName name="com.hms.userms.dto.EmailRequest"/>
     <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.RequestHeader"/>
     <fullyQualifiedTypeName name="com.hms.bedms.exceptions.BedStatusInvalidException"/>
-    <fullyQualifiedTypeName name="lombok.Data"/>
     <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.RequestBody"/>
     <fullyQualifiedTypeName name="com.hms.billingms.dto.BillingRequest"/>
     <fullyQualifiedTypeName name="jakarta.validation.constraints.NotEmpty"/>
@@ -60,4 +55,9 @@
     <fullyQualifiedTypeName name="org.springframework.beans.factory.annotation.Value"/>
     <fullyQualifiedTypeName name="com.hms.billingms.entities.Billing.PaymentStatus"/>
     <fullyQualifiedTypeName name="lombok.extern.slf4j.Slf4j"/>
+    <fullyQualifiedTypeName name="lombok.Data"/>
+    <fullyQualifiedTypeName name="lombok.NoArgsConstructor"/>
+    <fullyQualifiedTypeName name="lombok.AllArgsConstructor"/>
+    <fullyQualifiedTypeName name="com.hms.userms.dto.UpdatePasswordRequest"/>
+    <fullyQualifiedTypeName name="com.hms.userms.exception.UserNotFoundException"/>
 </qualifiedTypeNameHistroy>

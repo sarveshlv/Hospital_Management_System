@@ -26,7 +26,9 @@ This section provides details about the RESTful API endpoints available in the H
 
 - `GET /findByEmail` - Retrieve user details by email.
 
-- `GET /addReference/{emailId}/{referenceId}`
+- `GET /addReference/{emailId}/{referenceId}` - Add reference id to email
+
+- `PUT /updatePassword` - Reset password by email
 
 ### Hospital Controller
 
@@ -119,6 +121,7 @@ This section provides an overview of the service classes and their methods in th
   - `updateUser(UpdateUserRequest updateUserRequest)`: Updates user information.
   - `getUserByEmail(String email)`: Retrieves user details by email.
   - `addReferenceId(String email, String referenceId)`: Adds a reference ID to a user.
+  - `updatePassword(UpdatePasswordRequest updatePasswordRequest)`: Reset password
 
 ## Hospital Service
 

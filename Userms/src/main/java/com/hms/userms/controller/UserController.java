@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hms.userms.dto.AddUserRequest;
 import com.hms.userms.dto.EmailRequest;
+import com.hms.userms.dto.UpdatePasswordRequest;
 import com.hms.userms.dto.UpdateUserRequest;
 import com.hms.userms.dto.UserDetails;
 import com.hms.userms.exception.UserNotFoundException;
@@ -42,6 +43,10 @@ public class UserController {
 		return userService.getUserByEmail(emailRequest.getEmail());
 	}
 
+	@PutMapping("/updatePassword")
+	public UserDetails updatePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest) throws UserNotFoundException {
+		return userService.updatePassword(updatePasswordRequest);
+	}
 	@GetMapping("/addReference/{emailId}/{referenceId}")
 	public UserDetails addReference(@PathVariable String emailId, @PathVariable String referenceId) {
 		return userService.addReferenceId(emailId, referenceId);
