@@ -7,13 +7,15 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 public interface BedService {
-    Bed registerBed(AddBedDTO addBedObj);
+
+
+    Bed registerBed(String authorizationHeader, AddBedDTO addBedObj);
 
     List<Bed> getAllBeds();
 
     List<Bed> getBedsByHospitalId(String hospitalId);
 
-    List<Bed> getNearByBeds(Long pincode);
+    List<Bed> getNearByBeds(String authorizationHeader, Long pincode);
 
     List<Bed> getBedsByType(String bedType);
 

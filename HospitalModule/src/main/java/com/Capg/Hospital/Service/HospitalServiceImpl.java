@@ -19,10 +19,8 @@ public class HospitalServiceImpl implements HospitalService{
 
     @Override
     public Hospital registerHospital(AddHospitalDTO hospitalDTO) {
-        String hospitalId = hospitalDTO.getHospitalName() + hospitalDTO.getPincode();
 
         Hospital obj = new Hospital();
-        obj.setHospitalId(hospitalId);
         obj.setHospitalName(hospitalDTO.getHospitalName());
         obj.setHospitalAddress(hospitalDTO.getHospitalAddress());
         obj.setPincode(hospitalDTO.getPincode());
@@ -35,6 +33,16 @@ public class HospitalServiceImpl implements HospitalService{
         //link the generated hospital ID to the manager
         return hospitalRepository.save(obj);
 
+    }
+
+    @Override
+    public Hospital updateHospital(String id, AddHospitalDTO addHospitalDTO) throws HospitalNotFoundException {
+        Hospital hospital = findHospitalById(id);
+        hospital.setHospitalName(addHospitalDTO.getHospitalName());
+        hospital.setStatus("Requested");
+        hospital.setHospitalType(HospitalType.valueOf(addHospitalDTO.getHospitalType()));
+        hospital.setHospitalAddress(addHospitalDTO.getHospitalAddress());
+        return hospitalRepository.save(hospital);
     }
 
     @Override

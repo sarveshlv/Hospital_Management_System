@@ -26,4 +26,11 @@ public class CentralExceptionHandler {
                 .forEach((error) -> errors.put(error.getField(), error.getDefaultMessage()));
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Object> handleValidationErrors(RuntimeException ex) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put(ex.getClass().getName(), ex.getMessage());
+        return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
+    }
 }

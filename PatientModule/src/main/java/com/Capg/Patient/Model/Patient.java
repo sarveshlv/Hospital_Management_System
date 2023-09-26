@@ -1,5 +1,6 @@
 package com.Capg.Patient.Model;
 
+import com.Capg.Patient.Constants.Address;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -20,17 +21,6 @@ public class Patient {
     @Indexed(unique = true)
     private Long aadharCard;
     private Address address;
-
-    @Data
-    public static class Address {
-        @NotBlank(message = "City is required")
-        private String city;
-        @NotBlank(message = "State is required")
-        private String state;
-        @NotNull(message = "Pincode is required")
-        @Min(value = 100000L, message = "Pincode must be a 6-digit number")
-        @Max(value = 999999L, message = "Pincode must be a 6-digit number")
-        private Long pincode;
-    }
+    private Long pincode;
 
 }

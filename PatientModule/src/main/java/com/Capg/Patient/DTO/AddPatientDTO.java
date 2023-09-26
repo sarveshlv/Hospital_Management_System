@@ -1,5 +1,6 @@
 package com.Capg.Patient.DTO;
 
+import com.Capg.Patient.Constants.Address;
 import com.Capg.Patient.Model.Patient;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -24,5 +25,7 @@ public class AddPatientDTO {
     private Long aadharNumber;
     @Valid
     @NotNull(message = "Address is required")
-    private Patient.Address address;
+    private Address address;
+    @NotNull(message = "Pincode is required!")
+    private Long pincode;
 }

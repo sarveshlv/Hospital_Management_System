@@ -2,6 +2,7 @@ package com.Capg.BedModule.Controller;
 
 import com.Capg.BedModule.DTO.AddBedDTO;
 import com.Capg.BedModule.Exceptions.BedNotFoundException;
+import com.Capg.BedModule.Exceptions.BedStatusInvalidException;
 import com.Capg.BedModule.Model.Bed;
 import com.Capg.BedModule.Service.BedService;
 import jakarta.validation.Valid;
@@ -24,25 +25,23 @@ public class BedController {
     private BedService bedService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerBed(@Valid @RequestBody AddBedDTO addBedObj) {
-        try {
-            return new ResponseEntity<>(bedService.registerBed(addBedObj),HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<Bed> registerBed(@RequestHeader("Authorization") String authorizationHeader, @Valid @RequestBody AddBedDTO addBedObj) {
+        return ResponseEntity.ok().body(bedService.registerBed(authorizationHeader, addBedObj));
     }
+
     @GetMapping("/getAllBeds")
     public List<Bed> getAllBeds() {
         return bedService.getAllBeds();
     }
+
     @GetMapping("/getByHospital/{hospitalId}")
     public List<Bed> getBedsByHospitalId(@PathVariable String hospitalId) {
         return bedService.getBedsByHospitalId(hospitalId);
     }
 
     @GetMapping("/getNearByBeds/{pincode}")
-    public List<Bed> getNearByBeds(@NotNull(message = "Pincode is required") @Digits(integer = 6, fraction = 0, message = "Pincode must be a 6-digit number") @PathVariable Long pincode) {
-        return bedService.getNearByBeds(pincode);
+    public ResponseEntity<List<Bed>> getNearByBeds(@RequestHeader("Authorization") String authorizationHeader, @NotNull(message = "Pincode is required") @Digits(integer = 6, fraction = 0, message = "Pincode must be a 6-digit number") @PathVariable Long pincode) {
+        return ResponseEntity.ok().body(bedService.getNearByBeds(authorizationHeader, pincode));
     }
 
     @GetMapping("/getByType/{bedType}")
@@ -58,7 +57,7 @@ public class BedController {
     }
 
     @PostMapping("/makeBedAvailable/{bedId}")
-    public Bed makeBedAvailable(@PathVariable String bedId) throws BedNotFoundException {
+    public Bed makeBedAvailable(@PathVariable String bedId) throws BedNotFoundException, BedStatusInvalidException {
         return bedService.makeBedAvailable(bedId);
     }
 }

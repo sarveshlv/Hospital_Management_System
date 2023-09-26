@@ -1,18 +1,11 @@
 package com.Capg.User.Controller;
 
+import com.Capg.User.DTO.UpdateUserDTO;
+import com.Capg.User.Exception.UserNotFoundException;
+import com.Capg.User.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.Capg.User.DTO.SignInDTO;
 import com.Capg.User.DTO.SignUpDTO;
 import com.Capg.User.Service.UserService;
 
@@ -25,41 +18,25 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private DaoAuthenticationProvider authenticationProvider;
     @PostMapping("/signup")
-    public ResponseEntity<String> signupUser(@Valid @RequestBody SignUpDTO signupobj, BindingResult result) {
-        if(result.hasErrors()) {
-            return ResponseEntity.badRequest().body("Validation error: "+result.getAllErrors());
-        } else if(!signupobj.getPassword().equals(signupobj.getConfirmPassword())) {
-            return ResponseEntity.badRequest().body("Password and Confirm password are not same");
-        }
-
-        userService.save(signupobj);
-        return ResponseEntity.ok("User registered successfully!");
+    public User signupUser(@Valid @RequestBody SignUpDTO signupobj) {
+        return userService.addUser(signupobj);
     }
 
-    @PostMapping("/signin")
-    public ResponseEntity<String> signinUser(@Valid @RequestBody SignInDTO signinobj, BindingResult result) {
-        if(result.hasErrors()) {
-            return ResponseEntity.badRequest().body("Validation error: "+result.getAllErrors());
-        }
-
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(signinobj.getEmailId(), signinobj.getPassword());
-
-        try {
-            Authentication authentication = authenticationProvider.authenticate(token);
-
-            if(authentication.isAuthenticated()) {
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                return ResponseEntity.ok("Sign in successful!");
-            }
-
-
-        }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        return ResponseEntity.badRequest().body("Unauthorized access");
+    @PutMapping("/updateUser")
+    public User updateUser(@Valid @RequestBody UpdateUserDTO updateUserDTO) throws UserNotFoundException {
+        return userService.updateUser(updateUserDTO);
     }
+
+    @GetMapping("/findByEmailId/{emailId}")
+    public User getUserByEmailId(@PathVariable String emailId) throws UserNotFoundException {
+        return userService.getUserByEmail(emailId);
+    }
+
+    @GetMapping("/addReference/{emailId}/{referenceId}")
+    public User addReference(@PathVariable String emailId, @PathVariable String referenceId) {
+        return userService.addReferenceId(emailId, referenceId);
+    }
+
+
 }

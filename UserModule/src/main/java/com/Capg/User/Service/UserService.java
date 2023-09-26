@@ -1,10 +1,17 @@
 package com.Capg.User.Service;
 
 import com.Capg.User.DTO.SignUpDTO;
+import com.Capg.User.DTO.UpdateUserDTO;
+import com.Capg.User.Exception.UserNotFoundException;
 import com.Capg.User.Model.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface UserService extends UserDetailsService {
+public interface UserService {
 
-    User save(SignUpDTO signupobj);
+    User addUser(SignUpDTO signupobj);
+
+    User updateUser(UpdateUserDTO updateUserDTO) throws UserNotFoundException;
+
+    User getUserByEmail(String email) throws UserNotFoundException;
+
+    User addReferenceId(String email, String referenceId) throws UserNotFoundException;
 }

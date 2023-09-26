@@ -1,6 +1,7 @@
 package com.Capg.Hospital.Controller;
 
 import com.Capg.Hospital.DTO.AddHospitalDTO;
+import com.Capg.Hospital.Exceptions.HospitalNotFoundException;
 import com.Capg.Hospital.Model.Hospital;
 import com.Capg.Hospital.Service.HospitalService;
 import jakarta.validation.Valid;
@@ -21,25 +22,19 @@ public class HospitalController {
 
     //Access to only Manager of Hospital
     @PostMapping("/register")
-    public ResponseEntity<?> registerHospital(@Valid @RequestBody AddHospitalDTO hospitalDTO) {
+    public Hospital registerHospital(@Valid @RequestBody AddHospitalDTO hospitalDTO) {
+        return hospitalService.registerHospital(hospitalDTO);
+    }
 
-        try {
-            hospitalService.registerHospital(hospitalDTO);
-            return new ResponseEntity<>("Hospital Registered Successfully!", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+    @PutMapping("/updateHospital/{id}")
+    public Hospital updateHospital(@PathVariable String id, @Valid @RequestBody AddHospitalDTO addHospitalDTO) {
+        return hospitalService.updateHospital(id, addHospitalDTO);
     }
 
     //Access to only Admin
     @PutMapping("/verifyRegistration/{hospitalId}")
-    public ResponseEntity<?> approveDeclineRegistration(@PathVariable String hospitalId, @RequestParam String status) {
-        try {
-            hospitalService.verifyHospital(hospitalId, status);
-            return new ResponseEntity<>("Hospital Verified Successfully!", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+    public Hospital approveDeclineRegistration(@PathVariable String hospitalId, @RequestParam String status) throws HospitalNotFoundException {
+        return hospitalService.verifyHospital(hospitalId, status);
     }
 
     //Access to users
@@ -50,25 +45,12 @@ public class HospitalController {
 
     //Access to manager, user
     @GetMapping("/getHospital/{hospitalId}")
-    public ResponseEntity<?> getHospitalById(@PathVariable String hospitalId) {
-        try {
-            return new ResponseEntity<>(hospitalService.findHospitalById(hospitalId), HttpStatus.OK);
-        } catch (Exception e) {
-            //Provide specific action ahead
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+    public Hospital getHospitalById(@PathVariable String hospitalId) throws HospitalNotFoundException {
+        return hospitalService.findHospitalById(hospitalId);
     }
 
     @DeleteMapping("/deleteHospital/{hospitalId}")
-    public Hospital deleteHospitalById(@PathVariable String hospitalId) {
-        try {
-            return hospitalService.deleteHospitalById(hospitalId);
-        } catch (Exception e) {
-            //Provide specific action ahead
-            return null;
-        }
+    public Hospital deleteHospitalById(@PathVariable String hospitalId) throws HospitalNotFoundException {
+        return hospitalService.deleteHospitalById(hospitalId);
     }
-
-
-
 }

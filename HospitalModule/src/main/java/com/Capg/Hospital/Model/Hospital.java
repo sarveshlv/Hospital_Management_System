@@ -1,5 +1,6 @@
 package com.Capg.Hospital.Model;
 
+import com.Capg.Hospital.Constants.Address;
 import com.Capg.Hospital.Constants.HospitalType;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -12,7 +13,7 @@ public class Hospital {
     @Id
     private String hospitalId;
     private String hospitalName;
-    private String hospitalAddress;
+    private Address hospitalAddress;
     private Long pincode;
     private HospitalType hospitalType;
     private String status;

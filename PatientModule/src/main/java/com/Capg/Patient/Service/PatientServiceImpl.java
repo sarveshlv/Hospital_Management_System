@@ -7,6 +7,8 @@ import com.Capg.Patient.Repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class PatientServiceImpl implements PatientService{
     @Autowired
@@ -20,6 +22,7 @@ public class PatientServiceImpl implements PatientService{
         patient.setContactNumber(addPatientDTO.getContactNumber());
         patient.setAadharCard(addPatientDTO.getAadharNumber());
         patient.setAddress(addPatientDTO.getAddress());
+        patient.setPincode(addPatientDTO.getPincode());
 
         patient = patientRepository.save(patient);
 //        userApiService.addReference(patient.getId());
@@ -34,11 +37,16 @@ public class PatientServiceImpl implements PatientService{
         patient.setContactNumber(addPatientDTO.getContactNumber());
         patient.setAadharCard(addPatientDTO.getAadharNumber());
         patient.setAddress(addPatientDTO.getAddress());
+        patient.setPincode(addPatientDTO.getPincode());
         return patientRepository.save(patient);
     }
 
     @Override
     public Patient findPatientById(String patientId) throws PatientNotFoundException {
-        return patientRepository.findById(patientId).orElseThrow(() -> new PatientNotFoundException(patientId));
+        Optional<Patient> obj = patientRepository.findById(patientId);
+        if(obj.isEmpty()) {
+            throw new PatientNotFoundException("Patient not found with ID: "+patientId);
+        }
+        return obj.get();
     }
 }

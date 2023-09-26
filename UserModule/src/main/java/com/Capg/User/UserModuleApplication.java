@@ -7,8 +7,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @SpringBootApplication
-@ComponentScan({"com.*"})
-@EnableMongoRepositories({"com.Capg.User.Repository*"})
 @EnableDiscoveryClient
 public class UserModuleApplication {
 
