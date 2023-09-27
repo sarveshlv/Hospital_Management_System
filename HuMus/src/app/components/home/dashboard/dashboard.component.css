@@ -1,0 +1,93 @@
+/* Styles for the entire page */
+.full-screen-container {
+    min-height: 100vh;
+    background-color: #161b33; /* Background color for the full container */
+    padding-top: 20px;
+}
+
+/* Dashboard Header Styles */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px; /* Reduced padding */
+    border-radius: 10px;
+    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-profile-button {
+    background-color: #0056b3;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px; /* Reduced padding */
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.dashboard-profile-button:hover {
+    background-color: #003c80;
+}
+
+.display-4.font-weight-bold {
+    font-weight: bold;
+    font-size: 28px; /* Decreased font size */
+}
+
+/* Sidebar Filter Component Styles */
+.filter-component {
+    /* Add your styling for the sidebar filter component here */
+}
+
+/* Navbar Styles */
+.navbar {
+    margin: 0; /* Reset margin */
+    border: none;
+    align-items: center; /* Remove border */
+}
+
+.navbar-light .navbar-brand {
+    display: none; /* Hide the "HuMus" title */
+}
+
+.navbar-toggler-icon {
+    border-color: #fff;
+}
+
+.navbar-text {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+}
+
+.evenly-spaced-list {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+.evenly-spaced-list .nav-item {
+    flex: 1;
+    text-align: center;
+}
+
+.nav-item .nav-link {
+    font-size: 18px; /* Decreased font size */
+    font-weight: bold;
+    padding: 0 6px; /* Decreased horizontal padding */
+    transition: font-size 0.3s, color 0.3s; /* Added color transition */
+    color: #333; /* Default text color */
+}
+
+/* Reduce spacing when a navigation link is hovered over */
+.nav-item .nav-link:hover {
+    padding: 0 8px; /* Decreased horizontal padding on hover */
+}
+
+/* Change color when a navigation link (list item) is clicked (selected) */
+.nav-item .nav-link:active {
+    color: #007bff; /* Selected text color */
+}

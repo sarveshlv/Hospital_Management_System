@@ -1,0 +1,74 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Add Hospital Details</h4>
+                </div>
+                <div class="card-body">
+                    <form [formGroup]="hospitalForm" (ngSubmit)="onSubmit()">
+                        <!-- Hospital Name -->
+                        <div class="form-group">
+                            <label for="name">Hospital Name</label>
+                            <input type="text" class="form-control" id="name" name="name" formControlName="name">
+                            <div *ngIf="hospitalForm.get('name').invalid && hospitalForm.get('name').touched"
+                                class="text-danger">Hospital Name is required.</div>
+                        </div>
+
+                        <!-- Hospital Type -->
+                        <div class="form-group">
+                            <label for="hospitalType">Hospital Type</label>
+                            <select class="form-control" id="hospitalType" name="hospitalType" formControlName="hospitalType">
+                                <option disabled selected>Select Hospital Type</option>
+                                <option *ngFor="let type of hostpitalTypes" [value]="type">{{ type }}</option>
+                            </select>
+                            <div *ngIf="hospitalForm.get('hospitalType').invalid && hospitalForm.get('hospitalType').touched"
+                                class="text-danger">*Hospital Type is required.</div>
+                        </div>
+
+                        <!-- Contact Number -->
+                        <div class="form-group">
+                            <label for="contactNo">Contact Number</label>
+                            <input type="tel" class="form-control" id="contactNo" name="contactNo"
+                                formControlName="contactNo" pattern="[0-9]{10}">
+                            <div *ngIf="hospitalForm.get('contactNo').invalid && hospitalForm.get('contactNo').touched"
+                                class="text-danger">*Please enter a valid Contact Number of 10 digits starting with 6-9.</div>
+                        </div>
+
+                        <!-- Address -->
+                        <div class="form-group">
+                            <label for="state">State</label>
+                            <select class="form-control" id="state" name="state" formControlName="state">
+                                <option disabled selected>Select State</option>
+                                <option *ngFor="let state of indianStatesAndUTs" [value]="state">{{ state }}</option>
+                            </select>
+                            <div *ngIf="hospitalForm.get('state').invalid && hospitalForm.get('state').touched"
+                                class="text-danger">*State is required.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" class="form-control" id="city" name="city"
+                                formControlName="city">
+                            <div *ngIf="hospitalForm.get('city').invalid && hospitalForm.get('city').touched"
+                                class="text-danger">*City is required.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pincode">Pincode</label>
+                            <input type="text" class="form-control" id="pincode" name="pincode"
+                                formControlName="pincode">
+                            <div *ngIf="hospitalForm.get('pincode').invalid && hospitalForm.get('pincode').touched"
+                                class="text-danger">*Valid pincode is required of 6 digits.</div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-hospital"></i> Add Hospital
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

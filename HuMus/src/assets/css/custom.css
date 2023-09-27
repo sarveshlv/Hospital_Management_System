@@ -1,0 +1,93 @@
+.outer {
+    height: 100vh;
+    background: radial-gradient(circle at -8.9% 51.2%, #acacca 0%, #acacca 15.9%, #6767dc 15.9%, #6767dc 24.4%, rgb(19, 30, 37) 24.5%, rgb(19, 30, 37) 66%);
+}
+
+.panel-heading {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#forget {
+    max-width: 100px;
+    margin-left: auto;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+.form-inline label {
+    padding-left: 10px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.btn {
+    margin-top: 20px;
+    border-radius: 15px;
+}
+
+.panel {
+    box-shadow: 10px 10px 30px rgb(219, 218, 218);
+    border-radius: 12px;
+    margin-top: 100px;
+}
+
+.input-field {
+    border-radius: 5px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    color: #4343ff
+}
+
+.input-field.error {
+    border: 1px solid red;
+    color: red;
+}
+
+input, input:disabled, select {
+    border: none;
+    outline: none;
+    box-shadow: none;
+    width: 100%;
+    background-color: white;
+}
+
+.fa-eye-slash.btn {
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+    position: relative;
+}   
+
+.bordert {
+    border-top: 1px solid #aaa;
+    position: relative
+}
+
+.bordert:after {
+    content: "or connect with";
+    position: absolute;
+    top: -13px;
+    left: 33%;
+    background-color: #fff;
+    padding: 0px 8px
+}
+
+.bg-white {
+    background: none;
+    border: none;
+}

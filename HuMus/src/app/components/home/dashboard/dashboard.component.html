@@ -1,0 +1,43 @@
+<div class="container-fluid full-screen-container">
+    <!-- Top Title with increased font weight -->
+    <div class="dashboard-header">
+        <h1 class="display-4 font-weight-bold">HuMuS Portal</h1>
+        <button class="dashboard-profile-button">
+            <i class="fa fa-user"></i> View Profile
+        </button>
+    </div>
+
+    <!-- Sidebar Filter Component (Assuming it's named "filter-component") -->
+    <aside class="filter-component">
+        <!-- Add your filter component content here -->
+    </aside>
+
+    <!-- Navbar for Bookings and Beds (moved below the header) -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light rounded mt-3">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-0 evenly-spaced-list">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" (click)="showBookings = true; showBeds = false;">Bookings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" (click)="showBeds = true; showBookings = false;">Beds</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content for Bookings and Beds (conditionally displayed) -->
+    <div class="container mt-3" *ngIf="showBookings">
+        <app-bookings-tab></app-bookings-tab>
+    </div>
+
+    <div class="container mt-3" *ngIf="showBeds">
+        <app-beds-tab></app-beds-tab>
+    </div>
+</div>

@@ -1,0 +1,80 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Add Patient Details</h4>
+                </div>
+                <div class="card-body">
+                    <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
+                        <!-- First Name -->
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" class="form-control" id="firstName" name="firstName"
+                                formControlName="firstName">
+                            <div *ngIf="patientForm.get('firstName').invalid && patientForm.get('firstName').touched"
+                                class="text-danger">*First Name is required.</div>
+                        </div>
+
+                        <!-- Last Name -->
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" class="form-control" id="lastName" name="lastName"
+                                formControlName="lastName">
+                            <div *ngIf="patientForm.get('lastName').invalid && patientForm.get('lastName').touched"
+                                class="text-danger">*Last Name is required.</div>
+                        </div>
+
+                        <!-- Contact Number -->
+                        <div class="form-group">
+                            <label for="contactNumber">Contact Number</label>
+                            <input type="tel" class="form-control" id="contactNumber" name="contactNumber"
+                                formControlName="contactNumber" pattern="[0-9]{10}">
+                            <div *ngIf="patientForm.get('contactNumber').invalid && patientForm.get('contactNumber').touched"
+                                class="text-danger">*Please enter a valid Contact Number of 10 digits starting with 6-9.
+                            </div>
+                        </div>
+
+                        <!-- Aadhar Number -->
+                        <div class="form-group">
+                            <label for="aadharNumber">Aadhar Number</label>
+                            <input type="text" class="form-control" id="aadharNumber" name="aadharNumber"
+                                formControlName="aadharNumber" pattern="[0-9]{12}">
+                            <div *ngIf="patientForm.get('aadharNumber').invalid && patientForm.get('aadharNumber').touched"
+                                class="text-danger">*Please enter a valid Aadhar Number of 12 digits.</div>
+                        </div>
+
+                        <!-- -->
+                        <div class="form-group">
+                            <label for="state">State</label>
+                            <select class="form-control" id="state" name="state" formControlName="state">
+                                <option disabled selected>Select State</option>
+                                <option *ngFor="let state of indianStatesAndUTs" [value]="state">{{ state }}</option>
+                            </select>
+                            <div *ngIf="patientForm.get('state').invalid && patientForm.get('state').touched"
+                                class="text-danger">*State is required.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" class="form-control" id="city" name="city" formControlName="city">
+                            <div *ngIf="patientForm.get('city').invalid && patientForm.get('city').touched"
+                                class="text-danger">*City is required.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pincode">Pincode</label>
+                            <input type="text" class="form-control" id="pincode" name="pincode"
+                                formControlName="pincode">
+                            <div *ngIf="patientForm.get('pincode').invalid && patientForm.get('pincode').touched"
+                                class="text-danger">*Valid pincode is required of 6 digits.</div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary">Add Patient</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
