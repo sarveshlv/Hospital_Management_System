@@ -1,18 +1,21 @@
 /* Styles for the entire page */
-.full-screen-container {
+
+.container-fluid.full-screen-container {
+    background-color: #161b33;
     min-height: 100vh;
-    background-color: #161b33; /* Background color for the full container */
+    min-width: 100vh;
+    /* max-height: max-content; */
+    /* max-width: max-content; */
     padding-top: 20px;
 }
 
-/* Dashboard Header Styles */
 .dashboard-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: #007bff;
     color: #fff;
-    padding: 10px 20px; /* Reduced padding */
+    padding: 10px 20px;
     border-radius: 10px;
     box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.2);
 }
@@ -22,7 +25,7 @@
     color: #fff;
     border: none;
     border-radius: 5px;
-    padding: 8px 12px; /* Reduced padding */
+    padding: 8px 12px;
     cursor: pointer;
     transition: background-color 0.3s;
 }
@@ -33,23 +36,17 @@
 
 .display-4.font-weight-bold {
     font-weight: bold;
-    font-size: 28px; /* Decreased font size */
+    font-size: 28px;
 }
 
-/* Sidebar Filter Component Styles */
-.filter-component {
-    /* Add your styling for the sidebar filter component here */
-}
-
-/* Navbar Styles */
 .navbar {
-    margin: 0; /* Reset margin */
+    margin: 0;
     border: none;
-    align-items: center; /* Remove border */
+    align-items: center;
 }
 
 .navbar-light .navbar-brand {
-    display: none; /* Hide the "HuMus" title */
+    display: none;
 }
 
 .navbar-toggler-icon {
@@ -69,25 +66,24 @@
     padding: 0;
     margin: 0;
 }
+
 .evenly-spaced-list .nav-item {
     flex: 1;
     text-align: center;
 }
 
 .nav-item .nav-link {
-    font-size: 18px; /* Decreased font size */
+    font-size: 18px;
     font-weight: bold;
-    padding: 0 6px; /* Decreased horizontal padding */
-    transition: font-size 0.3s, color 0.3s; /* Added color transition */
-    color: #333; /* Default text color */
+    padding: 0 6px;
+    transition: font-size 0.3s, color 0.3s;
+    color: #333;
 }
 
-/* Reduce spacing when a navigation link is hovered over */
 .nav-item .nav-link:hover {
-    padding: 0 8px; /* Decreased horizontal padding on hover */
+    padding: 0 8px;
 }
 
-/* Change color when a navigation link (list item) is clicked (selected) */
 .nav-item .nav-link:active {
-    color: #007bff; /* Selected text color */
+    color: #007bff;
 }

@@ -11,9 +11,21 @@ const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
-  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
-  { path: 'addHospital', component: AddHospitalComponent, canActivate: [AuthGuard]},
-  { path: 'addPatient', component: AddPatientComponent, canActivate: [AuthGuard]},
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'addHospital',
+    component: AddHospitalComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'addPatient',
+    component: AddPatientComponent,
+    canActivate: [AuthGuard],
+  },
 ];
 
 @NgModule({

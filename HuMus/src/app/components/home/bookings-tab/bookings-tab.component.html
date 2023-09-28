@@ -1,0 +1,21 @@
+<div class="row">
+    <div class="col">
+        <select class="form-select" [(ngModel)]="selectedFilter" (ngModelChange)="applyFilter()">
+            <option value="ALL">ALL</option>
+            <option *ngFor="let status of bookingStatusOptions" [value]="status">{{ status }}</option>
+        </select>
+    </div>
+    <div class="col">
+        <select class="form-select" [(ngModel)]="selectedBedType" (ngModelChange)="applyFilter()">
+            <option value="ALL">ALL</option>
+            <option *ngFor="let type of bedTypeOptions" [value]="type">{{ type }}</option>
+        </select>
+    </div>
+</div>
+<div class="container mt-3">
+    <app-booking-item [idx]="-1" [isManager]="isManager" [isPatient]="isPatient"></app-booking-item>
+    <app-booking-item *ngFor="let booking of filteredBookings; let i = index" [idx]="i" [booking]="booking"
+        [isManager]="isManager" [isPatient]="isPatient" (rejectClick)="handleRejectClick(booking.id)"
+        (approveClick)="handleApproveClick(booking.id)" (cancelClick)="handleCancelClick(booking.id)"
+        (sortChange)="handleSortChange($event)"></app-booking-item>
+</div>

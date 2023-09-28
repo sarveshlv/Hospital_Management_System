@@ -1,3 +1,4 @@
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -75,7 +76,7 @@ export class LoginComponent implements OnInit {
   private handleError(errorMessage: string, error: any) {
     this.toast.error({
       detail: errorMessage,
-      summary: error.message,
+      summary: error.error,
       duration: 3000,
     });
   }
@@ -90,8 +91,8 @@ export class LoginComponent implements OnInit {
         next: (response) => {
           this.handleLoginSuccess(response);
         },
-        error: (error) => {
-          this.handleError('Bad credentials! Unable to log in', error);
+        error: (error: HttpErrorResponse) => {
+          this.handleError('Unable to log in', error.error);
           this.loginForm.reset();
         }
       });
@@ -107,7 +108,7 @@ export class LoginComponent implements OnInit {
 
     const userDetails: UserDetails = this.jwtService.getUserDetails();
     if (userDetails.referenceId || userDetails.role === 'ADMIN') {
-      this.handleSuccess('Logged in successfully', 'Welcome to the out awesome dashboard!');
+      this.handleSuccess('Logged in successfully', 'Welcome to the our awesome dashboard!');
       this.router.navigate(['/dashboard']);
     } else if (userDetails.role === 'MANAGER') {
       this.handleSuccess('Logged in successfully', 'Add Hospital details to continue!');
@@ -127,8 +128,8 @@ export class LoginComponent implements OnInit {
         this.isEmailFound = true;
         this.handleSuccess('User found for email id', email);
       },
-      error: (error) => {
-        this.handleError(`User not found for email id: ${email}`, error);
+      error: (error: HttpErrorResponse) => {
+        this.handleError(`User not found for email id: ${email}`, error.error);
         this.findEmailForm.reset();
         this.isEmailFound = false;
       },
@@ -148,8 +149,8 @@ export class LoginComponent implements OnInit {
           this.handleSuccess('Password reset successfully', 'Log in with new credentials');
           window.location.reload();
         },
-        error: (error) =>
-          this.handleError('Something went wrong. Unable to reset password', error),
+        error: (error: HttpErrorResponse) =>
+          this.handleError('Something went wrong. Unable to reset password', error.error),
       });
     } else {
       ValidateForm.validateAllFormFields(this.resetPasswordForm);

@@ -8,7 +8,7 @@ import { AddBedRequest, UpdateBedRequest, Bed } from '../models/bed.requests';
   providedIn: 'root',
 })
 export class BedService {
-  private baseUrl = 'http://localhost:8200/api/beds';
+  private baseUrl = 'http://localhost:8080/api/beds';
 
   constructor(private httpClient: HttpClient) {}
 

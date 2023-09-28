@@ -14,8 +14,8 @@ import {
   providedIn: 'root',
 })
 export class UserService {
-  private baseUserUrl = 'http://localhost:8000/api/users';
-  private baseAuthUrl = 'http://localhost:8600/api/auth';
+  private baseUserUrl = 'http://localhost:8080/api/users';
+  private baseAuthUrl = 'http://localhost:8080/api/auth';
 
   constructor(private httpClient: HttpClient) {}
 
@@ -23,23 +23,23 @@ export class UserService {
     return this.httpClient.post<any>(`${this.baseAuthUrl}/login`, loginRequest);
   }
 
-  addUser(registerRequest: AddUserRequest): Observable<any> {
-    return this.httpClient.post(`${this.baseUserUrl}/signup`, registerRequest);
+  addUser(registerRequest: AddUserRequest): Observable<UserDetails> {
+    return this.httpClient.post<UserDetails>(`${this.baseUserUrl}/signup`, registerRequest);
   }
 
-  updateUser(updateUserRequest: UpdateUserRequest): Observable<any> {
-    return this.httpClient.put(`${this.baseUserUrl}/update`, updateUserRequest);
+  updateUser(updateUserRequest: UpdateUserRequest): Observable<UserDetails> {
+    return this.httpClient.put<UserDetails>(`${this.baseUserUrl}/update`, updateUserRequest);
   }
 
-  getUserByEmail(email: string): Observable<any> {
-    return this.httpClient.get(`${this.baseUserUrl}/findByEmail/${email}`);
+  getUserByEmail(email: string): Observable<UserDetails> {
+    return this.httpClient.get<UserDetails>(`${this.baseUserUrl}/findByEmail/${email}`);
   }
 
-  updatePassword(updatePasswordRequest: UpdatePasswordRequest): Observable<any> {
-    return this.httpClient.put(`${this.baseUserUrl}/updatePassword`, updatePasswordRequest);
+  updatePassword(updatePasswordRequest: UpdatePasswordRequest): Observable<UserDetails> {
+    return this.httpClient.put<UserDetails>(`${this.baseUserUrl}/updatePassword`, updatePasswordRequest);
   }
 
-  addReference(emailId: string, referenceId: string): Observable<any> {
-    return this.httpClient.get(`${this.baseUserUrl}/addReference/${emailId}/${referenceId}`);
+  addReference(emailId: string, referenceId: string): Observable<UserDetails> {
+    return this.httpClient.get<UserDetails>(`${this.baseUserUrl}/addReference/${emailId}/${referenceId}`);
   }
 }

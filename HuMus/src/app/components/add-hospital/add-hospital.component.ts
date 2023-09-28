@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { JwtStorageService } from 'src/app/services/jwt/jwt.storage.service';
 import { UserDetails } from 'src/app/models/user.requests';
+import { HttpErrorResponse } from '@angular/common/http';
 
 const indianStatesAndUTs: string[] = [
   'Andhra Pradesh',
@@ -94,7 +95,7 @@ export class AddHospitalComponent {
   private handleError(errorMessage: string, error: any) {
     this.toast.error({
       detail: errorMessage,
-      summary: error.message,
+      summary: error.error,
       duration: 3000,
     });
   }
@@ -119,33 +120,46 @@ export class AddHospitalComponent {
       this.hospitalService.addHospital(addHospitalRequest).subscribe({
         next: (response) => {
           console.log('Added hospital with details: ', response);
-          
-          const userDetails: UserDetails = this.jwtStorageService.getUserDetails();
+
+          const userDetails: UserDetails =
+            this.jwtStorageService.getUserDetails();
           userDetails.referenceId = response.id;
           this.jwtStorageService.setUserDetails(userDetails);
 
-          console.log('Attaching profile with hospital details: ', userDetails, response);
-           
-          this.userService.addReference( userDetails.email, response.id).subscribe({
-            next: () => {
-              this.handleSuccess('Added hospital Successfully', 'Welcome to our awesome dashboard!');
-              this.router.navigate(['/dashboard']);
-            },
-            error: (error) => {
-              this.toast.warning({
-                detail:"Unable to attach hospital details to ur profile",
-                summary: error.message,
-                duration: 3000,
-              }) 
-              this.handleError("Plz try again later", "Apologises for problem caused");
-              this.hospitalForm.reset();
-            }
-          })
+          console.log(
+            'Attaching profile with hospital details: ',
+            userDetails,
+            response
+          );
+
+          this.userService
+            .addReference(userDetails.email, response.id)
+            .subscribe({
+              next: () => {
+                this.handleSuccess(
+                  'Added hospital Successfully',
+                  'Welcome to our awesome dashboard!'
+                );
+                this.router.navigate(['/dashboard']);
+              },
+              error: (error) => {
+                this.toast.warning({
+                  detail: 'Unable to attach hospital details to ur profile',
+                  summary: error.message,
+                  duration: 3000,
+                });
+                this.handleError(
+                  'Plz try again later',
+                  'Apologises for problem caused'
+                );
+                this.hospitalForm.reset();
+              },
+            });
         },
-        error: (error) => {
-          this.handleError('Something went wrong!', error.message);
-        this.hospitalForm.reset();
-        }
+        error: (error: HttpErrorResponse) => {
+          this.handleError('Something went wrong!', error.error);
+          this.hospitalForm.reset();
+        },
       });
     } else {
       ValidateForm.validateAllFormFields(this.hospitalForm);

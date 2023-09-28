@@ -6,6 +6,7 @@ import { UserService } from '../../services/user.service';
 import { NgToastService } from 'ng-angular-popup';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-signup',
@@ -50,21 +51,25 @@ export class SignupComponent {
       const userRequest = this.createUserRequest();
 
       this.userService.getUserByEmail(userRequest.email).subscribe({
-        next: (response) =>{
+        next: (response) => {
           this.handleError(
             `User already present with ${userRequest.email}`,
             'Please try with a different email id'
           );
-          this.signUpForm.reset()
+          this.signUpForm.reset();
         },
         error: (error) => {
           this.userService.addUser(userRequest).subscribe({
             next: () => {
-              this.handleSuccess('User signed up successfully', 'You can now log in with your credentials');
+              this.handleSuccess(
+                'User signed up successfully',
+                'You can now log in with your credentials'
+              );
               this.signUpForm.reset();
-              this.router.navigate(['/login']); // open welcome component          
+              this.router.navigate(['/login']); // open welcome component
             },
-            error: () => this.handleError("Unable to sign up. Plz. try again later", error),
+            error: (error: HttpErrorResponse) =>
+              this.handleError('Unable to sign up!', error.error),
           });
         },
       });
@@ -106,7 +111,7 @@ export class SignupComponent {
   private handleError(errorMessage: string, error: any) {
     this.toast.error({
       detail: errorMessage,
-      summary: error.message,
+      summary: error.error,
       duration: 3000,
     });
   }

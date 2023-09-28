@@ -8,7 +8,7 @@ import { BillingRequest, Billing } from '../models/billing.requests';
   providedIn: 'root',
 })
 export class BillingService {
-  private baseUrl = 'http://localhost:8500/api/billings';
+  private baseUrl = 'http://localhost:8080/api/billings';
 
   constructor(private httpClient: HttpClient) {}
 

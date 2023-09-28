@@ -9,7 +9,7 @@ import { Hospital, AddHospitalRequest } from '../models/hospital.requests';
   providedIn: 'root'
 })
 export class HospitalService {
-  private apiUrl = 'http://localhost:8100/api/hospitals'; // Update with your API URL
+  private apiUrl = 'http://localhost:8080/api/hospitals'; // Update with your API URL
 
   constructor(private http: HttpClient) {}
 

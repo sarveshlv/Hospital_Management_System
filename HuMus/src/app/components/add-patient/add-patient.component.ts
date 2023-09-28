@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -88,7 +89,7 @@ export class AddPatientComponent {
   private handleError(errorMessage: string, error: any) {
     this.toast.error({
       detail: errorMessage,
-      summary: error.message,
+      summary: error.error,
       duration: 3000,
     });
   }
@@ -128,10 +129,10 @@ export class AddPatientComponent {
               this.handleSuccess('Added patient Successfully', 'Welcome to our awesome dashboard!');
               this.router.navigate(['/dashboard']);
             },
-            error: (error) => {
+            error: (error: HttpErrorResponse) => {
               this.toast.warning({
                 detail:"Unable to attach patient details to ur profile",
-                summary: error.message,
+                summary: error.error,
                 duration: 3000,
               }) 
               this.handleError("Plz try again later", "Apologises for problem caused");
@@ -139,8 +140,8 @@ export class AddPatientComponent {
             }
           })
         },
-        (error) => {
-          this.handleError('Something went wrong!', error);
+        (error: HttpErrorResponse) => {
+          this.handleError('Something went wrong!', error.error);
           this.patientForm.reset();
         }
       );
