@@ -13,16 +13,20 @@ import { JwtStorageService } from 'src/app/services/jwt/jwt.storage.service';
   styleUrls: ['./bookings-tab.component.css'],
 })
 export class BookingsTabComponent implements OnInit {
+  
   isManager = false;
   isPatient = false;
+  
   userDetails: UserDetails;
-  idx = -1;
-  selectedFilter: BookingStatus | string = 'ALL';
-  selectedBedType: BedType | string = 'ALL';
 
+  idx = -1;  
   bookings: Booking[] = [];
   filteredBookings: Booking[] = [];
 
+  selectedFilter: BookingStatus | string = 'ALL';
+  selectedBedType: BedType | string = 'ALL';
+
+  
   constructor(
     private jwtStorageService: JwtStorageService,
     private bookingsService: BookingService,
@@ -54,37 +58,43 @@ export class BookingsTabComponent implements OnInit {
       bookingsObservable.subscribe({
         next: (response: Booking[]) => {
           console.log('Fetched bookings:', response);
+          this.toast.info({
+            detail: 'Bookings fetched',
+            summary: `Retrieved ${response.length} bookings`,
+            duration: 3000,
+          });
           this.bookings = response;
           this.applyFilter();
         },
         error: (error: HttpErrorResponse) => {
-          this.handleError(
-            `Unable to fetch ${
+          this.toast.error({
+            detail: `Unable to fetch ${
               this.isManager ? 'hospital' : 'patient'
             } bookings`,
-            error.error
-          );
-          console.log(error.error.error);
+            summary: error.error.toString(),
+            duration: 3000,
+          });
         },
       });
     }
   }
 
+  //setting up filters
   get bookingStatusOptions() {
     return Object.values(BookingStatus);
   }
 
+  //seting up filters
   get bedTypeOptions() {
     return Object.values(BedType);
   }
 
   private updateBooking(response: Booking, action: string): void {
-    console.log(
-      `Booking tab: handle${
-        action.charAt(0).toUpperCase() + action.slice(1)
-      }Click() -> ${action}ed Booking`,
-      response
-    );
+    this.toast.success({
+      detail: 'Success',
+      summary: 'Booking updated',
+      duration: 3000,
+    });
     const index = this.bookings.findIndex(
       (booking) => booking.id === response.id
     );
@@ -94,6 +104,7 @@ export class BookingsTabComponent implements OnInit {
     }
   }
 
+  //method to apply filters
   applyFilter() {
     if (this.selectedFilter === 'ALL' && this.selectedBedType === 'ALL') {
       this.filteredBookings = this.bookings;
@@ -110,67 +121,46 @@ export class BookingsTabComponent implements OnInit {
     }
   }
 
-  handleSortChange(sortObj: { column: string; order: string }) {
-    // Handle the selected column and sorting order together
-    const { column, order } = sortObj;
-    // You can update the sorting logic based on the selected column and order here
-    this.filteredBookings.sort((a: any, b: any) => {
-      let comparison = 0;
-  
-      if (order === 'asc') {
-        if (a[column] > b[column]) {
-          comparison = 1;
-        } else if (a[column] < b[column]) {
-          comparison = -1;
-        }
-      } else if (order === 'desc') {
-        if (a[column] < b[column]) {
-          comparison = 1;
-        } else if (a[column] > b[column]) {
-          comparison = -1;
-        }
-      }
-  
-      return comparison;
-    });
-  
-    // Update the filteredBookings array with the sorted results
-    this.filteredBookings = [...this.filteredBookings];
-  }
-
+  //methods for click events
   handleApproveClick(bookingId: string): void {
     this.bookingsService
       .approveBooking(this.jwtStorageService.getToken(), bookingId)
       .subscribe({
         next: (response: Booking) => this.updateBooking(response, 'approve'),
         error: (error: HttpErrorResponse) =>
-          this.handleError('Unable to approve booking', error.error),
+          this.toast.error({
+            detail: 'Unable to approve booking',
+            summary: error.error.toString(),
+            duration: 3000,
+          }),
       });
   }
 
+  //methods for click events
   handleCancelClick(bookingId: string): void {
     this.bookingsService
       .cancelBooking(this.jwtStorageService.getToken(), bookingId)
       .subscribe({
         next: (response: Booking) => this.updateBooking(response, 'cancel'),
         error: (error: HttpErrorResponse) =>
-          this.handleError('Unable to cancel booking', error.error),
+          this.toast.error({
+            detail: 'Unable to cancel booking',
+            summary: error.error.toString(),
+            duration: 3000,
+          }),
       });
   }
 
+  //methods for click events
   handleRejectClick(bookingId: string): void {
     this.bookingsService.rejectBooking(bookingId).subscribe({
       next: (response: Booking) => this.updateBooking(response, 'reject'),
       error: (error: HttpErrorResponse) =>
-        this.handleError('Unable to reject booking', error.error),
-    });
-  }
-
-  private handleError(errorMessage: string, error: any) {
-    this.toast.error({
-      detail: errorMessage,
-      summary: error.error,
-      duration: 3000,
+        this.toast.error({
+          detail: 'Unable to reject booking',
+          summary: error.error.toString(),
+          duration: 3000,
+        }),
     });
   }
 }

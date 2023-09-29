@@ -1,0 +1,13 @@
+server.port = 8000
+
+# Spring application Configurations
+spring.application.name = auth-service
+spring.data.mongodb.host=localhost
+spring.data.mongodb.port=27017
+spring.data.mongodb.database=usersdb
+
+# Eureka client registeation
+eureka.client.service-url.defaultZone=http://localhost:8761/eureka/
+
+jwtSecret= astaghfirullah
+jwtExpirationMs= 86400000

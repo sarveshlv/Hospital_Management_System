@@ -64,6 +64,14 @@ This section provides details about the RESTful API endpoints available in the H
 
 - `GET /findByHospital/{hospitalId}` - Retrieve beds by hospital ID.
 
+- `PUT /bookBed/{id}` - Update booking status to booked
+
+- `PUT /unbookBed/{id}` - Update booking status to cancelled
+
+- `PUT /completeBed/{id}` - Update booking status to completed
+
+- `PUT /makeBedAvaialble/{id}` - Update booking status to available
+
 ### Patient Controller
 
 #### Base URL: `/api/patients`

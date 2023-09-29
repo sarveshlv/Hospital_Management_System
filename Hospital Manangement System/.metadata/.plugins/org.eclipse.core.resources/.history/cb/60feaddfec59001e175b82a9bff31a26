@@ -1,0 +1,10 @@
+package com.hms.authms.dto;
+
+import jakarta.validation.constraints.AssertFalse.List;
+
+public class JwtTokenResponse {
+	private String token;
+	private String type = "Bearer";
+	private String username;
+	private String roles;
+}

@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import ValidateForm from 'src/app/helpers/validate.form';
-import { AddUserRequest } from 'src/app/models/user.requests';
+import { AddUserRequest, UserDetails } from 'src/app/models/user.requests';
 import { UserService } from '../../services/user.service';
 import { NgToastService } from 'ng-angular-popup';
-import { AppRoutingModule } from 'src/app/app-routing.module';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -20,8 +18,8 @@ export class SignupComponent {
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
-    private toast: NgToastService,
-    private router: Router
+    private router: Router,
+    private toast: NgToastService
   ) {}
 
   ngOnInit() {
@@ -51,30 +49,39 @@ export class SignupComponent {
       const userRequest = this.createUserRequest();
 
       this.userService.getUserByEmail(userRequest.email).subscribe({
-        next: (response) => {
-          this.handleError(
-            `User already present with ${userRequest.email}`,
-            'Please try with a different email id'
-          );
+        next: (response: UserDetails) => {
+          this.toast.success({
+            detail: `User already present with ${userRequest.email}`,
+            summary: 'Please try with a different email id',
+            duration: 3000,
+          });
           this.signUpForm.reset();
         },
-        error: (error) => {
+        error: (error: HttpErrorResponse) => {
           this.userService.addUser(userRequest).subscribe({
             next: () => {
-              this.handleSuccess(
-                'User signed up successfully',
-                'You can now log in with your credentials'
-              );
+              this.toast.info({
+                detail: 'User signed up successfully',
+                summary: 'You can now log in with your credentials',
+                duration: 3000,
+              });
               this.signUpForm.reset();
-              this.router.navigate(['/login']); // open welcome component
+              this.router.navigate(['/login']);
             },
             error: (error: HttpErrorResponse) =>
-              this.handleError('Unable to sign up!', error.error),
+              this.toast.success({
+                detail: 'Unable to sign up!',
+                summary: error.error.error,
+                duration: 3000,
+              }),
           });
         },
       });
     } else {
-      ValidateForm.validateAllFormFields(this.signUpForm);
+      Object.keys(this.signUpForm.controls).forEach((field) => {
+        const control = this.signUpForm.get(field);
+        control.markAsDirty({ onlySelf: true });
+      });
     }
   }
 
@@ -98,21 +105,5 @@ export class SignupComponent {
       password: this.signUpForm.get('password').value,
       role: this.signUpForm.get('role').value,
     };
-  }
-
-  private handleSuccess(message: string, summary: string) {
-    this.toast.success({
-      detail: message,
-      summary: summary,
-      duration: 3000,
-    });
-  }
-
-  private handleError(errorMessage: string, error: any) {
-    this.toast.error({
-      detail: errorMessage,
-      summary: error.error,
-      duration: 3000,
-    });
   }
 }

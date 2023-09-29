@@ -8,37 +8,36 @@ import { HospitalService } from 'src/app/services/hospital.service';
 import { PatientService } from 'src/app/services/patient.service';
 import { BookingStatus } from 'src/app/models/booking.requests';
 
-
 @Component({
   selector: 'app-booking-item',
   templateUrl: './booking-item.component.html',
-  styleUrls: ['./booking-item.component.css']
+  styleUrls: ['./booking-item.component.css'],
 })
-export class BookingItemComponent implements OnInit{
+export class BookingItemComponent implements OnInit {
   @Input() idx: number;
   @Input() booking: Booking;
   @Input() isManager: boolean;
-  @Input() isPatient: boolean; 
+  @Input() isPatient: boolean;
   @Output() rejectClick = new EventEmitter<string>();
   @Output() approveClick = new EventEmitter<string>();
   @Output() cancelClick = new EventEmitter<string>();
   @Output() bookingSorted = new EventEmitter<Booking[]>();
   @Output() sortChange = new EventEmitter<{ column: string; order: string }>();
 
-
-
   BookingStatus = BookingStatus;
-  patient: Patient
-  hospital: Hospital
+  patient: Patient;
+  hospital: Hospital;
   isItemClicked: boolean = false;
   sortColumn: string = '';
   sortDirection: number = 1;
   selectedColumn: string;
   selectedOrder: string;
 
-  constructor(private patientService: PatientService, private hospitalService: HospitalService,  private toast: NgToastService){
-
-  }
+  constructor(
+    private patientService: PatientService,
+    private hospitalService: HospitalService,
+    private toast: NgToastService
+  ) {}
 
   onRejectClick(bookingId: string) {
     this.rejectClick.emit(bookingId);
@@ -52,51 +51,56 @@ export class BookingItemComponent implements OnInit{
     this.cancelClick.emit(bookingId);
   }
 
-  handleSort(column: string) {
-    // Toggle sorting order if the same column is clicked again
-    if (this.selectedColumn === column) {
-      this.selectedOrder = this.selectedOrder === 'asc' ? 'desc' : 'asc';
-    } else {
-      // Default to ascending order when a new column is selected
-      this.selectedColumn = column;
-      this.selectedOrder = 'asc';
-    }
-  
-    // Emit selected column and sorting order as an object
-    this.sortChange.emit({ column: this.selectedColumn, order: this.selectedOrder });
-  }
-
-  
   toggleItemClicked() {
     this.isItemClicked = !this.isItemClicked;
   }
-  
+
   ngOnInit(): void {
-    console.log("BookingItemComponent: ngOnInit() -> ", "idx", this.idx, "Booking",this.booking );
+    if (this.isManager) {
+      this.fetchPatientDetails();
+    }
+    if (this.isPatient) {
+      this.fetchHospitalDetails();
+    }
+  }
+  
+  private fetchPatientDetails() {
     this.patientService.findPatientById(this.booking.patientId).subscribe({
-      next: (response : Patient) => {
-        console.log('Booking item: ngOnInit() -> ', 'Patient response', response);
+      next: (response: Patient) => {
+        this.toast.info({
+          detail: 'Success',
+          summary: 'Patient details fetched',
+          duration: 3000,
+        });
         this.patient = response;
       },
       error: (error: HttpErrorResponse) => {
-          this.handleError("Unable to fetch patient details", error.error);
-      }
-    })
-    this.hospitalService.getHospitalById(this.booking.hospitalId).subscribe({
-      next: (response: Hospital) =>{
-        console.log('Booking item: ngOnInit() -> ', 'Hospital Response', response);
+        this.toast.error({
+          detail: 'Unable to fetch patient details',
+          summary: error.error.toString(),
+          duration: 3000,
+        });
       },
-      error: (error: HttpErrorResponse) => {
-        this.handleError("Unable to fetch hospital details", error.error);
-      }
-    })
-  }
-  
-  private handleError(errorMessage: string, error: any) {
-    this.toast.error({
-      detail: errorMessage,
-      summary: error.error,
-      duration: 3000,
     });
   }
+  
+  private fetchHospitalDetails() {
+    this.hospitalService.getHospitalById(this.booking.hospitalId).subscribe({
+      next: (response: Hospital) => {
+        this.toast.info({
+          detail: 'Success',
+          summary: 'Hospital details fetched',
+          duration: 3000,
+        });
+        this.hospital = response;
+      },
+      error: (error: HttpErrorResponse) => {
+        this.toast.error({
+          detail: 'Unable to fetch hospital details',
+          summary: error.error.toString(),
+          duration: 3000,
+        });
+      },
+    });
+  }  
 }

@@ -1,43 +1,93 @@
-.example-card {
-    max-width: 400px;
+.bed-card {
+    background-color: #dedede;
 }
 
-.example-header-image {
-    background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
-    background-size: cover;
+.hospital-name,
+.hospital-type {
+    font-size: 24px;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
+.icon-container {
+    position: absolute;
+    top: 16px;
+    left: 16px;
 }
 
+.icon-container i {
+    font-size: 40px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
 
-.card-container {
-    background-color: #fff;
+.fa-times-circle {
+    color: red;
+}
+
+.fa-check-circle {
+    color: green;
+}
+
+.counter {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 16px;
+    width: 40px;
+    border-radius: 50%;
+    background-color: darkgreen;
+    display: flex;
+    justify-content: center;
+    color: #dedede;
+    
+    padding: 8px;
+    align-items: center;
+    font-weight: bold;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 1.0);
+}
+
+.book-button {
+    background-color: #45a049;
+    border: 2px solid #45a049;
+    color: #dedede;
     border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.book-button:hover {
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+}
+
+.bed-content {
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
+    padding-top: 16px;
 }
 
-.card-container:hover {
-    transform: scale(1.02);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-.mat-card-content {
-    color: #333;
+.bed-details-row {
+    display: flex;
+    justify-content: space-between;
 }
 
-.mat-card-actions {
-    justify-content: flex-end;
+.counter-available {
+    background-color: green;
 }
 
-.mat-button {
-    color: #007bff;
+.counter-booked {
+    background-color: orange;
 }
 
-.mat-card-title,
-.mat-card-subtitle {
-    color: #333;
+.counter-cancelled {
+    background-color: red;
+}
+
+.counter-completed {
+    background-color: blue;
 }

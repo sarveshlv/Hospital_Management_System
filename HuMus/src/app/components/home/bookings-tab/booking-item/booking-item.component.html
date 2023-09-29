@@ -1,10 +1,8 @@
 <table class="table table-bordered custom-table">
     <thead *ngIf="idx===-1">
         <tr>
-            <!-- <th class="text-center text-left col">No.</th> -->
-
             <!-- Booking details -->
-            <th (click)="handleSort('bookingDate')" class="text-center">Booking Date</th>
+            <th class="text-center">Booking Date</th>
 
             <!-- Hospital details -->
             <th *ngIf="isPatient" class="text-center col">Hospital Name</th>
@@ -19,16 +17,14 @@
 
             <!-- Booking details -->
             <th class="text-center">Bed Type</th>
-            <th (click)="handleSort('occupyDate')" class="text-center">Occupy Date</th>
-            <th (click)="handleSort('releaseDate')" class="text-center">Release Date</th>
+            <th class="text-center">Occupy Date</th>
+            <th class="text-center">Release Date</th>
             <th class="text-center">Booking Status</th>
-          
+
         </tr>
     </thead>
 
     <tr *ngIf="idx!==-1" (click)="toggleItemClicked()">
-
-        <!-- <td class="text-center text-left col">{{idx + 1}}</td> -->
 
         <!-- Booking details -->
         <td class="text-center col">{{ booking.bookingDate | date:'dd-MM-yyyy' }}</td>
@@ -70,13 +66,6 @@
                 <i class="fa  fa-question-circle text-warning"></i> {{BookingStatus.REQUESTED}}
             </ng-container>
         </td>
-
-
-        <!-- <td class="text-center">{{ calculateDateDifference(booking.occupyDate, booking.releaseDate) }}</td> -->
-
-
-        <!-- Actions based on user type -->
-
     </tr>
     <tr *ngIf="isItemClicked && (isManager || isPatient) && booking.bookingStatus === BookingStatus.REQUESTED"
         class="buttons-row">

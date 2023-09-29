@@ -3,8 +3,6 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgToastService } from 'ng-angular-popup';
-import ValidateForm from 'src/app/helpers/validate.form';
-import { HospitalType } from 'src/app/models/hospital.requests';
 import { AddPatientRequest } from 'src/app/models/patient.requests';
 import { UserDetails } from 'src/app/models/user.requests';
 import { JwtStorageService } from 'src/app/services/jwt/jwt.storage.service';
@@ -146,7 +144,10 @@ export class AddPatientComponent {
         }
       );
     } else {
-      ValidateForm.validateAllFormFields(this.patientForm);
+      Object.keys(this.patientForm.controls).forEach((field) => {
+        const control = this.patientForm.get(field);
+        control.markAsDirty({ onlySelf: true });
+      });
     }
   }
 }

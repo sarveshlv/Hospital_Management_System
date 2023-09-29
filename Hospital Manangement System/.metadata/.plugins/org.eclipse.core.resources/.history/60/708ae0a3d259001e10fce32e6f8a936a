@@ -1,0 +1,5 @@
+package com.hms.authms.utility;
+
+public class ServiceUtility {
+
+}

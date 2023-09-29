@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row container-fluid">
     <div class="col">
         <select class="form-select" [(ngModel)]="selectedFilter" (ngModelChange)="applyFilter()">
             <option value="ALL">ALL</option>
@@ -16,6 +16,6 @@
     <app-booking-item [idx]="-1" [isManager]="isManager" [isPatient]="isPatient"></app-booking-item>
     <app-booking-item *ngFor="let booking of filteredBookings; let i = index" [idx]="i" [booking]="booking"
         [isManager]="isManager" [isPatient]="isPatient" (rejectClick)="handleRejectClick(booking.id)"
-        (approveClick)="handleApproveClick(booking.id)" (cancelClick)="handleCancelClick(booking.id)"
-        (sortChange)="handleSortChange($event)"></app-booking-item>
+        (approveClick)="handleApproveClick(booking.id)"
+        (cancelClick)="handleCancelClick(booking.id)"></app-booking-item>
 </div>

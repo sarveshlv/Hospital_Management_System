@@ -24,7 +24,9 @@ export class HospitalService {
   getHospitalById(id: string): Observable<Hospital> {
     return this.http.get<Hospital>(`${this.apiUrl}/findById/${id}`);
   }
-
+  getAllHospitals(): Observable<Hospital[]> {
+    return this.http.get<Hospital[]>(`${this.apiUrl}/getAllHospitals`);
+  }
   isHospitalVerified(id: string): Observable<boolean> {
     return this.http.get<boolean>(`${this.apiUrl}/isVerified/${id}`);
   }

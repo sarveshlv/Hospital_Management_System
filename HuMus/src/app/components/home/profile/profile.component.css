@@ -1,0 +1,26 @@
+/* Custom CSS for button styling */
+.update-button {
+    background-color: #FF5733; /* Change the background color for the "Cancel" button */
+    color: #FFF; /* Text color for the buttons */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1); /* Add box shadows */
+    border-radius: 4px; /* Add border radius */
+    margin-right: 10px; /* Add some spacing between the buttons */
+    border: none; /* Remove the default button border */
+    padding: 8px 16px; /* Adjust padding for the buttons */
+}
+
+.cancel-button {
+    background-color: #007BFF; /* Change the background color for the "Update" button */
+    color: #FFF; /* Text color for the buttons */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1); /* Add box shadows */
+    border-radius: 4px; /* Add border radius */
+    margin-right: 10px; /* Add some spacing between the buttons */
+    border: none; /* Remove the default button border */
+    padding: 8px 16px; /* Adjust padding for the buttons */
+}
+
+.button-wrapper {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    margin-top: 20px; /* Add margin to the top of the button wrapper */
+}

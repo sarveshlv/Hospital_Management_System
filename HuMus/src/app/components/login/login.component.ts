@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgToastService } from 'ng-angular-popup';
-import ValidateForm from 'src/app/helpers/validate.form';
 import {
   LoginRequest,
   UpdatePasswordRequest,
@@ -29,9 +28,9 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
-    private toast: NgToastService,
     private router: Router,
-    private jwtService: JwtStorageService
+    private jwtService: JwtStorageService,
+    private toast: NgToastService
   ) {}
 
   ngOnInit(): void {
@@ -63,24 +62,6 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  private handleSuccess(message: string, summary: string) {
-    this.toast.success({
-      detail: message,
-      summary: summary,
-      duration: 3000,
-    });
-    this.loginForm.reset();
-    this.resetPasswordForm.reset();
-  }
-
-  private handleError(errorMessage: string, error: any) {
-    this.toast.error({
-      detail: errorMessage,
-      summary: error.error,
-      duration: 3000,
-    });
-  }
-
   onSubmit() {
     if (this.loginForm.valid) {
       this.loginRequest = {
@@ -92,12 +73,19 @@ export class LoginComponent implements OnInit {
           this.handleLoginSuccess(response);
         },
         error: (error: HttpErrorResponse) => {
-          this.handleError('Unable to log in', error.error);
+          this.toast.error({
+            detail: 'Unable to log in',
+            summary: error.error.error,
+            duration: 3000,
+          });
           this.loginForm.reset();
-        }
+        },
       });
     } else {
-      ValidateForm.validateAllFormFields(this.loginForm);
+      Object.keys(this.loginForm.controls).forEach((field) => {
+        const control = this.loginForm.get(field);
+        control.markAsDirty({ onlySelf: true });
+      });
     }
   }
 
@@ -108,16 +96,27 @@ export class LoginComponent implements OnInit {
 
     const userDetails: UserDetails = this.jwtService.getUserDetails();
     if (userDetails.referenceId || userDetails.role === 'ADMIN') {
-      this.handleSuccess('Logged in successfully', 'Welcome to the our awesome dashboard!');
+      this.toast.success({
+        detail: 'Logged in successfully',
+        summary: 'Welcome to the our awesome dashboard!',
+        duration: 3000,
+      });
       this.router.navigate(['/dashboard']);
     } else if (userDetails.role === 'MANAGER') {
-      this.handleSuccess('Logged in successfully', 'Add Hospital details to continue!');
+      this.toast.success({
+        detail: 'Logged in successfully',
+        summary: 'Add Hospital details to continue!',
+        duration: 3000,
+      });
       this.router.navigate(['/addHospital']);
     } else if (userDetails.role === 'USER') {
-      this.handleSuccess('Logged in successfully', 'Add Patient details to continue!');
+      this.toast.success({
+        detail: 'Logged in successfully',
+        summary: 'Add Patient details to continue!',
+        duration: 3000,
+      });
       this.router.navigate(['/addPatient']);
     }
-
   }
 
   findEmailById() {
@@ -126,10 +125,18 @@ export class LoginComponent implements OnInit {
       next: (response) => {
         console.log('User found for email id: ', response);
         this.isEmailFound = true;
-        this.handleSuccess('User found for email id', email);
+        this.toast.success({
+          detail: 'User found for email id',
+          summary: email,
+          duration: 3000,
+        });
       },
       error: (error: HttpErrorResponse) => {
-        this.handleError(`User not found for email id: ${email}`, error.error);
+        this.toast.error({
+          detail: `User not found for email id: ${email}`,
+          summary: error.error.error,
+          duration: 3000,
+        });
         this.findEmailForm.reset();
         this.isEmailFound = false;
       },
@@ -146,14 +153,25 @@ export class LoginComponent implements OnInit {
         next: (response) => {
           console.log('Password updated with details: ', response);
           this.isEmailFound = false;
-          this.handleSuccess('Password reset successfully', 'Log in with new credentials');
+          this.toast.success({
+            detail: 'Password reset successfully',
+            summary: 'Log in with new credentials',
+            duration: 3000,
+          });
           window.location.reload();
         },
         error: (error: HttpErrorResponse) =>
-          this.handleError('Something went wrong. Unable to reset password', error.error),
+          this.toast.success({
+            detail: 'Something went wrong. Unable to reset password',
+            summary: error.error.error,
+            duration: 3000,
+          }),
       });
     } else {
-      ValidateForm.validateAllFormFields(this.resetPasswordForm);
+      Object.keys(this.resetPasswordForm.controls).forEach((field) => {
+        const control = this.resetPasswordForm.get(field);
+        control.markAsDirty({ onlySelf: true });
+      });
     }
   }
 }

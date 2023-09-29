@@ -1,0 +1,5 @@
+package com.hms.authms.controller;
+
+public class CentralExaptionHandler {
+
+}

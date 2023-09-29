@@ -1,38 +1,37 @@
 <div class="container-fluid full-screen-container">
     <!-- Top Title with increased font weight -->
-    <div class="dashboard-header">
-        <h1 class="display-4 font-weight-bold">HuMuS Portal</h1>
-        <button class="dashboard-profile-button">
+    <div class="dashboard-header row">
+        <button class=" col-md-1 dashboard-signout-button" (click)="signOut()">
+            Sign out <i class="fa fa-sign-out"></i>
+        </button>
+        <h1 class="display-4 font-weight-bold text-center col-md-10">HuMuS Portal</h1>
+        <button class=" col-md-1 dashboard-profile-button" (click)="showProfile()">
             <i class="fa fa-user"></i> Profile
         </button>
     </div>
-    <!-- Navbar for Bookings and Beds (moved below the header) -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light rounded mt-3">
-        <div class="container">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-0 evenly-spaced-list">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" (click)="showBookings = true; showBeds = false;">Bookings</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" (click)="showBeds = true; showBookings = false;">Beds</a>
-                    </li>
-                </ul>
+    <div *ngIf="!showProfileToggle">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light rounded mt-3">
+            <div class="container">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-0 evenly-spaced-list">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" (click)="showBookings = true; showBeds = false;">Bookings</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" (click)="showBeds = true; showBookings = false;">Beds</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+        <router-outlet></router-outlet>
 
-    <!-- Content for Bookings and Beds (conditionally displayed) -->
-    <div class="container mt-3" *ngIf="showBookings">
-        <app-bookings-tab></app-bookings-tab>
+        <app-bookings-tab *ngIf="showBookings"></app-bookings-tab>
+        <app-beds-tab *ngIf="showBeds"></app-beds-tab>
     </div>
-
-    <div class="container mt-3" *ngIf="showBeds">
-        <app-beds-tab></app-beds-tab>
-    </div>
+    <app-profile *ngIf="showProfileToggle"></app-profile>
 </div>
-<ng-toast></ng-toast>

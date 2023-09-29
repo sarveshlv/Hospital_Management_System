@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import ValidateForm from 'src/app/helpers/validate.form';
 import {
   AddHospitalRequest,
   HospitalType,
@@ -162,7 +161,10 @@ export class AddHospitalComponent {
         },
       });
     } else {
-      ValidateForm.validateAllFormFields(this.hospitalForm);
+      Object.keys(this.hospitalForm.controls).forEach((field) => {
+        const control = this.hospitalForm.get(field);
+        control.markAsDirty({ onlySelf: true });
+      });
     }
   }
 }

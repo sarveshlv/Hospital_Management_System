@@ -1,0 +1,5 @@
+package com.hms.userms.controller;
+
+public class CentralExceptionHandler {
+
+}

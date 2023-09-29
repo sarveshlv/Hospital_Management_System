@@ -1,0 +1,10 @@
+package com.hms.billingms.exceptions;
+
+public class BookingNotCompletedExcaption extends Exception {
+
+	public BookingNotCompletedExcaption(String bookingStatus) {
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
+
+}

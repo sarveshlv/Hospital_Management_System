@@ -16,7 +16,7 @@
 
 .custom-table td, th {
     flex: 1;
-    width: 150px;
+    width: 170px;
     padding: 8px;
     cursor: pointer;
     user-select: none;

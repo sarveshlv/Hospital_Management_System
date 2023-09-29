@@ -1,0 +1,11 @@
+package com.hms.billingms.dto;
+
+import lombok.Data;
+import javax.validation.constraints.NotEmpty;
+
+@Data
+public class BillingRequest {
+	
+	@NotEmpty(message="Booking id is required")
+	private String bookingId;
+}

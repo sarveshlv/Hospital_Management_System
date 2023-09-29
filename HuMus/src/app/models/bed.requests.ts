@@ -18,6 +18,15 @@ export class Bed {
     this.bedStatus = bedStatus;
     this.costPerDay = costPerDay;
   }
+
+  isEqual(otherBed: Bed): boolean {
+    return (
+      this.hospitalId === otherBed.hospitalId &&
+      this.bedType === otherBed.bedType &&
+      this.bedStatus === otherBed.bedStatus &&
+      this.costPerDay === otherBed.costPerDay
+    );
+  }
 }
 
 export enum BedType {
@@ -31,6 +40,7 @@ export enum BedStatus {
   AVAILABLE = 'AVAILABLE',
   BOOKED = 'BOOKED',
   CANCELLED = 'CANCELLED',
+  COMPLETED = 'COMPLETED',
 }
 
 export interface AddBedRequest {
