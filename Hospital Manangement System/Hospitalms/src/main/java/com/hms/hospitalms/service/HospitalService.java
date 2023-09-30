@@ -1,6 +1,7 @@
 package com.hms.hospitalms.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,7 +62,7 @@ public class HospitalService implements IHospitalService {
 
 	@Override
 	public List<Hospital> getNearbyHospitals(Long pincode) {
-		return hospitalRepository.findByAddressPincodeBetween(pincode - 2, pincode + 2);
+		return hospitalRepository.findByAddressPincodeBetween(pincode - 20, pincode + 20);
 	}
 
 	@Override

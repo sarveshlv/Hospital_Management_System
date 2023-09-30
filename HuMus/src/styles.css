@@ -1,1 +1,334 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    list-style: none;
+    text-decoration: none;
+    outline: none;
+}
+
+/* Shared button styles */
+.btn,
+.btn-add,
+.book-button {
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.book-button {
+    background-color: #45a049;
+    border: 2px solid #45a049;
+    border-radius: 10px;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 8px;
+    font-size: 16px;
+}
+
+.btn-add {
+    background-color: black;
+    border: 2px solid darkgray;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 24px;
+    text-align: center;
+    width: 200px;
+    height: 50px;
+    margin: 25px;
+    display: block;
+}
+
+.btn-add:hover,
+.book-button:hover {
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+}
+
+.panel {
+    box-shadow: 10px 10px 30px rgb(219, 218, 218);
+    border-radius: 12px;
+    margin-top: 100px;
+    padding: 24px;
+    background-color: #fff;
+}
+
+.input-field {
+    border-radius: 5px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    color: #4343ff;
+}
+
+.input-field.error {
+    border: 1px solid red;
+    color: red;
+}
+
+input,
+input:disabled,
+select {
+    border: none;
+    outline: none;
+    box-shadow: none;
+    width: 100%;
+    background-color: white;
+    color: #4343ff;
+}
+
+.button-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+/* Dashboard button styles */
+.dashboard-profile-button,
+.dashboard-signout-button {
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.dashboard-profile-button {
+    background-color: #007bff;
+}
+
+.dashboard-signout-button {
+    background-color: #FF5733;
+}
+
+.dashboard-profile-button:hover,
+.dashboard-signout-button:hover {
+    background-color: #003c80;
+}
+
+.dashboard-signout-button i {
+    margin-left: 5px;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.overlay-content {
+    padding: 20px 10px;
+    padding-top: 50px;
+    background-color: #f0f0f0;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+    position: relative;
+}
+
+.container {
+    padding: 24px;
+}
+
+.responsive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 24px;
+}
+
+.bordert {
+    border-top: 1px solid #aaa;
+    position: relative;
+}
+
+.bordert:after {
+    content: "or connect with";
+    position: absolute;
+    top: -13px;
+    left: 33%;
+    background-color: #fff;
+    padding: 0px 8px;
+}
+
+.bg-white {
+    background: none;
+    border: none;
+}
+
+.update-button,
+.cancel-button {
+    color: #FFF;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-right: 10px;
+    border: none;
+    padding: 8px 16px;
+}
+
+.update-button {
+    background-color: #FF5733;
+}
+
+.cancel-button {
+    background-color: #007BFF;
+}
+
+img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+    position: relative;
+}
+
+.panel-heading {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#forget {
+    max-width: 100px;
+    margin-left: auto;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+.form-inline label {
+    padding-left: 10px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.fa-eye-slash.btn {
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+.dashboard-header {
+    justify-content: space-between;
+    align-items: center;
+    background-color: #0056b3;
+    color: #fff;
+    padding: 10px 20px;
+    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.2);
+}
+
+.bed-card {
+    background-color: #FFFFFA;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.hospital-name,
+.hospital-type {
+    font-size: 24px;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.icon-container {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+}
+
+.icon-container i {
+    font-size: 40px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.fa-times-circle {
+    color: red;
+}
+
+.fa-check-circle {
+    color: green;
+}
+
+.counter {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 16px;
+    width: 40px;
+    border-radius: 50%;
+    background-color: darkgreen;
+    display: flex;
+    justify-content: center;
+    color: #dedede;
+    padding: 8px;
+    align-items: center;
+    font-weight: bold;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 1.0);
+}
+
+.bed-content {
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding-top: 16px;
+}
+
+.bed-details-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.counter-available {
+    background-color: green;
+}
+
+.counter-booked {
+    background-color: orange;
+}
+
+.counter-cancelled {
+    background-color: red;
+}
+
+.counter-completed {
+    background-color: blue;
+}
+
+.custom-table {
+    margin-top: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.custom-table thead {
+    background-color: #333;
+    color: white;
+}
+
+.custom-table td,
+th {
+    width: 130px;
+    min-width: 130px;
+    max-width: 130px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.buttons-td button {
+    margin: 4px;
+}

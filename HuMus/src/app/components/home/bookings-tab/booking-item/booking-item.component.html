@@ -5,15 +5,15 @@
             <th class="text-center">Booking Date</th>
 
             <!-- Hospital details -->
-            <th *ngIf="isPatient" class="text-center col">Hospital Name</th>
-            <th *ngIf="isPatient" class="text-center col">Contact Number</th>
-            <th *ngIf="isPatient" class="text-center col">Address</th>
+            <th *ngIf="isPatient || isAdmin" class="text-center col">Hospital Name</th>
+            <th *ngIf="isPatient || isAdmin" class="text-center col">Contact Number</th>
+            <th *ngIf="isPatient || isAdmin" class="text-center col">Address</th>
 
             <!-- Patient details -->
-            <th *ngIf="isManager" class="text-center col">Patient Name</th>
-            <th *ngIf="isManager" class="text-center col">Contact Number</th>
-            <th *ngIf="isManager" class="text-center col">Aadhar Card</th>
-            <th *ngIf="isManager" class="text-center col">Address</th>
+            <th *ngIf="isManager || isAdmin" class="text-center col">Patient Name</th>
+            <th *ngIf="isManager || isAdmin" class="text-center col">Contact Number</th>
+            <th *ngIf="isManager || isAdmin" class="text-center col">Aadhar Card</th>
+            <th *ngIf="isManager || isAdmin" class="text-center col">Address</th>
 
             <!-- Booking details -->
             <th class="text-center">Bed Type</th>
@@ -21,26 +21,28 @@
             <th class="text-center">Release Date</th>
             <th class="text-center">Booking Status</th>
 
+            <th *ngIf="isManager || isPatient" class="text-center">Actions</th>
+
         </tr>
     </thead>
 
-    <tr *ngIf="idx!==-1" (click)="toggleItemClicked()">
+    <tr *ngIf="idx!==-1">
 
         <!-- Booking details -->
         <td class="text-center col">{{ booking.bookingDate | date:'dd-MM-yyyy' }}</td>
 
         <!-- Hospital details -->
-        <td *ngIf="isPatient" class="text-center col">{{ hospital?.name }}</td>
-        <td *ngIf="isPatient" class="text-center col">{{ hospital?.contactNo }}</td>
-        <td *ngIf="isPatient" class="text-center col address-td">{{ hospital?.address.city + ', ' +
+        <td *ngIf="isPatient || isAdmin" class="text-center col">{{ hospital?.name }}</td>
+        <td *ngIf="isPatient || isAdmin" class="text-center col">{{ hospital?.contactNo }}</td>
+        <td *ngIf="isPatient || isAdmin" class="text-center col address-td">{{ hospital?.address.city + ', ' +
             hospital?.address.state + ' - '
             + hospital?.address.pincode }}</td>
 
         <!-- Patient details -->
-        <td *ngIf="isManager" class="text-center col">{{ patient?.firstName + ' ' + patient?.lastName }}</td>
-        <td *ngIf="isManager" class="text-center col">{{ patient?.contactNumber }}</td>
-        <td *ngIf="isManager" class="text-center col">{{ patient?.aadharCard }}</td>
-        <td *ngIf="isManager" class="text-center col address-td">{{ patient?.address.city + ', ' +
+        <td *ngIf="isManager || isAdmin" class="text-center col">{{ patient?.firstName + ' ' + patient?.lastName }}</td>
+        <td *ngIf="isManager || isAdmin" class="text-center col">{{ patient?.contactNumber }}</td>
+        <td *ngIf="isManager || isAdmin" class="text-center col">{{ patient?.aadharCard }}</td>
+        <td *ngIf="isManager || isAdmin" class="text-center col address-td">{{ patient?.address.city + ', ' +
             patient?.address.state
             + ' - ' +
             patient?.address.pincode }}</td>
@@ -66,15 +68,14 @@
                 <i class="fa  fa-question-circle text-warning"></i> {{BookingStatus.REQUESTED}}
             </ng-container>
         </td>
-    </tr>
-    <tr *ngIf="isItemClicked && (isManager || isPatient) && booking.bookingStatus === BookingStatus.REQUESTED"
-        class="buttons-row">
-        <td *ngIf="isManager" colspan="12" class="text-end buttons-td">
-            <button class="btn btn-danger compact-btn" (click)="onRejectClick(booking.id)">Reject</button>
-            <button class="btn btn-success compact-btn" (click)="onApproveClick(booking.id)">Approve</button>
+        <td *ngIf="isManager && booking.bookingStatus === BookingStatus.REQUESTED" class="text-center">
+            <button class="btn btn-success text-dark" (click)="onApproveClick(booking.id)">Approve</button>
+            <button class="btn btn-danger text-dark" (click)="onRejectClick(booking.id)">Reject</button>
         </td>
-        <td *ngIf="isPatient">
-            <button class="btn btn-danger compact-btn" (click)="onCancelClick(booking.id)">Cancel</button>
+        <td *ngIf="isPatient && booking.bookingStatus === BookingStatus.REQUESTED" class="text-center">
+            <button class="btn btn-warning text-dark" (click)="onCancelClick(booking.id)">Cancel</button>
         </td>
-    </tr>
+        <td *ngIf="!isAdmin && booking.bookingStatus !== BookingStatus.REQUESTED" class="text-center">No Action</td>
+
+      </tr>
 </table>

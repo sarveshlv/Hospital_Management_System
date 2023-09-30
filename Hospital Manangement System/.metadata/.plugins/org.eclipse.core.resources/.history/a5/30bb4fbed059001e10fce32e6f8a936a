@@ -1,5 +1,0 @@
-package com.hms.authms.service;
-
-public interface IUserService {
-
-}

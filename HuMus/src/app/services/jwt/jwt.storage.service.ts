@@ -6,7 +6,7 @@ import { UserDetails } from 'src/app/models/user.requests';
 })
 export class JwtStorageService {
   private jwtToken: string | null;
-    private userDetails: UserDetails | null;
+  private userDetails: UserDetails | null;
 
   authenticated = signal(false);
 

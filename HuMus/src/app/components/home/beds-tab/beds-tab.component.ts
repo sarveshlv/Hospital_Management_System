@@ -2,7 +2,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NgToastService } from 'ng-angular-popup';
 import { AddBedRequest, Bed, BedStatus } from 'src/app/models/bed.requests';
-import { AddBookingRequest, BedType, Booking } from 'src/app/models/booking.requests';
+import {
+  AddBookingRequest,
+  BedType,
+  Booking,
+} from 'src/app/models/booking.requests';
 import { Hospital } from 'src/app/models/hospital.requests';
 import { Patient } from 'src/app/models/patient.requests';
 import { UserDetails } from 'src/app/models/user.requests';
@@ -21,6 +25,7 @@ import { BookingService } from 'src/app/services/booking.service';
 export class BedsTabComponent implements OnInit {
   isManager = false;
   isPatient = false;
+  isAdmin = false;
 
   userDetails: UserDetails;
   patient: Patient;
@@ -61,11 +66,23 @@ export class BedsTabComponent implements OnInit {
     this.userDetails = this.jwtStorageService.getUserDetails();
     this.isManager = this.userDetails.role === 'MANAGER';
     this.isPatient = this.userDetails.role === 'USER';
+    this.isAdmin = this.userDetails.role === 'ADMIN';
+
     this.addBedRequest.hospitalId = this.userDetails.referenceId;
 
     this.loadbeds();
     this.gethospitalList();
-    this.addBedPopup = this.beds.length !== 0;
+  }
+
+  //loading beds based on profile
+  private loadbeds(): void {
+    if (this.isManager) {
+      this.getBedsByHospitalId(this.userDetails.referenceId);
+    } else if (this.isPatient) {
+      this.getBedsByPincode();
+    } else if (this.isAdmin) {
+      this.getAllBeds();
+    }
   }
 
   //methods for setting up filters
@@ -78,36 +95,28 @@ export class BedsTabComponent implements OnInit {
     return Object.values(BedType);
   }
 
-  //methods for setting up filters
+  //method call for setting filter by hospital name
   private gethospitalList(): void {
     this.hospitalService.getAllHospitals().subscribe({
       next: (response: Hospital[]) => {
         this.hospitals = response;
         this.toast.info({
-          detail: 'Successfully fetched hospital list',
-          summary: `Fetched ${this.hospitals.length} hospitals`,
+          detail: 'Fetched hospital list',
+          summary: `Fetched ${this.hospitals.length} hospitals for filtering`,
           duration: 3000,
         });
       },
       error: (error: HttpErrorResponse) => {
         this.toast.info({
           detail: 'Unable to fetch hospitals list',
-          summary: error.error.toString(),
+          summary: error.error.error,
           duration: 3000,
         });
       },
     });
   }
 
-  private loadbeds(): void {
-    if (this.isManager) {
-      this.getBedsByHospitalId(this.userDetails.referenceId);
-    } else if (this.isPatient) {
-      this.getBedsByPincode();
-    }
-  }
-
-  // filtering methods
+  //method for filtering by bedType
   applyFilter() {
     if (this.selectedBedType === 'ALL' && this.selectedBedStatus === 'ALL') {
       this.filteredBeds = this.beds;
@@ -116,7 +125,6 @@ export class BedsTabComponent implements OnInit {
         const bedTypeMatch =
           this.selectedBedType === 'ALL' ||
           bed.bedType === this.selectedBedType;
-        console.log(bed);
         const bedStatusMatch =
           this.selectedBedStatus === 'ALL' ||
           bed.bedStatus === this.selectedBedStatus;
@@ -126,7 +134,7 @@ export class BedsTabComponent implements OnInit {
     }
   }
 
-  // filtering methods
+  // filtering method for filtering by hospital
   applyHospitalFilter() {
     if (this.selectedHospital === 'ALL') {
       this.getAllBeds();
@@ -135,7 +143,7 @@ export class BedsTabComponent implements OnInit {
     }
   }
 
-  // filtering methods
+  // filtering method for filtering by location - FOR Pateint only
   applyLocationFilter() {
     if (this.selectedAddressFilter === 'ALL') {
       this.getAllBeds();
@@ -144,7 +152,7 @@ export class BedsTabComponent implements OnInit {
     }
   }
 
-  // service calls method
+  //method call for getting hospital by id - filtering and for loading MANAGER
   private getBedsByHospitalId(hospitalId: string): void {
     this.bedsService.getBedsByHospitalId(hospitalId).subscribe({
       next: (response: Bed[]) => {
@@ -159,7 +167,7 @@ export class BedsTabComponent implements OnInit {
       error: (error: HttpErrorResponse) => {
         this.toast.error({
           detail: 'Unable to fetch beds of hospital',
-          summary: error.error.toString(),
+          summary: error.error.error,
           duration: 3000,
         });
       },
@@ -167,7 +175,7 @@ export class BedsTabComponent implements OnInit {
     });
   }
 
-  // service calls method
+  //method call for filteing by pincode - PATIENT
   private getBedsByPincode() {
     this.patientService
       .findPatientById(this.userDetails.referenceId)
@@ -192,7 +200,7 @@ export class BedsTabComponent implements OnInit {
               error: (error: HttpErrorResponse) => {
                 this.toast.error({
                   detail: 'Unable to fetch beds nearby you',
-                  summary: error.error.toString(),
+                  summary: error.error.error,
                   duration: 3000,
                 });
               },
@@ -202,7 +210,7 @@ export class BedsTabComponent implements OnInit {
         error: (error: HttpErrorResponse) => {
           this.toast.error({
             detail: 'Unable to fetch your location',
-            summary: error.error.toString(),
+            summary: error.error.error,
             duration: 3000,
           });
         },
@@ -213,13 +221,15 @@ export class BedsTabComponent implements OnInit {
   private getAllBeds(): void {
     this.bedsService.getAllBeds().subscribe({
       next: (response: Bed[]) => {
-        this.beds = response;
+        this.beds = this.isPatient
+          ? response.filter((bed) => bed.bedStatus === BedStatus.AVAILABLE)
+          : response;
         this.filteredBeds = this.beds;
       },
       error: (error: HttpErrorResponse) => {
         this.toast.error({
           detail: 'Unable to fetch beds',
-          summary: error.error.toString(),
+          summary: error.error.error,
           duration: 3000,
         });
       },
@@ -227,23 +237,23 @@ export class BedsTabComponent implements OnInit {
     });
   }
 
+  //method to group similiar beds
   refreshUniqueBed(): void {
     this.uniqueBeds = [];
     this.filteredBeds.forEach((bed) => {
-      if (bed.bedStatus === BedStatus.AVAILABLE) {
-        const found = this.uniqueBeds.find((uniqueBed) =>
-          this.areBedsEqual(bed, uniqueBed.bed)
-        );
-        if (found) {
-          found.count++;
-        } else {
-          this.uniqueBeds.push({ bed, count: 1 });
-        }
+      const found = this.uniqueBeds.find((uniqueBed) =>
+        this.areBedsEqual(bed, uniqueBed.bed)
+      );
+      if (found) {
+        found.count++;
+      } else {
+        this.uniqueBeds.push({ bed, count: 1 });
       }
     });
-    console.log(this.uniqueBeds);
+    this.addBedPopup = this.refreshUniqueBed.length !== 0;
   }
 
+  //utitilty beds to check beds to be similiar
   private areBedsEqual(bed1: Bed, bed2: Bed): boolean {
     return (
       bed1.hospitalId === bed2.hospitalId &&
@@ -253,17 +263,20 @@ export class BedsTabComponent implements OnInit {
     );
   }
 
+  //click actions
   closePopup() {
     this.addBedPopup = false;
     this.bookBedPopup = false;
   }
 
+  //click action from bed item
   onAddBedClicked(uniqueBed: any) {
     this.addBedPopup = true;
     this.addBedRequest.bedType = uniqueBed.bed.bedType;
     this.addBedRequest.costPerDay = uniqueBed.bed.costPerDay;
   }
 
+  //click action from bed item
   onBookBedClicked(uniqueBed: any) {
     this.bookBedPopup = true;
     this.addBookingRequest.hospitalId = uniqueBed.bed.hospitalId;
@@ -271,7 +284,7 @@ export class BedsTabComponent implements OnInit {
     this.addBookingRequest.patientId = this.userDetails.referenceId;
   }
 
-  // service calls method on click
+  //handling click action to add bed
   addBed() {
     this.bedsService
       .addBed(this.jwtStorageService.getToken(), this.addBedRequest)
@@ -289,13 +302,18 @@ export class BedsTabComponent implements OnInit {
         error: (error: HttpErrorResponse) => {
           this.toast.error({
             detail: 'Unable to add bed. Plz try again later',
-            summary: error.error.toString(),
+            summary: error.error.error,
             duration: 3000,
           });
         },
-        complete: () => (this.addBedPopup = false),
+        complete: () => {
+          this.addBedPopup = false;
+          this.loadbeds();
+        },
       });
   }
+
+  //handling click action for booking bed
   bookBed() {
     if (this.datePickerForm.valid) {
       const occupyDateValue = this.datePickerForm.get('occupyDate').value;
@@ -316,23 +334,27 @@ export class BedsTabComponent implements OnInit {
       } else {
         this.addBookingRequest.occupyDate = occupyDate;
         this.addBookingRequest.releaseDate = releaseDate;
-        this.bookingService.addBooking(this.jwtStorageService.getToken(), this.addBookingRequest).subscribe({
-          next: (respone: Booking) => 
+        this.bookingService
+          .addBooking(this.jwtStorageService.getToken(), this.addBookingRequest)
+          .subscribe({
+            next: (respone: Booking) =>
               this.toast.success({
-                detail: "Added booking request",
-                summary: "Waiting for approval. Your booking should be visible in bookings tab",
-                duration: 3000
+                detail: 'Added booking request',
+                summary:
+                  'Waiting for approval. Your booking should be visible in bookings tab',
+                duration: 3000,
               }),
-          error: (error: HttpErrorResponse) =>{
-            console.log(error.error);
+            error: (error: HttpErrorResponse) => {
+              console.log(error.error);
               this.toast.error({
-                detail: "Unable to add booking request. Please try again after some time",
+                detail:
+                  'Unable to add booking request. Please try again after some time',
                 summary: error.error,
-                duration: 3000
+                duration: 3000,
               });
             },
-          complete: () => this.bookBedPopup = false
-        });
+            complete: () => (this.bookBedPopup = false),
+          });
       }
     }
   }

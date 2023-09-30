@@ -13,38 +13,40 @@ import { HospitalService } from 'src/app/services/hospital.service';
 export class BedItemComponentComponent implements OnInit {
   @Input() uniqueBed: any;
   @Input() isManager: boolean;
-  @Input() isPatient: boolean; 
+  @Input() isPatient: boolean;
   @Output() addBedClicked: EventEmitter<any> = new EventEmitter<any>();
   @Output() bookBedClicked: EventEmitter<void> = new EventEmitter<any>();
 
-
   hospital: Hospital;
   BedStaus = BedStatus;
+
   constructor(
     private hospitalService: HospitalService,
-    private toast: NgToastService,
-
+    private toast: NgToastService
   ) {}
 
+  //fetching hopital details associcated with beds
   ngOnInit(): void {
-    this.hospitalService.getHospitalById(this.uniqueBed.bed.hospitalId).subscribe({
-      next: (response: Hospital) => {
-        this.hospital = response;
-      },
-      error: (error: HttpErrorResponse) => {
-        this.toast.error({
-          detail:`Unable to fetch hospital details for bed ${this.uniqueBed.bed.id}`,
-          summary: error.error.toString(),
-          duration: 3000
-        });
-      },
-    });
+    this.hospitalService
+      .getHospitalById(this.uniqueBed.bed.hospitalId)
+      .subscribe({
+        next: (response: Hospital) => (this.hospital = response),
+        error: (error: HttpErrorResponse) => {
+          this.toast.error({
+            detail: `Unable to fetch hospital details for bed ${this.uniqueBed.bed.id}`,
+            summary: error.error.toString(),
+            duration: 3000,
+          });
+        },
+      });
   }
-  
-  bookBed(uniqueBed: any){
+
+  //click events
+  bookBed(uniqueBed: any) {
     this.bookBedClicked.emit(uniqueBed);
   }
-  addBed(uniqueBed: any){
+
+  addBed(uniqueBed: any) {
     this.addBedClicked.emit(uniqueBed);
   }
 }

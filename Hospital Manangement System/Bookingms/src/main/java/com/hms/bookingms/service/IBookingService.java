@@ -29,4 +29,6 @@ public interface IBookingService {
 			throws BookingNotFoundException, InvalidBookingRequest;
 
 	Booking completeBooking(String authorizationHeader, String bookingId) throws BookingNotFoundException;
+
+	List<Booking> getAllBookings();
 }

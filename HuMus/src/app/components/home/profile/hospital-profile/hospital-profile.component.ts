@@ -50,11 +50,11 @@ const indianStatesAndUTs: string[] = [
   styleUrls: ['./hospital-profile.component.css'],
 })
 export class HospitalProfileComponent {
+  indianStatesAndUTs: string[] = indianStatesAndUTs;
   hospitalForm: FormGroup;
+
   userDetails: UserDetails;
   hospital: Hospital;
-  indianStatesAndUTs: string[] = indianStatesAndUTs;
-
 
   constructor(
     private formBuilder: FormBuilder,
@@ -63,6 +63,7 @@ export class HospitalProfileComponent {
     private toast: NgToastService
   ) {}
 
+  //fetching and populating hospital details
   ngOnInit() {
     this.userDetails = this.jwtStorageService.getUserDetails();
     this.hospitalService
@@ -76,13 +77,13 @@ export class HospitalProfileComponent {
             duration: 3000,
           });
         },
-        error: (error: HttpErrorResponse) => 
-        this.toast.error({
-          detail: "Unable to ur hospital's details",
-          summary: error.error.error,
-          duration: 3000
-        }),
-        complete: () =>  {
+        error: (error: HttpErrorResponse) =>
+          this.toast.error({
+            detail: "Unable to ur hospital's details",
+            summary: error.error.error,
+            duration: 3000,
+          }),
+        complete: () => {
           this.hospitalForm = this.formBuilder.group({
             name: [this.hospital.name, Validators.required],
             hospitalType: [this.hospital.hospitalType, Validators.required],
@@ -92,13 +93,16 @@ export class HospitalProfileComponent {
             ],
             state: [this.hospital.address.state, Validators.required],
             city: [this.hospital.address.city, Validators.required],
-            pincode: [this.hospital.address.pincode, [Validators.required, Validators.pattern(/[0-9]{6}/)]],
+            pincode: [
+              this.hospital.address.pincode,
+              [Validators.required, Validators.pattern(/[0-9]{6}/)],
+            ],
           });
-        }
+        },
       });
-    
   }
 
+  //click action to update hopital
   updateHospital() {
     if (this.hospitalForm.valid) {
       const formValues = this.hospitalForm.value;
@@ -113,25 +117,27 @@ export class HospitalProfileComponent {
           pincode: formValues.pincode,
         },
       };
-      
-      this.hospitalService.updateHospital(this.hospital.id,addHospitalRequest).subscribe({
-        next: (respone: Hospital) => {
-          this.hospital = respone;
-          this.toast.success({
-            detail: 'Hospital updated successfully',
-            summary: 'Reloading page to update details',
-            duration: 3000,
-          });
-        },
-        error: (error: HttpErrorResponse) => {
-          this.toast.error({
-            detail: 'Unable to update hospital',
-            summary: 'Please try again later',
-            duration: 3000,
-          });
-        },
-        complete: () => window.location.reload()
-      });
+
+      this.hospitalService
+        .updateHospital(this.hospital.id, addHospitalRequest)
+        .subscribe({
+          next: (respone: Hospital) => {
+            this.hospital = respone;
+            this.toast.success({
+              detail: 'Hospital updated successfully',
+              summary: 'Reloading page to update details',
+              duration: 3000,
+            });
+          },
+          error: (error: HttpErrorResponse) => {
+            this.toast.error({
+              detail: 'Unable to update hospital',
+              summary: 'Please try again later',
+              duration: 3000,
+            });
+          },
+          complete: () => window.location.reload(),
+        });
     } else {
       Object.keys(this.hospitalForm.controls).forEach((field) => {
         const control = this.hospitalForm.get(field);

@@ -1,0 +1,33 @@
+<div class="container mt-4">
+    <h1>Hospitals List</h1>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Contact No</th>
+                <th>Address</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let hospital of hospitals">
+                <td>{{ hospital.name }}</td>
+                <td>{{ hospital.hospitalType }}</td>
+                <td>{{ hospital.contactNo }}</td>
+                <td>{{ hospital.address.city }}, {{ hospital.address.state }} - {{ hospital.address.pincode }}</td>
+                <td>
+                    <span [ngClass]="{'text-success': hospital.verified, 'text-danger': !hospital.verified}">
+                        {{ hospital.verified ? 'Verified' : 'Unverified' }}
+                    </span>
+                </td>
+                <td>
+                    <button *ngIf="!hospital.verified" class="btn btn-primary" (click)="verifyHospital(hospital)">
+                        Verify
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

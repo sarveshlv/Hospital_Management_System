@@ -1,5 +1,0 @@
-package com.hms.bookingms.exception;
-
-public class PatientNotFoundException extends RuntimeException {
-
-}

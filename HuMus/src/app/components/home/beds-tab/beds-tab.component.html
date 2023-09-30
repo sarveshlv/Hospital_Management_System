@@ -1,88 +1,93 @@
-<div class="row">
-    <div class="col" *ngIf="isManager">
-        <select class="form-select" [(ngModel)]="selectedBedStatus" (ngModelChange)="applyFilter()">
-            <option value="" disabled selected>Filter by Bed Status</option>
-            <option value="ALL">ALL</option>
-            <option *ngFor="let status of bedStausOptions" [value]="status">{{ status }}</option>
-        </select>
-    </div>
-    <div class="col" *ngIf="isPatient">
-        <select class="form-select" [(ngModel)]="selectedAddressFilter" (ngModelChange)="applyLocationFilter()">
-            <option value="" disabled>Filter by location</option>
-            <option value="ALL">ALL</option>
-            <option value="PINCODE" selected>By Pincode</option>
-        </select>
-    </div>
-    <div class="col">
-        <select class="form-select" *ngIf="isPatient" [(ngModel)]="selectedHospital"
-            (ngModelChange)="applyHospitalFilter()">
-            <option value="" disabled selected>Filter by Hospital</option>
-            <option value="ALL">ALL</option>
-            <option *ngFor="let hospital of hospitals" [value]="hospital.id">{{ hospital.name }}</option>
-        </select>
-    </div>
-    <div class="col">
-        <select class="form-select" [(ngModel)]="selectedBedType" (ngModelChange)="applyFilter()">
-            <option value="" disabled selected>Filter by Bed Type</option>
+<div class="p-4">
+    <div class="row">
+        <div class="col" *ngIf="isManager || isAdmin">
+            <select class="form-select" [(ngModel)]="selectedBedStatus" (ngModelChange)="applyFilter()">
+                <option value="" disabled selected>Filter by Bed Status</option>
+                <option value="ALL">ALL</option>
+                <option *ngFor="let status of bedStausOptions" [value]="status">{{ status }}</option>
+            </select>
+        </div>
+        <div class="col" *ngIf="isPatient">
+            <select class="form-select" [(ngModel)]="selectedAddressFilter" (ngModelChange)="applyLocationFilter()">
+                <option value="" disabled>Filter by location</option>
+                <option value="ALL">ALL</option>
+                <option value="PINCODE" selected>By Pincode</option>
+            </select>
+        </div>
+        <div class="col">
+            <select class="form-select" *ngIf="isPatient || isAdmin" [(ngModel)]="selectedHospital"
+                (ngModelChange)="applyHospitalFilter()">
+                <option value="" disabled selected>Filter by Hospital</option>
+                <option value="ALL">ALL</option>
+                <option *ngFor="let hospital of hospitals" [value]="hospital.id">{{ hospital.name }}</option>
+            </select>
+        </div>
+        <div class="col">
+            <select class="form-select" [(ngModel)]="selectedBedType" (ngModelChange)="applyFilter()">
+                <option value="" disabled selected>Filter by Bed Type</option>
 
-            <option value="ALL">ALL</option>
-            <option *ngFor="let type of bedTypeOptions" [value]="type">{{ type }}</option>
-        </select>
+                <option value="ALL">ALL</option>
+                <option *ngFor="let type of bedTypeOptions" [value]="type">{{ type }}</option>
+            </select>
+        </div>
     </div>
-</div>
-<div class="container responsive-grid">
-    <app-bed-item-component *ngFor="let uniqueBed of uniqueBeds" [uniqueBed]="uniqueBed" [isManager]="isManager"
-        [isPatient]="isPatient" (addBedClicked)="onAddBedClicked(uniqueBed)"
-        (bookBedClicked)="onBookBedClicked(uniqueBed)">
-        ></app-bed-item-component>
-</div>
-<div class="overlay" *ngIf="addBedPopup">
-    <div class="overlay-content">
-        <div class="close" (click)="closePopup()">&times;</div>
-        <form (submit)="addBed()">
-            <div class="form-group">
-                <label for="bedType">Bed Type</label>
-                <select id="bedType" name="bedType" class="form-control" [(ngModel)]="addBedRequest.bedType" required>
-                    <option *ngFor="let bedType of bedTypeOptions" [value]="bedType">{{ bedType }}</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="costPerDay">Cost Per Day</label>
-                <input type="number" id="costPerDay" name="costPerDay" class="form-control"
-                    [(ngModel)]="addBedRequest.costPerDay" required min="0" max="100000" step="100" />
-                <div *ngIf="addBedRequest.costPerDay < 0" class="text-danger">*Cost cannot be negative.</div>
-            </div>
-            <button type="submit" class="btn btn-primary btn-add">Add</button>
-        </form>
+    <div class="container responsive-grid">
+        <app-bed-item-component *ngFor="let uniqueBed of uniqueBeds" [uniqueBed]="uniqueBed" [isManager]="isManager"
+            [isPatient]="isPatient" (addBedClicked)="onAddBedClicked(uniqueBed)"
+            (bookBedClicked)="onBookBedClicked(uniqueBed)">
+            ></app-bed-item-component>
     </div>
-</div>
-<div class="overlay" *ngIf="bookBedPopup">
-    <div class="overlay-content">
-        <div class="close" (click)="closePopup()">&times;</div>
-        <form [formGroup]="datePickerForm" (submit)="bookBed()">
-            <div class="form-group">
-                <div class="input-field"
-                    [class.error]="datePickerForm.controls['occupyDate'].dirty && datePickerForm.hasError('required','occupyDate')">
-                    <label for="startDate">Occupying Date</label>
-                    <input type="date" id="startDate" name="startDate" class="form-control" formControlName="occupyDate"
+    <div class="overlay" *ngIf="addBedPopup">
+        <div class="overlay-content">
+            <div class="close" (click)="closePopup()">&times;</div>
+            <form (submit)="addBed()">
+                <div class="form-group">
+                    <label for="bedType">Bed Type</label>
+                    <select id="bedType" name="bedType" class="form-control" [(ngModel)]="addBedRequest.bedType"
                         required>
-                    <small
-                        *ngIf="datePickerForm.controls['occupyDate'].dirty && datePickerForm.hasError('required','occupyDate')"
-                        class="text-danger">*Occupying date is required</small>
+                        <option value="" disabled selected>Select a bed type</option>
+                        <option *ngFor="let bedType of bedTypeOptions" [value]="bedType">{{ bedType }}</option>
+                    </select>
                 </div>
-            </div>
-            <div class="form-group">
-                <div class="input-field"
-                    [class.error]="datePickerForm.controls['releaseDate'].dirty && datePickerForm.hasError('required','releaseDate')">
-                    <label for="endDate">Releasing Date</label>
-                    <input type="date" id="endDate" name="endDate" class="form-control" formControlName="releaseDate"
-                        required>
-                    <small
-                        *ngIf="datePickerForm.controls['releaseDate'].dirty && datePickerForm.hasError('required','releaseDate')"
-                        class="text-danger">*Releasing date is required</small>
+                <div class="form-group">
+                    <label for="costPerDay">Cost Per Day</label>
+                    <input type="number" id="costPerDay" name="costPerDay" class="form-control"
+                        [(ngModel)]="addBedRequest.costPerDay" required min="0" max="100000" step="100"
+                        placeholder="Enter cost per day of bed" />
+                    <div *ngIf="addBedRequest.costPerDay < 0" class="text-danger">*Cost cannot be negative.</div>
                 </div>
-            </div>
-            <button type="submit" class="btn btn-primary btn-add">Book</button>
-        </form>
+                <button type="submit" class="btn btn-primary btn-add">Add</button>
+            </form>
+        </div>
+    </div>
+    <div class="overlay" *ngIf="bookBedPopup">
+        <div class="overlay-content">
+            <div class="close" (click)="closePopup()">&times;</div>
+            <form [formGroup]="datePickerForm" (submit)="bookBed()">
+                <div class="form-group">
+                    <div class="input-field"
+                        [class.error]="datePickerForm.controls['occupyDate'].dirty && datePickerForm.hasError('required','occupyDate')">
+                        <label for="startDate">Occupying Date</label>
+                        <input type="date" id="startDate" name="startDate" class="form-control"
+                            formControlName="occupyDate" required>
+                        <small
+                            *ngIf="datePickerForm.controls['occupyDate'].dirty && datePickerForm.hasError('required','occupyDate')"
+                            class="text-danger">*Occupying date is required</small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-field"
+                        [class.error]="datePickerForm.controls['releaseDate'].dirty && datePickerForm.hasError('required','releaseDate')">
+                        <label for="endDate">Releasing Date</label>
+                        <input type="date" id="endDate" name="endDate" class="form-control"
+                            formControlName="releaseDate" required>
+                        <small
+                            *ngIf="datePickerForm.controls['releaseDate'].dirty && datePickerForm.hasError('required','releaseDate')"
+                            class="text-danger">*Releasing date is required</small>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-add">Book</button>
+            </form>
+        </div>
     </div>
 </div>

@@ -1,5 +1,0 @@
-package com.hms.userms.repository;
-
-public interface UserRepository {
-
-}

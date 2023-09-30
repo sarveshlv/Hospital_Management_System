@@ -1,5 +1,0 @@
-package com.hms.patientms.repository;
-
-public interface PatientRepository extends MongoRepository<String, Patient>{
-
-}

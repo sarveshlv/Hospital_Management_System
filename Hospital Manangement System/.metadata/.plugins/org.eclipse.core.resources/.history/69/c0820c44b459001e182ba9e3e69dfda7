@@ -1,5 +1,0 @@
-package com.hms.authms.repository;
-
-public interface UserRepository {
-
-}

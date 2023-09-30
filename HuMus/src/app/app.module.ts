@@ -25,6 +25,7 @@ import { BedItemComponentComponent } from './components/home/beds-tab/bed-item-c
 import { ProfileComponent } from './components/home/profile/profile.component';
 import { PatientProfileComponent } from './components/home/profile/patient-profile/patient-profile.component';
 import { HospitalProfileComponent } from './components/home/profile/hospital-profile/hospital-profile.component';
+import { HospitalsTabComponent } from './components/home/dashboard/hospitals-tab/hospitals-tab.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { HospitalProfileComponent } from './components/home/profile/hospital-pro
     ProfileComponent,
     PatientProfileComponent,
     HospitalProfileComponent,
+    HospitalsTabComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,6 +1,6 @@
 <div class="card">
     <div class="card-body">
-        <h2>Add Patient Details</h2>
+        <h2>Your Details</h2>
         <form [formGroup]="patientForm" (ngSubmit)="updatePatient()">
             <!-- First Name -->
             <div class="form-group">
@@ -46,8 +46,7 @@
                     <option *ngFor="let state of indianStatesAndUTs" [value]="state">{{ state }}</option>
                 </select>
                 <div *ngIf="patientForm.get('state').invalid && patientForm.get('state').touched" class="text-danger">
-                    *State
-                    is required.</div>
+                    *State is required.</div>
             </div>
 
             <!-- City -->
@@ -55,8 +54,7 @@
                 <label for="city">City</label>
                 <input type="text" class="form-control" id="city" name="city" formControlName="city">
                 <div *ngIf="patientForm.get('city').invalid && patientForm.get('city').touched" class="text-danger">
-                    *City is
-                    required.</div>
+                    *City is required.</div>
             </div>
 
             <!-- Pincode -->

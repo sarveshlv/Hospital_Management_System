@@ -1,9 +1,0 @@
-package com.hms.billingms.exceptions;
-
-public class BookingNotCompletedExcaption extends Exception {
-
-	public BookingNotCompletedExcaption(String bookingStatus) {
-		super("Booking not completed. Current booking staus: " + bookingStatus);
-	}
-
-}

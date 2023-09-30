@@ -1,5 +1,0 @@
-package com.hms.billingms.controller;
-
-public class CentralExceptionHandler {
-
-}

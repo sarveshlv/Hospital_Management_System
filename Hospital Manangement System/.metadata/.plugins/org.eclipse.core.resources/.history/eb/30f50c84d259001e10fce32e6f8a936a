@@ -1,9 +1,0 @@
-package com.hms.authms.service;
-
-import com.hms.authms.dto.AddUserRequest;
-import com.hms.authms.dto.UserDetailsResponse;
-
-public interface AuthenticatonService {
-	UserDetailsResponse saveUser(AddUserRequest addUserRequest);
-
-}

@@ -1,7 +1,0 @@
-package com.hms.billingms.service;
-
-import com.hms.billingms.entities.Billing;
-
-public interface IBillingService {
-	Billing addBilling(String bookingId) throws BookingNotFoundExcaption;
-}

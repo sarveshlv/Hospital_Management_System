@@ -1,9 +1,0 @@
-package com.hms.bedms.repository;
-
-import org.springframework.data.mongodb.repository.MongoRepository;
-
-import com.hms.bedms.entities.Bed;
-
-public interface BedRepository extends MongoRepository<Bed, String>{
-
-}

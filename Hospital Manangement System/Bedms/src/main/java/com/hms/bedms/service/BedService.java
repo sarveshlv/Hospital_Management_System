@@ -64,6 +64,7 @@ public class BedService implements IBedService {
 
 	@Override
 	public List<Bed> getAllBeds() {
+		
 		return bedRepository.findAll();
 	}
 
@@ -75,8 +76,7 @@ public class BedService implements IBedService {
 			String hospitalId = hospital.getId();
 			beds.addAll(getBedsByHospitalId(hospitalId));
 		}
-//		return beds.stream().filter(bed -> bed.getBedStatus() == Bed.BedStatus.AVAILABLE).collect(Collectors.toUnmodifiableList());
-		return beds;
+		return beds.stream().filter(bed -> bed.getBedStatus() == Bed.BedStatus.AVAILABLE).collect(Collectors.toUnmodifiableList());
 	}
 
 	@Override

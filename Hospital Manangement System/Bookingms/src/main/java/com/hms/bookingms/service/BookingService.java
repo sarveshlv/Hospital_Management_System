@@ -122,9 +122,8 @@ public class BookingService implements IBookingService {
 	@Override
 	public Booking cancelBooking(String authorizationHeader, String bookingId) throws BookingNotFoundException, InvalidBookingRequest {
 		Booking booking = findBookingById(bookingId);
-		if (booking.getBookingStatus().equals(Booking.BookingStatus.APPROVED)) {
+		if (booking.getBookingStatus().equals(Booking.BookingStatus.REQUESTED)) {
 			booking.setBookingStatus(Booking.BookingStatus.CANCELLED);
-			bedServiceClient.unbookBed(authorizationHeader, booking.getBedId());
 			return bookingRepository.save(booking);
 		}
 		throw new InvalidBookingRequest(booking.getBookingStatus().toString());
@@ -144,5 +143,10 @@ public class BookingService implements IBookingService {
 	@Override
 	public List<Booking> getBookingByHospitalId(String hospitalId) throws HospitalNotFoundException {
 		return bookingRepository.findAllByHospitalId(hospitalId);
+	}
+	
+	@Override
+	public List<Booking> getAllBookings() {
+		return bookingRepository.findAll();
 	}
 }

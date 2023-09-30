@@ -46,13 +46,15 @@ const indianStatesAndUTs: string[] = [
 @Component({
   selector: 'app-patient-profile',
   templateUrl: './patient-profile.component.html',
-  styleUrls: ['./patient-profile.component.css']
+  styleUrls: ['./patient-profile.component.css'],
 })
 export class PatientProfileComponent {
+
+  indianStatesAndUTs: string[] = indianStatesAndUTs;
   patientForm: FormGroup;
+  
   userDetails: UserDetails;
   patient: Patient;
-  indianStatesAndUTs: string[] = indianStatesAndUTs;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -61,9 +63,11 @@ export class PatientProfileComponent {
     private toast: NgToastService
   ) {}
 
+  //fetching and populating hospital details
   ngOnInit() {
     this.userDetails = this.jwtStorageService.getUserDetails();
-    this.patientService.findPatientById(this.userDetails.referenceId)
+    this.patientService
+      .findPatientById(this.userDetails.referenceId)
       .subscribe({
         next: (response: Patient) => {
           this.patient = response;
@@ -102,6 +106,7 @@ export class PatientProfileComponent {
       });
   }
 
+  //click action to update patient details
   updatePatient() {
     if (this.patientForm.valid) {
       const formValues = this.patientForm.value;
@@ -119,24 +124,26 @@ export class PatientProfileComponent {
         },
       };
 
-      this.patientService.updatePatient(this.patient.id, addPatientRequest).subscribe({
-        next: (response: Patient) => {
-          this.patient = response;
-          this.toast.success({
-            detail: 'Patient updated successfully',
-            summary: 'Reloading page to update details',
-            duration: 3000,
-          });
-        },
-        error: (error: HttpErrorResponse) => {
-          this.toast.error({
-            detail: 'Unable to update patient. Please try again later',
-            summary: error.error.e,
-            duration: 3000,
-          });
-        },
-        complete: () => window.location.reload(),
-      });
+      this.patientService
+        .updatePatient(this.patient.id, addPatientRequest)
+        .subscribe({
+          next: (response: Patient) => {
+            this.patient = response;
+            this.toast.success({
+              detail: 'Patient updated successfully',
+              summary: 'Reloading page to update details',
+              duration: 3000,
+            });
+          },
+          error: (error: HttpErrorResponse) => {
+            this.toast.error({
+              detail: 'Unable to update patient. Please try again later',
+              summary: error.error.e,
+              duration: 3000,
+            });
+          },
+          complete: () => window.location.reload(),
+        });
     } else {
       Object.keys(this.patientForm.controls).forEach((field) => {
         const control = this.patientForm.get(field);

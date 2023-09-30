@@ -13,20 +13,19 @@ import { JwtStorageService } from 'src/app/services/jwt/jwt.storage.service';
   styleUrls: ['./bookings-tab.component.css'],
 })
 export class BookingsTabComponent implements OnInit {
-  
   isManager = false;
   isPatient = false;
-  
+  isAdmin = false;
+
   userDetails: UserDetails;
 
-  idx = -1;  
+  idx = -1;
   bookings: Booking[] = [];
   filteredBookings: Booking[] = [];
 
   selectedFilter: BookingStatus | string = 'ALL';
   selectedBedType: BedType | string = 'ALL';
 
-  
   constructor(
     private jwtStorageService: JwtStorageService,
     private bookingsService: BookingService,
@@ -37,10 +36,12 @@ export class BookingsTabComponent implements OnInit {
     this.userDetails = this.jwtStorageService.getUserDetails();
     this.isManager = this.userDetails.role === 'MANAGER';
     this.isPatient = this.userDetails.role === 'USER';
+    this.isAdmin = this.userDetails.role === 'ADMIN';
 
     this.loadBookings();
   }
 
+  //loading bookings based on profiles
   private loadBookings(): void {
     let bookingsObservable;
 
@@ -52,12 +53,13 @@ export class BookingsTabComponent implements OnInit {
       bookingsObservable = this.bookingsService.getBookingsByPatientId(
         this.userDetails.referenceId
       );
+    } else if (this.isAdmin) {
+      bookingsObservable = this.bookingsService.findAll();
     }
 
     if (bookingsObservable) {
       bookingsObservable.subscribe({
         next: (response: Booking[]) => {
-          console.log('Fetched bookings:', response);
           this.toast.info({
             detail: 'Bookings fetched',
             summary: `Retrieved ${response.length} bookings`,
@@ -71,7 +73,7 @@ export class BookingsTabComponent implements OnInit {
             detail: `Unable to fetch ${
               this.isManager ? 'hospital' : 'patient'
             } bookings`,
-            summary: error.error.toString(),
+            summary: error.error.error,
             duration: 3000,
           });
         },
@@ -130,7 +132,7 @@ export class BookingsTabComponent implements OnInit {
         error: (error: HttpErrorResponse) =>
           this.toast.error({
             detail: 'Unable to approve booking',
-            summary: error.error.toString(),
+            summary: error.error.error,
             duration: 3000,
           }),
       });
@@ -145,7 +147,7 @@ export class BookingsTabComponent implements OnInit {
         error: (error: HttpErrorResponse) =>
           this.toast.error({
             detail: 'Unable to cancel booking',
-            summary: error.error.toString(),
+            summary: error.error.error,
             duration: 3000,
           }),
       });
@@ -158,7 +160,7 @@ export class BookingsTabComponent implements OnInit {
       error: (error: HttpErrorResponse) =>
         this.toast.error({
           detail: 'Unable to reject booking',
-          summary: error.error.toString(),
+          summary: error.error.error,
           duration: 3000,
         }),
     });

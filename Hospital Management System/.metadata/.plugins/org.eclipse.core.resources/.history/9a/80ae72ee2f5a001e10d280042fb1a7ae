@@ -1,8 +1,0 @@
-package com.hms.billingms.dto;
-
-import lombok.Data;
-
-@Data
-public class BillingRequest {
-	private String bookingId;
-}

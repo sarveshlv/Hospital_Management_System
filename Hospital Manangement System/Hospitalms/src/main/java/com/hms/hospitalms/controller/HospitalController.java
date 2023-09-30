@@ -22,7 +22,6 @@ import jakarta.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping("/api/hospitals")
-@Validated
 public class HospitalController {
 
 	@Autowired
@@ -59,7 +58,7 @@ public class HospitalController {
 
 	@GetMapping("/nearby/{pincode}")
 	public List<Hospital> getNearbyHospitals(
-			@NotNull(message = "Pincode is required") @Digits(integer = 6, fraction = 0, message = "Pincode must be a 6-digit number") @PathVariable Long pincode) {
+			@PathVariable Long pincode) {
 		return hospitalService.getNearbyHospitals(pincode);
 	}
 }

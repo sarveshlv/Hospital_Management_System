@@ -1,5 +1,0 @@
-package com.hms.billingms.exceptions;
-
-public class BookingNotFoundException extends RuntimeException {
-
-}

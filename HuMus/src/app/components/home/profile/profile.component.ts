@@ -18,25 +18,28 @@ import { Router } from '@angular/router';
   styleUrls: ['./profile.component.css'],
 })
 export class ProfileComponent {
-  userForm: FormGroup;
-  userDetails: UserDetails;
+
   isManager: boolean = false;
   isPatient: boolean = false;
 
+  userForm: FormGroup;
+  
+  userDetails: UserDetails;
+    
   constructor(
     private formBuilder: FormBuilder,
     private jwtStorageService: JwtStorageService,
     private userService: UserService,
     private toast: NgToastService
   ) {}
+
+
+  //setting up and populating user details
   ngOnInit() {
     this.userDetails = this.jwtStorageService.getUserDetails();
-    if(this.userDetails.role === 'MANAGER'){
-      this.isManager = true;
-    }
-    if(this.userDetails.role === 'USER'){
-      this.isPatient = true;
-    }
+    this.isManager = this.userDetails.role === 'MANAGER';
+    this.isPatient = this.userDetails.role === 'USER';
+    
     this.userForm = this.formBuilder.group({
       firstName: [this.userDetails.firstName, Validators.required],
       lastName: [this.userDetails.lastName, Validators.required],
@@ -52,6 +55,7 @@ export class ProfileComponent {
     });
   }
 
+  //click action to update user details
   updateUser() {
     if (this.userForm.valid) {
       if (!this.passwordsMatch()) {
@@ -70,20 +74,19 @@ export class ProfileComponent {
         next: (response: UserDetails) => {
           this.toast.success({
             detail: `Update user with details`,
-            summary:
-              'Reloading page to update details',
+            summary: 'Reloading page to update details',
             duration: 3000,
           });
           this.userDetails = response;
         },
         error: (error: HttpErrorResponse) => {
           this.toast.error({
-            detail: 'Unable to update user details',
-            summary: 'Plz try again later. Redirecting to user page',
+            detail: 'Unable to update user details. Plz try again later. Redirecting to user page',
+            summary: error.error.error,
             duration: 3000,
           });
         },
-        complete: () => window.location.reload()
+        complete: () => window.location.reload(),
       });
     } else {
       Object.keys(this.userForm.controls).forEach((field) => {
@@ -95,6 +98,7 @@ export class ProfileComponent {
     }
   }
 
+  //utility method to check if passwords match
   passwordsMatch(): boolean {
     const password = this.userForm.get('password').value;
     const confirmPassword = this.userForm.get('confirmPassword').value;

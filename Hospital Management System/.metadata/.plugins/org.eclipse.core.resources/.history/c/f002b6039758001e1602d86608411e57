@@ -1,7 +1,0 @@
-package com.hms.bookingms.service;
-
-import com.hms.bookingms.entities.Booking;
-
-public interface IBookingService {
-	Booking addBooking(AddBookingRequest addBookingRequest) throws PatientNotFoundException
-}

@@ -1,5 +1,0 @@
-package com.hms.hospitalms.config;
-
-public class RestTemplateConfig {
-
-}

@@ -34,6 +34,10 @@ public class BookingController {
 		return bookingService.findBookingById(bookingId);
 	}
 
+	@GetMapping("/findAll")
+	public List<Booking> getAllBookings(){
+		return bookingService.getAllBookings();
+	}
 	@GetMapping("/findByPatientId/{patientId}")
 	public List<Booking> getBookingsByPatientId(@PathVariable String patientId) throws PatientNotFoundException {
 		return bookingService.getBookingByPatientId(patientId);

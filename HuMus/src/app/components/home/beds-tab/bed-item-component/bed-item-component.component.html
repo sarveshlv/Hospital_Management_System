@@ -1,48 +1,51 @@
-<mat-card class="bed-card">
-  <mat-card-header class="row">
-    <div class="col-md-2">
-      <div class="header-content">
-        <div class="icon-container header-icon" [class.example-header-image]="hospital?.verified"
-          [class.cross-image]="!hospital?.verified" >
-          <i class="fa" [ngClass]="{'fa-check-circle': hospital?.verified, 'fa-times-circle': !hospital?.verified}" ></i>
+<div class="bed-card"><mat-card>
+    <mat-card-header class="row">
+      <div class="col-md-2">
+        <div class="header-content">
+          <div class="icon-container header-icon" [class.example-header-image]="hospital?.verified"
+            [class.cross-image]="!hospital?.verified">
+            <i class="fa"
+              [ngClass]="{'fa-check-circle': hospital?.verified, 'fa-times-circle': !hospital?.verified}"></i>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="col-md-8 text-center">
-      <div class="header-content">
-        <div class="title-container">
-          <mat-card-title class="hospital-name">{{ hospital?.name }}</mat-card-title>
-          <mat-card-subtitle class="hospital-type">{{ '(' + hospital?.hospitalType + ')' }}</mat-card-subtitle>
+      <div class="col-md-8 text-center">
+        <div class="header-content">
+          <div class="title-container">
+            <mat-card-title class="hospital-name">{{ hospital?.name }}</mat-card-title>
+            <mat-card-subtitle class="hospital-type">{{ '(' + hospital?.hospitalType + ')' }}</mat-card-subtitle>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="col-md-2">
-      <div class="header-content">
-        <div class="counter" [ngClass]="{
+      <div class="col-md-2">
+        <div class="header-content">
+          <div class="counter" [ngClass]="{
           'counter-available': uniqueBed.bed.bedStatus === 'AVAILABLE',
           'counter-booked': uniqueBed.bed.bedStatus === 'BOOKED',
           'counter-cancelled': uniqueBed.bed.bedStatus === 'CANCELLED',
           'counter-completed': uniqueBed.bed.bedStatus === 'COMPLETED'
-        }" >{{ 'x' + uniqueBed.count }}</div>
+        }">{{ 'x' + uniqueBed.count }}</div>
+        </div>
       </div>
-    </div>
-  </mat-card-header>
-  <mat-card-content class="bed-content">
-    <div class="hospital-address">
-      <p><strong>Address</strong> - {{ hospital?.address.city }}, {{ hospital?.address.state }} - {{ hospital?.address.pincode }}</p>
-    </div>
-    <div class="contact-number">
-      <p><strong>Contact No.</strong> - {{ hospital?.contactNo }}</p>
-    </div>
-  </mat-card-content>
-  <mat-card-content class="bed-content">
-    <div class="bed-details-row">
-      <p><strong>Type</strong> - {{ uniqueBed.bed.bedType }}</p>
-      <p><strong>Cost Per Day</strong> - {{ uniqueBed.bed.costPerDay }} Rs.</p>
-    </div>
-  </mat-card-content>
-  <mat-card-actions class="button-container d-flex justify-content-end">
-    <button class="book-button" *ngIf="isManager" (click)="addBed(uniqueBed)">Add bed</button>
-    <button class="book-button" *ngIf="isPatient" (click)="bookBed(uniqueBed)">Book bed</button>
-  </mat-card-actions>
-</mat-card>
+    </mat-card-header>
+    <mat-card-content class="bed-content">
+      <div class="hospital-address">
+        <p><strong>Address</strong> - {{ hospital?.address.city }}, {{ hospital?.address.state }} - {{
+          hospital?.address.pincode }}</p>
+      </div>
+      <div class="contact-number">
+        <p><strong>Contact No.</strong> - {{ hospital?.contactNo }}</p>
+      </div>
+    </mat-card-content>
+    <mat-card-content class="bed-content">
+      <div class="bed-details-row">
+        <p><strong>Type</strong> - {{ uniqueBed.bed.bedType }}</p>
+        <p><strong>Cost Per Day</strong> - {{ uniqueBed.bed.costPerDay }} Rs.</p>
+      </div>
+    </mat-card-content>
+    <mat-card-actions class="button-container d-flex justify-content-end">
+      <button class="book-button" *ngIf="isManager" (click)="addBed(uniqueBed)">Add bed</button>
+      <button class="book-button" *ngIf="isPatient" (click)="bookBed(uniqueBed)">Book bed</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

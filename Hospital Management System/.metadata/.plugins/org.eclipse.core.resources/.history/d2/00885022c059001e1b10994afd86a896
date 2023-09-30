@@ -1,5 +1,0 @@
-package com.hms.authms.config;
-
-public class CustomUserDetails {
-
-}

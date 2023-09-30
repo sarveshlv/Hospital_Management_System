@@ -21,6 +21,9 @@ export class BookingService {
     return this.httpClient.get<Booking>(`${this.baseUrl}/findById/${bookingId}`);
   }
 
+  findAll(): Observable<Booking[]> {
+    return this.httpClient.get<Booking[]>(`${this.baseUrl}/findAll`);
+  }
   getBookingsByPatientId(patientId: string): Observable<Booking[]> {
     return this.httpClient.get<Booking[]>(`${this.baseUrl}/findByPatientId/${patientId}`);
   }

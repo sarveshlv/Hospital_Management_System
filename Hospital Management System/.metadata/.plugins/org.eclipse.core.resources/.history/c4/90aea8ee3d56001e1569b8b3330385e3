@@ -1,5 +1,0 @@
-package com.hms.bedms.controller;
-
-public class CentralExceptionHandler {
-
-}
