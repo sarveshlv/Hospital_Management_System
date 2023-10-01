@@ -11,6 +11,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 
 @Component
+@SuppressWarnings("deprecation")
 public class JwtUtility {
 
 	@Value("${jwtSecret}")

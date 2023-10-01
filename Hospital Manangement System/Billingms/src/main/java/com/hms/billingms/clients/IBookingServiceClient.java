@@ -10,6 +10,6 @@ import com.hms.billingms.dto.Booking;
 @FeignClient(name = "BOOKINGMS", url = "http://localhost:8080/api/bookings")
 public interface IBookingServiceClient {
 	
-	@GetMapping("/findById/{bookingId}")
+	@GetMapping("/complete/{bookingId}")
 	Booking completeBooking(@RequestHeader("Authorization") String authorizationHValue, @PathVariable String bookingId);
 }

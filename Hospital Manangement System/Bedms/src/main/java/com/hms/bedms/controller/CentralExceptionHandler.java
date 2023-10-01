@@ -1,12 +1,3 @@
-/**
- * This class defines a central exception handler for handling various exceptions that may occur during
- * the execution of RESTful API endpoints in the Bed Management System (BedMS) controllers.
- * It includes specific exception handlers for {@link HospitalNotFoundException}, {@link BedNotFoundException},
- * and validation errors ({@link MethodArgumentNotValidException}).
- * The exception handlers return appropriate HTTP responses with error details.
- *
- * @author prateek
- */
 package com.hms.bedms.controller;
 
 import java.util.Date;
@@ -25,19 +16,9 @@ import com.hms.bedms.exceptions.HospitalNotFoundException;
 
 import feign.FeignException;
 
-/**
- * The {@code CentralExceptionHandler} class provides centralized exception
- * handling for the BedMS controllers.
- */
 @RestControllerAdvice
 public class CentralExceptionHandler {
-	/**
-	 * Handles the {@link HospitalNotFoundException} by returning an HTTP response
-	 * with a NOT_FOUND status code and error message.
-	 *
-	 * @param ex The exception indicating that a hospital was not found.
-	 * @return An HTTP response entity with error details.
-	 */
+	
 	@ExceptionHandler(HospitalNotFoundException.class)
 	public ResponseEntity<Object> handleHospitalNotFoundException(HospitalNotFoundException ex) {
 		Map<String, String> errors = new HashMap<>();
@@ -88,7 +69,7 @@ public class CentralExceptionHandler {
 	@ExceptionHandler(RuntimeException.class)
 	public ResponseEntity<Object> handleValidationErrors(RuntimeException ex) {
 		Map<String, String> errors = new HashMap<>();
-		errors.put(ex.getClass().getName(), ex.getMessage());
+		errors.put("error", ex.getMessage());
 		return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
 	}
 }

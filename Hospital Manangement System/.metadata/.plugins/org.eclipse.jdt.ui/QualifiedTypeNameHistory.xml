@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-    <fullyQualifiedTypeName name="com.hms.authms.dto.JwtTokenResponse"/>
-    <fullyQualifiedTypeName name="lombok.ToString"/>
-    <fullyQualifiedTypeName name="org.springframework.security.core.context.SecurityContextHolder"/>
-    <fullyQualifiedTypeName name="org.springframework.data.mongodb.repository.MongoRepository"/>
-    <fullyQualifiedTypeName name="com.hms.userms.repository.UserRepository"/>
-    <fullyQualifiedTypeName name="com.hms.userms.entity.User"/>
-    <fullyQualifiedTypeName name="com.hms.userms.dto.UpdateUserRequest"/>
-    <fullyQualifiedTypeName name="com.hms.userms.service.UserService"/>
     <fullyQualifiedTypeName name="com.hms.userms.dto.AddUserRequest"/>
     <fullyQualifiedTypeName name="com.hms.userms.dto.UserDetails"/>
     <fullyQualifiedTypeName name="org.springframework.cloud.client.discovery.EnableDiscoveryClient"/>
@@ -35,7 +27,6 @@
     <fullyQualifiedTypeName name="org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration"/>
     <fullyQualifiedTypeName name="org.springframework.cloud.gateway.filter.cors.CorsGatewayFilterApplicationListener"/>
     <fullyQualifiedTypeName name="org.springframework.web.cors.CorsConfigurationSource"/>
-    <fullyQualifiedTypeName name="org.springframework.context.annotation.Bean"/>
     <fullyQualifiedTypeName name="java.lang.Override"/>
     <fullyQualifiedTypeName name="org.springframework.web.reactive.config.CorsRegistry"/>
     <fullyQualifiedTypeName name="org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration"/>
@@ -60,4 +51,13 @@
     <fullyQualifiedTypeName name="java.util.stream.Collectors"/>
     <fullyQualifiedTypeName name="com.hms.hospitalms.entities.Hospital"/>
     <fullyQualifiedTypeName name="com.hms.hospitalms.entities.Hospital.Address"/>
+    <fullyQualifiedTypeName name="com.hms.billingms.exceptions.BillingNotFoundException"/>
+    <fullyQualifiedTypeName name="org.springframework.context.annotation.Bean"/>
+    <fullyQualifiedTypeName name="org.springframework.amqp.rabbit.core.RabbitTemplate"/>
+    <fullyQualifiedTypeName name="org.springframework.amqp.rabbit.connection.ConnectionFactory"/>
+    <fullyQualifiedTypeName name="org.springframework.amqp.core.DirectExchange"/>
+    <fullyQualifiedTypeName name="org.springframework.amqp.core.Binding"/>
+    <fullyQualifiedTypeName name="org.springframework.amqp.core.BindingBuilder"/>
+    <fullyQualifiedTypeName name="org.springframework.amqp.rabbit.annotation.EnableRabbit"/>
+    <fullyQualifiedTypeName name="java.lang.SuppressWarnings"/>
 </qualifiedTypeNameHistroy>

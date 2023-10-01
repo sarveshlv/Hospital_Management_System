@@ -21,12 +21,10 @@ public class UserDetailsImpl implements UserDetails {
     private String password;
 	private Collection<? extends GrantedAuthority> authorities;
 
-
     public UserDetailsImpl(User user) {
         this.email = user.getEmail();
         this.password = user.getPassword();
 		this.authorities = List.of(new SimpleGrantedAuthority(user.getRole()));
-
     }
 
     @Override

@@ -38,10 +38,15 @@ public class BillingController {
 	public Billing getBillingById(@PathVariable String billingId) throws BillingNotFoundException {
 		return billingService.findById(billingId);
 	}
+	
+	@GetMapping("/findByBookingId/{bookingId}")
+	public Billing getBillingByBookingId(@PathVariable String bookingId){
+		return billingService.findByBillingId(bookingId);
+	}
 
-	@PostMapping("/pay")
-	public String payment(@RequestBody BillingRequest billingRequest) throws PayPalRESTException {
-		Billing billing = billingService.findById(billingRequest.getBookingId());
+	@GetMapping("/pay/{billingId}")
+	public String payment(@PathVariable String billingId) throws PayPalRESTException {
+		Billing billing = billingService.findById(billingId);
 		if (billing.getPaymentStatus() == Billing.PaymentStatus.COMPLETED) {
 			throw new RuntimeException();
 		}

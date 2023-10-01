@@ -11,7 +11,7 @@ import { BedsTabComponent } from './components/home/beds-tab/beds-tab.component'
 import { ProfileComponent } from './components/home/profile/profile.component';
 
 const routes: Routes = [
-  { path: '', component: DashboardComponent },
+  { path: '', component: LoginComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   {

@@ -13,7 +13,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.hms.authms.config.UserDetailsImpl;
 import com.hms.authms.dto.LoginRequest;
 import com.hms.authms.entity.User;
 import com.hms.authms.repository.UserRepository;
@@ -25,11 +24,9 @@ import com.hms.authms.service.IAuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/auth")
-@Slf4j
 public class AuthController {
 
 	@Autowired
@@ -42,19 +39,20 @@ public class AuthController {
 	private UserRepository userRepository;
 
 	@PostMapping("/login")
-	public ResponseEntity<UserDetailsTokenResponse> getToken(HttpServletRequest request, @Valid @RequestBody LoginRequest loginRequest) {
+	public ResponseEntity<UserDetailsTokenResponse> getToken(HttpServletRequest request,
+			@Valid @RequestBody LoginRequest loginRequest) {
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
 				loginRequest.getPassword());
 
 		// Authenticate the user
 		Authentication authentication = authenticationManager.authenticate(token);
 		SecurityContext securityContext = SecurityContextHolder.getContext();
-        securityContext.setAuthentication(authentication);
-		
-        HttpSession session = request.getSession(true);
-        session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+		securityContext.setAuthentication(authentication);
 
-        String email = authentication.getName().toString();
+		HttpSession session = request.getSession(true);
+		session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+
+		String email = authentication.getName().toString();
 		Optional<User> user = userRepository.findByEmail(email);
 		Collection<? extends GrantedAuthority> authorites = authentication.getAuthorities();
 		String jwtToken = authenticationService.generateToken(email, authorites);
@@ -64,26 +62,21 @@ public class AuthController {
 	}
 
 	@GetMapping("/validate")
-    public String validateToken(@RequestParam("token") String token, HttpServletRequest request) {
-        HttpSession session = request.getSession();
+	public boolean validateToken(@RequestParam("token") String token, HttpServletRequest request) {
+		HttpSession session = request.getSession();
 
-        // Get the SecurityContext from the session
-        SecurityContext securityContext = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
+		// Get the SecurityContext from the session
+		SecurityContext securityContext = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
 
-        if (securityContext != null) {
-            Authentication authentication = securityContext.getAuthentication();
-            String email = authentication.getName();
-
-            if (authenticationService.validateToken(token, email)) {
-                return "Token is valid";
-            }
-        }
-        
-        return "Token is invalid";
-    }
+		if (securityContext != null) {
+			Authentication authentication = securityContext.getAuthentication();
+			String email = authentication.getName();
+			return authenticationService.validateToken(token, email);
+		}
+		return false;
+	}
 
 	public static UserDetails getUserDetailsResponse(User user) {
-
 		UserDetails userDetails = new UserDetails();
 		userDetails.setId(user.getId());
 		userDetails.setFirstName(user.getFirstName());

@@ -53,7 +53,7 @@ public class CentralExceptionHandler {
 	@ExceptionHandler(RuntimeException.class)
 	public ResponseEntity<Object> handleValidationErrors(RuntimeException ex) {
 		Map<String, String> errors = new HashMap<>();
-		errors.put(ex.getClass().getName(), ex.getMessage());
+		errors.put("error", ex.getMessage());
 		return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
 	}
 }

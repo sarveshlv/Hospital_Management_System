@@ -11,5 +11,4 @@ public class AuthmsApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AuthmsApplication.class, args);
 	}
-
 }

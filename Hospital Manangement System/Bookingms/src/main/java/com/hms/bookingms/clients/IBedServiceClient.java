@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.hms.bookingms.dto.Bed;
-import com.hms.bookingms.entities.Booking.BedType;
 
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -26,5 +25,5 @@ public interface IBedServiceClient {
     List<Bed> findBedsByHospitalId(@RequestHeader("Authorization") String authorizationHValue, @PathVariable("hospitalId") String hospitalId);
     
     @PutMapping("/completeBed/{bedId}")
-    ResponseEntity<Bed> completeBooking(@RequestHeader("Authorization") String authorizationHeader,@PathVariable("hospitalId") String bedId);
+    ResponseEntity<Bed> completeBooking(@RequestHeader("Authorization") String authorizationHeader,@PathVariable("bedId") String bedId);
 }

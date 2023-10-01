@@ -21,7 +21,11 @@
             <th class="text-center">Release Date</th>
             <th class="text-center">Booking Status</th>
 
+            <th class="text-center col">Bill</th>
+            <th class="text-center col">Payment Staus</th>
+
             <th *ngIf="isManager || isPatient" class="text-center">Actions</th>
+
 
         </tr>
     </thead>
@@ -68,14 +72,31 @@
                 <i class="fa  fa-question-circle text-warning"></i> {{BookingStatus.REQUESTED}}
             </ng-container>
         </td>
-        <td *ngIf="isManager && booking.bookingStatus === BookingStatus.REQUESTED" class="text-center">
+
+
+        <td *ngIf="booking.bookingStatus === BookingStatus.COMPLETED" class="text-center col">{{ billing.billAmount }}</td>
+        <td *ngIf="booking.bookingStatus === BookingStatus.COMPLETED"
+            [ngClass]="{'text-center': true, 'col': true, 'text-warning': billing.paymentStatus === PaymentStaus.PENDING, 'text-success': billing.paymentStatus === PaymentStaus.PENDING}">
+            {{ billing.paymentStatus }}</td>
+
+        <td *ngIf="booking.bookingStatus !== BookingStatus.COMPLETED" class="text-center col"> - </td>
+        <td *ngIf="booking.bookingStatus !== BookingStatus.COMPLETED" class="text-center col"> - </td>
+
+        <!-- Action buttons -->
+        <td *ngIf="shouldDisplayApproval(booking)" class="text-center">
             <button class="btn btn-success text-dark" (click)="onApproveClick(booking.id)">Approve</button>
             <button class="btn btn-danger text-dark" (click)="onRejectClick(booking.id)">Reject</button>
         </td>
-        <td *ngIf="isPatient && booking.bookingStatus === BookingStatus.REQUESTED" class="text-center">
-            <button class="btn btn-warning text-dark" (click)="onCancelClick(booking.id)">Cancel</button>
+    
+        <td *ngIf="shouldDisplayPatientActions(booking)" class="text-center">
+            <button *ngIf="booking.bookingStatus === BookingStatus.REQUESTED" class="btn btn-warning text-dark"
+                (click)="onCancelClick(booking.id)">Cancel</button>
+            <button *ngIf="booking.bookingStatus === BookingStatus.APPROVED" class="btn btn-success text-dark"
+                (click)="onCompleteClick(booking)">Complete</button>
+            <button *ngIf="shouldDisplayPaymentButton(booking)" class="btn btn-success text-dark"
+                (click)="payBill()">Pay</button>
         </td>
-        <td *ngIf="!isAdmin && booking.bookingStatus !== BookingStatus.REQUESTED" class="text-center">No Action</td>
-
-      </tr>
+    
+        <td *ngIf="shouldDisplayNoAction(booking)" class="text-center">No Action</td>    
+    </tr>
 </table>

@@ -1,23 +1,18 @@
 package com.hms.authms.jwt;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
 import java.util.Collection;
 import java.util.Date;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
-@Slf4j
+@SuppressWarnings("deprecation")
 public class JwtUtility {
 
 	@Value("${jwtSecret}")
@@ -28,8 +23,7 @@ public class JwtUtility {
 
 	public Boolean validateToken(final String token, String email) {
       String emailFromToken = getUsernameFromToken(token);
-      log.info(emailFromToken);
-      Claims claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+      Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
       return (emailFromToken.equals(email) && !isTokenExpired(token));
 	}
 

@@ -1,7 +1,6 @@
 package com.hms.hospitalms.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,9 +26,7 @@ public class HospitalService implements IHospitalService {
 		hospital.setContactNo(addHospitalRequest.getContactNo());
 		hospital.setVerified(false);
 		hospital = hospitalRepository.save(hospital);
-
 		return hospital;
-
 	}
 
 	@Override

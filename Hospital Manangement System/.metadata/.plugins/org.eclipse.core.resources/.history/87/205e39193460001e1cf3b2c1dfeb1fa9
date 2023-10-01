@@ -1,0 +1,8 @@
+package com.hms.bedms.controller;
+
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+
+@WebMvcTest(BedController.class)
+public class BedControllerTest {
+
+}

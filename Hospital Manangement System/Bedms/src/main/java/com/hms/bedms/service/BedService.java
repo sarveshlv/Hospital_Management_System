@@ -113,7 +113,7 @@ public class BedService implements IBedService {
 	@Override
 	public Bed makeBedAvailable(String id) throws BedNotFoundException, BedStatusInvalidException {
 		Bed bed = findBedById(id);
-		if (bed.getBedStatus() != BedStatus.CANCELLED) {
+		if (bed.getBedStatus() != BedStatus.COMPLETED) {
 			throw new BedStatusInvalidException(bed.getBedStatus().toString());
 		}
 		bed.setBedStatus(BedStatus.AVAILABLE);

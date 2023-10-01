@@ -1,0 +1,27 @@
+#================================
+#Spring application Configuration
+#================================
+server.port = 8400
+spring.application.name = bookingms
+
+
+#======================
+#Mongo db configuration
+#======================
+spring.data.mongodb.host=localhost
+spring.data.mongodb.port=27017
+spring.data.mongodb.database=bookingsdb
+
+
+#======================
+#Rabit MQ configuration
+#======================
+spring.rabbitmq.host=localhost
+spring.rabbitmq.port=5672
+spring.rabbitmq.username=guest
+spring.rabbitmq.password=guest
+
+#==========================
+#Eureka client registeation
+#==========================
+eureka.client.service-url.defaultZone=http://localhost:8761/eureka/

@@ -1,0 +1,58 @@
+package com.hms.bedms.repository;
+
+import com.hms.bedms.entities.Bed;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import java.util.List;
+
+//@DataMongoTest
+public class IBedRepositoryTest {
+
+	@Autowired
+	private IBedRepository bedRepository;
+
+	@Test
+	public void testFindByHospitalId() {
+		// Create and save beds with a specific hospitalId
+		Bed bed1 = createBed("hospital123", Bed.BedType.USUAL_BED);
+		Bed bed2 = createBed("hospital123", Bed.BedType.ICU_BED);
+		Bed bed3 = createBed("hospital456", Bed.BedType.USUAL_BED);
+
+		// Retrieve beds by hospitalId
+		List<Bed> beds = bedRepository.findByHospitalId("hospital123");
+
+		assertEquals(2, beds.size());
+		assertTrue(beds.contains(bed1));
+		assertTrue(beds.contains(bed2));
+		assertFalse(beds.contains(bed3));
+	}
+
+	@Test
+	public void testFindByBedType() {
+		// Create and save beds with a specific bedType
+		Bed bed1 = createBed("hospital123", Bed.BedType.USUAL_BED);
+		Bed bed2 = createBed("hospital456", Bed.BedType.USUAL_BED);
+		Bed bed3 = createBed("hospital789", Bed.BedType.ICU_BED);
+
+		// Retrieve beds by bedType
+		List<Bed> usualBeds = bedRepository.findByBedType(Bed.BedType.USUAL_BED.toString());
+
+		assertEquals(2, usualBeds.size());
+		assertTrue(usualBeds.contains(bed1));
+		assertTrue(usualBeds.contains(bed2));
+		assertFalse(usualBeds.contains(bed3));
+	}
+
+	// Helper method to create and save a Bed entity
+	private Bed createBed(String hospitalId, Bed.BedType bedType) {
+		Bed bed = new Bed();
+		bed.setHospitalId(hospitalId);
+		bed.setBedType(bedType);
+		bed.setBedStatus(Bed.BedStatus.AVAILABLE);
+		bed.setCostPerDay(100.0);
+
+		return bedRepository.save(bed);
+	}
+}

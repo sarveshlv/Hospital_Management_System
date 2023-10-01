@@ -8,6 +8,8 @@ import { HospitalService } from 'src/app/services/hospital.service';
 import { PatientService } from 'src/app/services/patient.service';
 import { BookingStatus } from 'src/app/models/booking.requests';
 import { BillingService } from 'src/app/services/billing.service';
+import { Billing, PaymentStatus } from 'src/app/models/billing.requests';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-booking-item',
@@ -23,11 +25,13 @@ export class BookingItemComponent implements OnInit {
   @Output() rejectClick = new EventEmitter<string>();
   @Output() approveClick = new EventEmitter<string>();
   @Output() cancelClick = new EventEmitter<string>();
-  @Output() bookingSorted = new EventEmitter<Booking[]>();
+  @Output() completeClick = new EventEmitter<Booking>();
 
   BookingStatus = BookingStatus;
+  PaymentStaus = PaymentStatus;
   patient: Patient;
   hospital: Hospital;
+  billing: Billing;
   selectedColumn: string;
   selectedOrder: string;
 
@@ -39,20 +43,41 @@ export class BookingItemComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (this.booking.bookingStatus === BookingStatus.COMPLETED) {
+      this.billingService.findByBookingId(this.booking.id).subscribe({
+        next: (response: Billing) => {
+          console.log(response);
+          this.billing = response;
+        },
+        error: (error: HttpErrorResponse) =>
+          this.toast.error({
+            detail: 'Unable to find billing details',
+            summary: error.error.error,
+            duration: 3000,
+          }),
+      });
+    }
+
     if (this.isManager || this.isAdmin)
       this.fetchPatientDetails(this.booking.patientId);
 
     if (this.isPatient || this.isAdmin)
       this.fetchHospitalDetails(this.booking.hospitalId);
 
-    if(this.booking.bookingStatus === BookingStatus.REQUESTED && this.booking.occupyDate < new Date()){
+    if (
+      this.booking.bookingStatus === BookingStatus.REQUESTED &&
+      this.booking.occupyDate < new Date()
+    ) {
       //auto reject booking as booking date has already passed
       this.onRejectClick(this.hospital.id);
     }
 
-    if(this.booking.bookingStatus === BookingStatus.APPROVED && this.booking.releaseDate >= new Date()){
+    if (
+      this.booking.bookingStatus === BookingStatus.APPROVED &&
+      this.booking.releaseDate >= new Date()
+    ) {
       //booking should be marked completed as, today is the release date
-      // this.billingService.addBilling()
+      this.onCompleteClick(this.booking);
     }
   }
 
@@ -94,5 +119,62 @@ export class BookingItemComponent implements OnInit {
 
   onCancelClick(bookingId: string) {
     this.cancelClick.emit(bookingId);
+  }
+  onCompleteClick(booking: Booking) {
+    if (
+      confirm(
+        'Are you sure to complete booking. If this is a mistake, ur bill will be generated for days ur booking was for and you will be charged accordingly according to the policy'
+      )
+    ) {
+      this.completeClick.emit(booking);
+    }
+  }
+  payBill() {
+    this.billingService.initiatePayment(this.billing.id).subscribe({
+      next: (response: any) => {
+        this.toast.error({
+          detail: 'Unable to initiate payment',
+          summary: 'Plz try again later',
+          duration: 3000,
+        });
+      },
+      error: (error: HttpErrorResponse) => {
+        console.log(error.error.text);
+        window.open(error.error.text, '_blank');
+      },
+    });
+  }
+
+  //conditionals for showing td's
+  shouldDisplayApproval(booking: Booking): boolean {
+    return this.isManager && booking.bookingStatus === BookingStatus.REQUESTED;
+  }
+
+  shouldDisplayPatientActions(booking: Booking): boolean {
+    return (
+      this.isPatient &&
+      (booking.bookingStatus === BookingStatus.REQUESTED ||
+        booking.bookingStatus === BookingStatus.APPROVED ||
+        booking.bookingStatus === BookingStatus.COMPLETED)
+    );
+  }
+
+  shouldDisplayPaymentButton(booking: Booking): boolean {
+    return (
+      this.isPatient &&
+      booking.bookingStatus === BookingStatus.COMPLETED &&
+      this.billing.paymentStatus === PaymentStatus.PENDING
+    );
+  }
+
+  shouldDisplayNoAction(booking: Booking): boolean {
+    return (
+      !this.isAdmin &&
+      !(
+        this.shouldDisplayApproval(booking) ||
+        this.shouldDisplayPatientActions(booking) ||
+        this.shouldDisplayPaymentButton(booking)
+      )
+    );
   }
 }

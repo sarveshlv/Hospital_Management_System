@@ -19,6 +19,7 @@
         <app-booking-item *ngFor="let booking of filteredBookings; let i = index" [idx]="i" [booking]="booking"
             [isManager]="isManager" [isPatient]="isPatient" [isAdmin]="isAdmin"
             (rejectClick)="handleRejectClick(booking.id)" (approveClick)="handleApproveClick(booking.id)"
-            (cancelClick)="handleCancelClick(booking.id)"></app-booking-item>
+            (cancelClick)="handleCancelClick(booking.id)"
+            (completeClick)="handleCompleteClick(booking)"></app-booking-item>
     </div>
 </div>
