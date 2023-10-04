@@ -1,0 +1,75 @@
+package com.hms;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import io.jsonwebtoken.io.IOException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.gateway.filter.GatewayFilter;
+import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.server.ResponseStatusException;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.SignatureException;
+
+@SpringBootApplication
+@EnableDiscoveryClient
+public class RouterGatewayApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(RouterGatewayApplication.class, args);
+	}
+	
+	@Bean
+    @Order(1)
+    public OncePerRequestFilter jwtAuthenticationFilter() {
+        return new OncePerRequestFilter() {
+            @Override
+            protected void doFilterInternal(HttpServletRequest req, HttpServletRequest res, FilterChain chain)
+                    throws IOException, ServletException {
+                String header = req.getHeader(HttpHeaders.AUTHORIZATION);
+                String username = null;
+                String authToken = null;
+
+                if (header != null && header.startsWith(BEARER_PREFIX)) {
+                    authToken = header.replace(BEARER_PREFIX, "");
+                    try {
+                        username = jwtUtil.getUsernameFromToken(authToken);
+                    } catch (IllegalArgumentException e) {
+                        // Handle error
+                    } catch (ExpiredJwtException e) {
+                        // Handle token expiration
+                    } catch (SignatureException e) {
+                        // Handle invalid token signature
+                    }
+                }
+
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+                    if (jwtUtil.validateToken(authToken, userDetails)) {
+                        UsernamePasswordAuthenticationToken authentication = jwtUtil.getAuthenticationToken(authToken, SecurityContextHolder.getContext().getAuthentication(), userDetails);
+                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
+                }
+
+                chain.doFilter(req, res);
+            }
+        };
+    }
+
+}

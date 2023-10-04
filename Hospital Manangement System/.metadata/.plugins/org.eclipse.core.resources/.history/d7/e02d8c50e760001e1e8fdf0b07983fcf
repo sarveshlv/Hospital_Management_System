@@ -1,0 +1,65 @@
+package com.hms.authms.repository;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.hms.userms.entity.User;
+import com.hms.userms.repository.UserRepository;
+
+//@ExtendWith(SpringExtension.class)
+//@DataMongoTest
+//@SpringBootTest
+public class UserRepositoryTest {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Mock
+    private UserRepository mockUserRepository;
+
+    @BeforeEach
+    public void setUp() {
+        // Insert test data into the MongoDB database
+        User user1 = new User("1", "user1@example.com", "password1", "John", "Doe", "USER", "ref1");
+        User user2 = new User("2", "user2@example.com", "password2", "Jane", "Smith", "ADMIN", "ref2");
+        userRepository.save(user1);
+        userRepository.save(user2);
+    }
+
+    @Test
+    public void testFindByEmail() {
+        // Test a case where a user is found by email
+        Optional<User> foundUser = userRepository.findByEmail("user1@example.com");
+        assertThat(foundUser).isPresent();
+        assertThat(foundUser.get().getFirstName()).isEqualTo("John");
+        assertThat(foundUser.get().getLastName()).isEqualTo("Doe");
+        assertThat(foundUser.get().getRole()).isEqualTo("USER");
+
+        // Test a case where a user is not found by email
+        Optional<User> notFoundUser = userRepository.findByEmail("nonexistent@example.com");
+        assertThat(notFoundUser).isEmpty();
+    }
+
+    @Test
+    public void testFindByEmailWithMock() {
+        // Mock the repository to return a user with a specific email address
+        when(mockUserRepository.findByEmail("user1@example.com"))
+            .thenReturn(Optional.of(new User("1", "user1@example.com", "password1", "John", "Doe", "USER", "ref1")));
+
+        // Test the mock repository
+        Optional<User> foundUser = mockUserRepository.findByEmail("user1@example.com");
+        assertThat(foundUser).isPresent();
+        assertThat(foundUser.get().getFirstName()).isEqualTo("John");
+        assertThat(foundUser.get().getLastName()).isEqualTo("Doe");
+        assertThat(foundUser.get().getRole()).isEqualTo("USER");
+    }
+}

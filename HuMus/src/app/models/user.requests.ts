@@ -29,5 +29,6 @@ export interface UserDetails {
   firstName: string;
   lastName: string;
   role: string;
+  loggedId: boolean;
   referenceId: string;
 }

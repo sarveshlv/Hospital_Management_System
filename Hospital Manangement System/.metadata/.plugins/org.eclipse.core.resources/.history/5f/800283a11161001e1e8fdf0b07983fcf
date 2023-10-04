@@ -1,0 +1,213 @@
+package com.hms.bedms.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hms.bedms.dtos.AddBedRequest;
+import com.hms.bedms.entities.Bed;
+import com.hms.bedms.entities.Bed.BedType;
+import com.hms.bedms.dtos.UpdateBedRequest;
+import com.hms.bedms.exceptions.BedNotFoundException;
+import com.hms.bedms.exceptions.HospitalNotFoundException;
+import com.hms.bedms.service.BedService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(BedController.class)
+public class BedControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockBean
+    private BedService bedService;
+
+    private Bed testBed;
+
+    @BeforeEach
+    void setUp() {
+        // Initialize a test Bed object for use in the test cases
+        testBed = new Bed();
+        testBed.setId("1");
+        testBed.setHospitalId("hospital123");
+        testBed.setBedType(BedType.USUAL_BED);
+        testBed.setCostPerDay(100.0);
+    }
+
+    @Test
+    void testAddBed_ValidBed() throws Exception {
+        // Arrange
+        AddBedRequest addBedRequest = createValidAddBedRequest();
+        Mockito.when(bedService.addBed(any())).thenReturn(testBed);
+
+        // Act and Assert
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/beds/add")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(addBedRequest)))
+                .andExpect(status().isOk())
+                .andExpectBedDetails(testBed);
+    }
+
+    @Test
+    void testAddBed_InvalidBedWithMissingHospitalId() throws Exception {
+        // Arrange
+        AddBedRequest addBedRequest = new AddBedRequest();
+        // Initialize addBedRequest with missing hospitalId...
+
+        // Act and Assert
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/beds/add")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(addBedRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.hospitalId").value("Hospital id is required"));
+    }
+
+    @Test
+    void testAddBed_InvalidBedWithInvalidBedType() throws Exception {
+        // Arrange
+        AddBedRequest addBedRequest = createInvalidBedTypeAddBedRequest();
+
+        // Act and Assert
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/beds/add")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(addBedRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.bedType").value("Invalid Bed type"));
+    }
+
+    @Test
+    void testAddBed_InvalidBedWithNegativeCostPerDay() throws Exception {
+        // Arrange
+        AddBedRequest addBedRequest = createNegativeCostPerDayAddBedRequest();
+
+        // Act and Assert
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/beds/add")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(addBedRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.costPerDay").value("Cost per day must be a positive number"));
+    }
+
+    @Test
+    void testUpdateBed_ValidInput() throws Exception {
+        // Arrange
+        UpdateBedRequest updateBedRequest = createValidUpdateBedRequest();
+        Bed updatedBed = createUpdatedBed();
+
+        Mockito.when(bedService.updateBed("1", updateBedRequest)).thenReturn(updatedBed);
+
+        // Act and Assert
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/beds/update/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateBedRequest)))
+                .andExpect(status().isOk())
+                .andExpectBedDetails(updatedBed);
+    }
+
+    @Test
+    void testUpdateBed_InvalidBedType() throws Exception {
+        // Arrange
+        UpdateBedRequest updateBedRequest = createInvalidBedTypeUpdateBedRequest();
+
+        Mockito.when(bedService.updateBed("1", updateBedRequest)).thenReturn(null);
+
+        // Act and Assert
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/beds/update/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateBedRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.bedType").value("Invalid Bed type"));
+    }
+
+    // ... Other test methods ...
+
+    private AddBedRequest createValidAddBedRequest() {
+        AddBedRequest addBedRequest = new AddBedRequest();
+        addBedRequest.setHospitalId("hospital123");
+        addBedRequest.setBedType("USUAL_BED");
+        addBedRequest.setCostPerDay(100.0);
+        return addBedRequest;
+    }
+
+    private AddBedRequest createInvalidBedTypeAddBedRequest() {
+        AddBedRequest addBedRequest = new AddBedRequest();
+        addBedRequest.setHospitalId("hospital123");
+        addBedRequest.setBedType("INVALID_BED");
+        addBedRequest.setCostPerDay(100.0);
+        return addBedRequest;
+    }
+
+    private AddBedRequest createNegativeCostPerDayAddBedRequest() {
+        AddBedRequest addBedRequest = new AddBedRequest();
+        addBedRequest.setHospitalId("hospital123");
+        addBedRequest.setBedType("USUAL_BED");
+        addBedRequest.setCostPerDay(-100.0);
+        return addBedRequest;
+    }
+
+    private UpdateBedRequest createValidUpdateBedRequest() {
+        UpdateBedRequest updateBedRequest = new UpdateBedRequest();
+        updateBedRequest.setBedType("ICU_BED");
+        updateBedRequest.setCostPerDay(200.0);
+        return updateBedRequest;
+    }
+
+    private UpdateBedRequest createInvalidBedTypeUpdateBedRequest() {
+        UpdateBedRequest updateBedRequest = new UpdateBedRequest();
+        updateBedRequest.setBedType("INVALID_BED");
+        updateBedRequest.setCostPerDay(200.0);
+        return updateBedRequest;
+    }
+
+    private Bed createUpdatedBed() {
+        Bed updatedBed = new Bed();
+        updatedBed.setId("1");
+        updatedBed.setHospitalId("hospital123");
+        updatedBed.setBedType(BedType.ICU_BED);
+        updatedBed.setCostPerDay(200.0);
+        return updatedBed;
+    }
+    
+    // Define custom matchers for Bed JSON representation
+    private ResultMatcher jsonPathBedId(String expectedBedId) {
+        return jsonPath("$.id").value(expectedBedId);
+    }
+
+    private ResultMatcher jsonPathHospitalId(String expectedHospitalId) {
+        return jsonPath("$.hospitalId").value(expectedHospitalId);
+    }
+
+    private ResultMatcher jsonPathBedType(BedType expectedBedType) {
+        return jsonPath("$.bedType").value(expectedBedType.toString());
+    }
+
+    private ResultMatcher jsonPathCostPerDay(double expectedCostPerDay) {
+        return jsonPath("$.costPerDay").value(expectedCostPerDay);
+    }
+
+    private ResultMatcher jsonPathBedDetails(Bed expectedBed) {
+        return ResultMatcher.matchAll(
+            jsonPathBedId(expectedBed.getId()),
+            jsonPathHospitalId(expectedBed.getHospitalId()),
+            jsonPathBedType(expectedBed.getBedType()),
+            jsonPathCostPerDay(expectedBed.getCostPerDay())
+        );
+    }
+}

@@ -1,0 +1,5 @@
+package com.hms.billingms.repository;
+
+public class BillingRepositoryTest {
+
+}

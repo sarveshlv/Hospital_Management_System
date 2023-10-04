@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.hms.bookingms.clients.IBedServiceClient;
@@ -23,10 +22,7 @@ import com.hms.bookingms.exceptions.InvalidDatesException;
 import com.hms.bookingms.exceptions.PatientNotFoundException;
 import com.hms.bookingms.repository.BookingRepository;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Service
-@Slf4j
 public class BookingService implements IBookingService {
 
 	@Autowired
@@ -51,8 +47,6 @@ public class BookingService implements IBookingService {
 		Date occupyDate = addBookingRequest.getOccupyDate();
 		Date releaseDate = addBookingRequest.getReleaseDate();
 
-		ResponseEntity<?> reponse = patientServiceClient.isPatientFound(authorizationHeader, patientId);
-		log.info(reponse.toString());
 		if (patientServiceClient.isPatientFound(authorizationHeader, patientId).getStatusCode() != HttpStatus.OK) {
 			throw new PatientNotFoundException(patientId);
 		} else if (hospitalServiceClient.isHospitalFound(authorizationHeader, hospitalId).getStatusCode() != HttpStatus.OK) {
@@ -118,6 +112,7 @@ public class BookingService implements IBookingService {
 		}
 		throw new InvalidBookingRequest(booking.getBookingStatus().toString());
 	}
+	
 
 	@Override
 	public Booking cancelBooking(String authorizationHeader, String bookingId) throws BookingNotFoundException, InvalidBookingRequest {

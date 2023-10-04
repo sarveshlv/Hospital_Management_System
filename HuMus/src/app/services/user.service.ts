@@ -23,6 +23,10 @@ export class UserService {
     return this.httpClient.post<any>(`${this.baseAuthUrl}/login`, loginRequest);
   }
 
+  logout(email: string): Observable<any>{
+    return this.httpClient.get<UserDetails>(`${this.baseAuthUrl}/logout/${email}`);
+  }
+  
   addUser(registerRequest: AddUserRequest): Observable<UserDetails> {
     return this.httpClient.post<UserDetails>(`${this.baseUserUrl}/signup`, registerRequest);
   }

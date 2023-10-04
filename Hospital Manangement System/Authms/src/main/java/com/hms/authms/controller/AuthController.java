@@ -49,16 +49,15 @@ public class AuthController {
 		SecurityContext securityContext = SecurityContextHolder.getContext();
 		securityContext.setAuthentication(authentication);
 
-		HttpSession session = request.getSession(true);
-		session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
-
 		String email = authentication.getName().toString();
 		Optional<User> user = userRepository.findByEmail(email);
 		Collection<? extends GrantedAuthority> authorites = authentication.getAuthorities();
 		String jwtToken = authenticationService.generateToken(email, authorites);
 
-		return ResponseEntity.ok(new UserDetailsTokenResponse(jwtToken, getUserDetailsResponse(user.get())));
+		HttpSession session = request.getSession(true);
+		session.setAttribute("USER_EMAIL", email);
 
+		return ResponseEntity.ok(new UserDetailsTokenResponse(jwtToken, getUserDetailsResponse(user.get())));
 	}
 
 	@GetMapping("/validate")
@@ -66,16 +65,21 @@ public class AuthController {
 		HttpSession session = request.getSession();
 
 		// Get the SecurityContext from the session
-		SecurityContext securityContext = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
+		String email = (String) session.getAttribute("USER_EMAIL");
 
-		if (securityContext != null) {
-			Authentication authentication = securityContext.getAuthentication();
-			String email = authentication.getName();
+		if (email != null) {
+//			Authentication authentication = securityContext.getAuthentication();
+//			String email = authentication.getName();
 			return authenticationService.validateToken(token, email);
 		}
 		return false;
 	}
 
+	@GetMapping("/logout/{email}")
+	public UserDetails logout(@PathVariable String email) {
+		User user = authenticationService.logout(email);
+		return getUserDetailsResponse(user);
+	}
 	public static UserDetails getUserDetailsResponse(User user) {
 		UserDetails userDetails = new UserDetails();
 		userDetails.setId(user.getId());
@@ -83,6 +87,7 @@ public class AuthController {
 		userDetails.setLastName(user.getLastName());
 		userDetails.setEmail(user.getEmail());
 		userDetails.setRole(user.getRole());
+		userDetails.setLoggedId(user.getLoggedId());
 		userDetails.setReferenceId(user.getReferenceId());
 		return userDetails;
 	}

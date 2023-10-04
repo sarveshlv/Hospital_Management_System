@@ -23,6 +23,7 @@ public class UserDetailsTokenResponse {
 		private String firstName;
 		private String lastName;
 		private String role;
+		private Boolean loggedId;
 		private String referenceId;
 	}
 }

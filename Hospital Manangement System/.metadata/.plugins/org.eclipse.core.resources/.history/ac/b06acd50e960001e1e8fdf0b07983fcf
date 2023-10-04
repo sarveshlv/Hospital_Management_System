@@ -1,0 +1,273 @@
+package com.hms.userms.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hms.hospitalms.controller.CentralExceptionHandler;
+import com.hms.hospitalms.controller.HospitalController;
+import com.hms.userms.controller.UserController;
+import com.hms.userms.dto.AddUserRequest;
+import com.hms.userms.dto.UpdatePasswordRequest;
+import com.hms.userms.dto.UpdateUserRequest;
+import com.hms.userms.dto.UserDetails;
+import com.hms.userms.exception.UserNotFoundException;
+import com.hms.userms.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+//@WebMvcTest(UserController.class)
+public class UserControllerTest {
+
+    private MockMvc mockMvc;
+
+    @Mock
+    private UserService userService;
+    
+    @InjectMocks
+    private UserController userController;
+
+
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(userController)
+                .setControllerAdvice(new CentralExceptionHandler())
+                .build();
+    }
+
+    @Test
+    public void testAddNewUser_Success() throws Exception {
+        // Create an example AddUserRequest
+        AddUserRequest request = new AddUserRequest();
+        request.setFirstName("John");
+        request.setLastName("Doe");
+        request.setEmail("johndoe@example.com");
+        request.setRole("USER");
+        request.setPassword("SecurePass123");
+
+        // Create an example UserDetails response
+        UserDetails userDetails = new UserDetails();
+        userDetails.setId("1");
+        userDetails.setFirstName("John");
+        userDetails.setLastName("Doe");
+        userDetails.setEmail("johndoe@example.com");
+        userDetails.setRole("USER");
+        userDetails.setReferenceId(null);  // Set as needed
+
+        // Mock the userService.saveUser method
+        when(userService.saveUser(any(AddUserRequest.class))).thenReturn(userDetails);
+
+        // Perform the POST request
+        mockMvc.perform(post("/api/users/signup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(request)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value("1"))
+                .andExpect(jsonPath("$.firstName").value("John"))
+                .andExpect(jsonPath("$.lastName").value("Doe"))
+                .andExpect(jsonPath("$.email").value("johndoe@example.com"))
+                .andExpect(jsonPath("$.role").value("USER"))
+                .andExpect(jsonPath("$.referenceId").value("null")); // Update as needed
+    }
+
+    @Test
+    public void testAddNewUser_InvalidData() throws Exception {
+        // Create an example AddUserRequest with invalid data (missing required fields)
+        AddUserRequest request = new AddUserRequest();
+
+        // Perform the POST request
+        mockMvc.perform(post("/api/users/signup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value("Invalid request data")); // Adjust as needed
+    }
+
+    @Test
+    public void testUpdateUser_Success() throws Exception {
+        // Create an example UpdateUserRequest
+        UpdateUserRequest request = new UpdateUserRequest();
+        request.setEmail("johndoe@example.com");
+        request.setFirstName("UpdatedFirstName");
+        request.setLastName("UpdatedLastName");
+        request.setPassword("NewPassword123");
+
+        // Create an example UserDetails response after update
+        UserDetails updatedUserDetails = new UserDetails();
+        updatedUserDetails.setId("1");
+        updatedUserDetails.setFirstName("UpdatedFirstName");
+        updatedUserDetails.setLastName("UpdatedLastName");
+        updatedUserDetails.setEmail("johndoe@example.com");
+        updatedUserDetails.setRole("USER");
+        updatedUserDetails.setReferenceId(null);  // Set as needed
+
+        // Mock the userService.updateUser method
+        when(userService.updateUser(any(UpdateUserRequest.class))).thenReturn(updatedUserDetails);
+
+        // Perform the PUT request
+        mockMvc.perform(put("/api/users/update")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(request)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value("1"))
+                .andExpect(jsonPath("$.firstName").value("UpdatedFirstName"))
+                .andExpect(jsonPath("$.lastName").value("UpdatedLastName"))
+                .andExpect(jsonPath("$.email").value("johndoe@example.com"))
+                .andExpect(jsonPath("$.role").value("USER"))
+                .andExpect(jsonPath("$.referenceId").value("null")); // Update as needed
+    }
+
+    @Test
+    public void testUpdateUser_InvalidData() throws Exception {
+        // Create an example UpdateUserRequest with invalid data (missing required fields)
+        UpdateUserRequest request = new UpdateUserRequest();
+
+        // Perform the PUT request
+        mockMvc.perform(put("/api/users/update")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value("Invalid request data")); // Adjust as needed
+    }
+
+    @Test
+    public void testUpdateUser_UserNotFound() throws Exception {
+        // Create an example UpdateUserRequest
+        UpdateUserRequest request = new UpdateUserRequest();
+        request.setEmail("nonexistent@example.com");
+
+        // Mock the userService.updateUser method to throw UserNotFoundException
+        when(userService.updateUser(any(UpdateUserRequest.class))).thenThrow(UserNotFoundException.class);
+
+        // Perform the PUT request
+        mockMvc.perform(put("/api/users/update")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(request)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testGetUserByEmail_Success() throws Exception {
+        // Create an example UserDetails response
+        UserDetails userDetails = new UserDetails();
+        userDetails.setId("1");
+        userDetails.setFirstName("John");
+        userDetails.setLastName("Doe");
+        userDetails.setEmail("johndoe@example.com");
+        userDetails.setRole("USER");
+        userDetails.setReferenceId(null);  // Set as needed
+
+        // Mock the userService.getUserByEmail method
+        when(userService.getUserByEmail(anyString())).thenReturn(userDetails);
+
+        // Perform the GET request
+        mockMvc.perform(get("/api/users/findByEmail/johndoe@example.com"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testGetUserByEmail_UserNotFound() throws Exception {
+        // Mock the userService.getUserByEmail method to throw UserNotFoundException
+        when(userService.getUserByEmail(anyString())).thenThrow(UserNotFoundException.class);
+
+        // Perform the GET request
+        mockMvc.perform(get("/api/users/findByEmail/nonexistent@example.com"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testUpdatePassword_Success() throws Exception {
+        // Create an example UpdatePasswordRequest
+        UpdatePasswordRequest request = new UpdatePasswordRequest();
+        request.setEmail("johndoe@example.com");
+        request.setPassword("NewPassword123");
+
+        // Create an example UserDetails response after password update
+        UserDetails updatedUserDetails = new UserDetails();
+        updatedUserDetails.setId("1");
+        updatedUserDetails.setFirstName("John");
+        updatedUserDetails.setLastName("Doe");
+        updatedUserDetails.setEmail("johndoe@example.com");
+        updatedUserDetails.setRole("USER");
+        updatedUserDetails.setReferenceId(null);  // Set as needed
+
+        // Mock the userService.updatePassword method
+        when(userService.updatePassword(any(UpdatePasswordRequest.class))).thenReturn(updatedUserDetails);
+
+        // Perform the PUT request
+        mockMvc.perform(put("/api/users/updatePassword")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(request)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testUpdatePassword_InvalidData() throws Exception {
+        // Create an example UpdatePasswordRequest with invalid data (missing required fields)
+        UpdatePasswordRequest request = new UpdatePasswordRequest();
+
+        // Perform the PUT request
+        mockMvc.perform(put("/api/users/updatePassword")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testUpdatePassword_UserNotFound() throws Exception {
+        // Create an example UpdatePasswordRequest
+        UpdatePasswordRequest request = new UpdatePasswordRequest();
+        request.setEmail("nonexistent@example.com");
+
+        // Mock the userService.updatePassword method to throw UserNotFoundException
+        when(userService.updatePassword(any(UpdatePasswordRequest.class))).thenThrow(UserNotFoundException.class);
+
+        // Perform the PUT request
+        mockMvc.perform(put("/api/users/updatePassword")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(request)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testAddReference_Success() throws Exception {
+        // Create an example UserDetails response after adding reference
+        UserDetails updatedUserDetails = new UserDetails();
+        updatedUserDetails.setId("1");
+        updatedUserDetails.setFirstName("John");
+        updatedUserDetails.setLastName("Doe");
+        updatedUserDetails.setEmail("johndoe@example.com");
+        updatedUserDetails.setRole("USER");
+        updatedUserDetails.setReferenceId("ref123");  // Set as needed
+
+        // Mock the userService.addReferenceId method
+        when(userService.addReferenceId(eq("johndoe@example.com"), eq("ref123"))).thenReturn(updatedUserDetails);
+
+        // Perform the GET request
+        mockMvc.perform(get("/api/users/addReference/johndoe@example.com/ref123"))
+                .andExpect(status().isOk());
+    }
+
+    // Utility method to convert object to JSON string
+    private String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+}

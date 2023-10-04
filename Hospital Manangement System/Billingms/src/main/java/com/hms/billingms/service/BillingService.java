@@ -25,7 +25,7 @@ public class BillingService implements IBillingService {
 	private IBedServiceClient bedServiceClient;
 
 	@Override
-	public Billing addBilling(String authroizationHeader, String bookingId) throws BookingNotFoundException, BookingNotFoundException {
+	public Billing generateBill(String authroizationHeader, String bookingId) throws BookingNotFoundException {
 		Booking booking = bookingServiceClient.completeBooking(authroizationHeader, bookingId);
 		Bed bed = bedServiceClient.makeBedAvaialbe(authroizationHeader, booking.getBedId());
 		
@@ -37,6 +37,11 @@ public class BillingService implements IBillingService {
 		billing.setBillAmount(100 + bed.getCostPerDay()*differenceInDays);
 		billing.setPaymentStatus(Billing.PaymentStatus.PENDING);
 		
+		return addBill(billing);
+	}
+	
+	@Override
+	public Billing addBill(Billing billing) {
 		return billingRepository.save(billing);
 	}
 
@@ -46,7 +51,7 @@ public class BillingService implements IBillingService {
 	}
 
 	@Override
-	public Billing findByBillingId(String bookingId) {
-		return billingRepository.findByBookingId(bookingId);
+	public Billing findByBookingId(String bookingId) throws BookingNotFoundException{
+		return billingRepository.findByBookingId(bookingId).orElseThrow(() -> new BookingNotFoundException(bookingId));
 	}
 }

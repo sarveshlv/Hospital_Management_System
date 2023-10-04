@@ -5,7 +5,8 @@ import com.hms.billingms.exceptions.BillingNotFoundException;
 import com.hms.billingms.exceptions.BookingNotFoundException;
 
 public interface IBillingService {
-	Billing addBilling(String authroizationHeader, String bookingId) throws BookingNotFoundException, BookingNotFoundException;
+	Billing generateBill(String authroizationHeader, String bookingId) throws BookingNotFoundException, BookingNotFoundException;
 	Billing findById(String billingId) throws BillingNotFoundException;
-	Billing findByBillingId(String bookingId);
+	Billing findByBookingId(String bookingId) throws BookingNotFoundException;
+	Billing addBill(Billing billing);
 }

@@ -24,8 +24,7 @@ public class PatientService implements IPatientService {
 		patient.setAadharCard(addPatientRequest.getAadharNumber());
 		patient.setAddress(addPatientRequest.getAddress());
 
-		patient = patientRepository.save(patient);
-		return patient;
+		return patientRepository.save(patient);
 	}
 
 	@Override

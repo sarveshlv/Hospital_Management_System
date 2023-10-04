@@ -26,7 +26,7 @@ public class AddPatientRequest {
     @Min(value = 100000000000L, message = "Invalid aadhar number")
     @Max(value = 999999999999L, message = "Invalid aadhar number")
     private Long aadharNumber;
-	@Valid
 	@NotNull(message = "Address is required")
+	@Valid
 	private Patient.Address address;
 }

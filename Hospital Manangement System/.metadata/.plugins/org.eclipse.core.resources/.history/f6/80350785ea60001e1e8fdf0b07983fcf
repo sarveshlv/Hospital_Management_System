@@ -1,0 +1,173 @@
+package com.hms.userms.service;
+
+import com.hms.hospitalms.service.HospitalService;
+import com.hms.userms.dto.AddUserRequest;
+import com.hms.userms.dto.UpdatePasswordRequest;
+import com.hms.userms.dto.UpdateUserRequest;
+import com.hms.userms.dto.UserDetails;
+import com.hms.userms.entity.User;
+import com.hms.userms.exception.UserNotFoundException;
+import com.hms.userms.repository.UserRepository;
+import com.hms.userms.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class UserServiceTest {
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
+        
+    
+	@InjectMocks
+	private UserService userService;
+
+
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void testSaveUser_Success() {
+        // Create an example AddUserRequest
+        AddUserRequest request = new AddUserRequest();
+        request.setFirstName("John");
+        request.setLastName("Doe");
+        request.setEmail("johndoe@example.com");
+        request.setRole("USER");
+        request.setPassword("SecurePass123");
+
+        // Mock the userRepository.save method
+        User savedUser = new User();
+        savedUser.setId("1");
+        savedUser.setFirstName("John");
+        savedUser.setLastName("Doe");
+        savedUser.setEmail("johndoe@example.com");
+        savedUser.setRole("USER");
+        savedUser.setPassword("EncodedPassword");
+
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+        when(passwordEncoder.encode(anyString())).thenReturn("EncodedPassword");
+
+        // Call the userService method
+        UserDetails userDetails = userService.saveUser(request);
+
+        // Verify the result
+        assertNotNull(userDetails);
+        assertEquals("1", userDetails.getId());
+        assertEquals("John", userDetails.getFirstName());
+        assertEquals("Doe", userDetails.getLastName());
+        assertEquals("johndoe@example.com", userDetails.getEmail());
+        assertEquals("USER", userDetails.getRole());
+        assertNull(userDetails.getReferenceId()); // Update as needed
+    }
+
+    @Test
+    public void testUpdateUser_Success() throws UserNotFoundException {
+        // Create an example UpdateUserRequest
+        UpdateUserRequest request = new UpdateUserRequest();
+        request.setEmail("johndoe@example.com");
+        request.setFirstName("UpdatedFirstName");
+        request.setLastName("UpdatedLastName");
+        request.setPassword("NewPassword123");
+
+        // Mock the userRepository.findByEmail method
+        User existingUser = new User();
+        existingUser.setId("1");
+        existingUser.setFirstName("John");
+        existingUser.setLastName("Doe");
+        existingUser.setEmail("johndoe@example.com");
+        existingUser.setRole("USER");
+        existingUser.setPassword("EncodedPassword");
+
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(existingUser));
+        when(userRepository.save(any(User.class))).thenReturn(existingUser);
+        when(passwordEncoder.encode(anyString())).thenReturn("NewEncodedPassword");
+
+        // Call the userService method
+        UserDetails userDetails = userService.updateUser(request);
+
+        // Verify the result
+        assertNotNull(userDetails);
+        assertEquals("1", userDetails.getId());
+        assertEquals("UpdatedFirstName", userDetails.getFirstName());
+        assertEquals("UpdatedLastName", userDetails.getLastName());
+        assertEquals("johndoe@example.com", userDetails.getEmail());
+        assertEquals("USER", userDetails.getRole());
+        assertNull(userDetails.getReferenceId()); // Update as needed
+    }
+
+    @Test
+    public void testUpdateUser_UserNotFound() {
+        // Create an example UpdateUserRequest
+        UpdateUserRequest request = new UpdateUserRequest();
+        request.setEmail("nonexistent@example.com");
+
+        // Mock the userRepository.findByEmail method to return empty Optional
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+
+        // Call the userService method and expect UserNotFoundException
+        assertThrows(UserNotFoundException.class, () -> userService.updateUser(request));
+    }
+
+    @Test
+    public void testUpdatePassword_Success() throws UserNotFoundException {
+        // Create an example UpdatePasswordRequest
+        UpdatePasswordRequest request = new UpdatePasswordRequest();
+        request.setEmail("johndoe@example.com");
+        request.setPassword("NewPassword123");
+
+        // Mock the userRepository.findByEmail method
+        User existingUser = new User();
+        existingUser.setId("1");
+        existingUser.setFirstName("John");
+        existingUser.setLastName("Doe");
+        existingUser.setEmail("johndoe@example.com");
+        existingUser.setRole("USER");
+        existingUser.setPassword("EncodedPassword");
+
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(existingUser));
+        when(userRepository.save(any(User.class))).thenReturn(existingUser);
+        when(passwordEncoder.encode(anyString())).thenReturn("NewEncodedPassword");
+
+        // Call the userService method
+        UserDetails userDetails = userService.updatePassword(request);
+
+        // Verify the result
+        assertNotNull(userDetails);
+        assertEquals("1", userDetails.getId());
+        assertEquals("John", userDetails.getFirstName());
+        assertEquals("Doe", userDetails.getLastName());
+        assertEquals("johndoe@example.com", userDetails.getEmail());
+        assertEquals("USER", userDetails.getRole());
+        assertNull(userDetails.getReferenceId()); // Update as needed
+    }
+
+    @Test
+    public void testUpdatePassword_UserNotFound() {
+        // Create an example UpdatePasswordRequest
+        UpdatePasswordRequest request = new UpdatePasswordRequest();
+        request.setEmail("nonexistent@example.com");
+
+        // Mock the userRepository.findByEmail method to return empty Optional
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+
+        // Call the userService method and expect UserNotFoundException
+        assertThrows(UserNotFoundException.class, () -> userService.updatePassword(request));
+    }
+
+    // Additional test cases for other service methods can be added similarly.
+}

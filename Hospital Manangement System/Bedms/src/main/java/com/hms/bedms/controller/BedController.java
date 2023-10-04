@@ -23,7 +23,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/beds")
-@Validated
 public class BedController {
 
 	@Autowired
@@ -53,13 +52,13 @@ public class BedController {
 
 	@GetMapping("/findNearby/{pincode}")
 	public ResponseEntity<List<Bed>> getNearbyBeds(@RequestHeader("Authorization") String authorizationHeader, 
-			@NotNull(message = "Pincode is required") @Digits(integer = 6, fraction = 0, message = "Pincode must be a 6-digit number") @PathVariable Long pincode) {
+			@NotNull(message = "Pincode is required") @Digits(integer = 6, fraction = 0, message = "Pincode must be a 6-digit number") @Valid @PathVariable Long pincode) {
 		return ResponseEntity.ok().body(bedService.getNearbyBeds(authorizationHeader, pincode));
 	}
 
 	@GetMapping("/findByType/{bedType}")
 	public ResponseEntity<List<Bed>> getBedsByType(
-			@NotBlank(message = "Bed type is required") @Pattern(regexp = "USUAL_BED|ICU_BED|OXYGEN_BED|VENTILATOR_BED", message = "Invalid Bed type") @PathVariable String bedType) {
+			@NotBlank(message = "Bed type is required") @Pattern(regexp = "USUAL_BED|ICU_BED|OXYGEN_BED|VENTILATOR_BED", message = "Invalid Bed type") @Valid @PathVariable String bedType) {
 		return ResponseEntity.ok().body(bedService.getBedsByType(bedType));
 	}
 

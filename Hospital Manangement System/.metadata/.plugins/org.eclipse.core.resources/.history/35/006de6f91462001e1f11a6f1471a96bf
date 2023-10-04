@@ -1,0 +1,67 @@
+package com.hms.billingms.repository;
+
+import com.hms.billingms.entities.Billing;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.util.Optional;
+
+@DataMongoTest
+public class BillingRepositoryTest {
+
+	@Autowired
+    private BillingRepository billingRepository;
+
+    @Test
+    public void testFindByBookingId_ExistingBilling_ReturnsBilling() {
+        // Arrange
+        Billing billing = new Billing();
+        billing.setBookingId("sampleBookingId");
+        billing.setBillAmount(100.0);
+        billing.setPaymentStatus(Billing.PaymentStatus.PENDING);
+        billingRepository.save(billing);
+
+        // Act
+        Optional<Billing> foundBilling = billingRepository.findByBookingId("sampleBookingId");
+
+        // Assert
+        assertTrue(foundBilling.isPresent());
+        assertEquals("sampleBookingId", foundBilling.get().getBookingId());
+    }
+
+    @Test
+    public void testFindByBookingId_NonExistingBilling_ReturnsEmptyOptional() {
+        // Act
+        Optional<Billing> foundBilling = billingRepository.findByBookingId("nonExistingBookingId");
+
+        // Assert
+        assertTrue(foundBilling.isEmpty());
+    }
+
+    @Test
+    public void testFindByBookingId_MultipleBillingsWithSameBookingId_ReturnsFirstBilling() {
+        // Arrange
+        Billing billing1 = new Billing();
+        billing1.setBookingId("sampleBookingId");
+        billing1.setBillAmount(100.0);
+        billing1.setPaymentStatus(Billing.PaymentStatus.PENDING);
+        billingRepository.save(billing1);
+
+        Billing billing2 = new Billing();
+        billing2.setBookingId("sampleBookingId");
+        billing2.setBillAmount(200.0);
+        billing2.setPaymentStatus(Billing.PaymentStatus.COMPLETED);
+        billingRepository.save(billing2);
+
+        // Act
+        Optional<Billing> foundBilling = billingRepository.findByBookingId("sampleBookingId");
+
+        // Assert
+        assertTrue(foundBilling.isPresent());
+        assertEquals(100.0, foundBilling.get().getBillAmount());
+    }
+}

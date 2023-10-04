@@ -54,6 +54,6 @@ public class CentralExceptionHandler {
 	public ResponseEntity<Object> handleValidationErrors(RuntimeException ex) {
 		Map<String, String> errors = new HashMap<>();
 		errors.put("error", ex.getMessage());
-		return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
 	}
 }

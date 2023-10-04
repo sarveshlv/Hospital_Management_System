@@ -1,0 +1,101 @@
+package com.hms.bookingms.repository;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+
+import com.hms.bookingms.entities.Booking;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
+@DataMongoTest
+public class BookingRepositoryTest {
+
+    @Mock
+    private BookingRepository bookingRepository;
+    
+    @Test
+    public void testSaveBooking() {
+        // Create a sample Booking entity
+        Booking testBooking = new Booking();
+        testBooking.setPatientId("patientId");
+        testBooking.setHospitalId("hospitalId");
+        testBooking.setBedId("bedId");
+        testBooking.setBedType(Booking.BedType.USUAL_BED);
+        testBooking.setBookingDate(new Date());
+        testBooking.setOccupyDate(new Date());
+        testBooking.setReleaseDate(new Date());
+        testBooking.setBookingStatus(Booking.BookingStatus.REQUESTED);
+
+        // Mock the behavior of the save method
+        when(bookingRepository.save(testBooking)).thenReturn(testBooking);
+
+        // Save the sample Booking entity
+        Booking savedBooking = bookingRepository.save(testBooking);
+
+        // Verify that the saved Booking matches the expected Booking
+        assertEquals(testBooking, savedBooking);
+    }
+
+    @Test
+    public void testFindAllByPatientId() {
+        // Create a sample Booking entity
+        Booking testBooking = new Booking();
+        testBooking.setPatientId("patientId");
+        testBooking.setHospitalId("hospitalId");
+        testBooking.setBedId("bedId");
+        testBooking.setBedType(Booking.BedType.USUAL_BED);
+        testBooking.setBookingDate(new Date());
+        testBooking.setOccupyDate(new Date());
+        testBooking.setReleaseDate(new Date());
+        testBooking.setBookingStatus(Booking.BookingStatus.REQUESTED);
+
+        // Mock the behavior of findAllByPatientId
+        when(bookingRepository.findAllByPatientId("patientId")).thenReturn(List.of(testBooking));
+
+        // Retrieve the Booking entities by patientId
+        List<Booking> bookings = bookingRepository.findAllByPatientId("patientId");
+
+        // Verify that the list contains the expected Booking entity
+        assertEquals(1, bookings.size());
+        assertEquals(testBooking, bookings.get(0));
+    }
+
+    @Test
+    public void testFindAllByHospitalId() {
+        // Create a sample Booking entity
+        Booking testBooking = new Booking();
+        testBooking.setPatientId("patientId");
+        testBooking.setHospitalId("hospitalId");
+        testBooking.setBedId("bedId");
+        testBooking.setBedType(Booking.BedType.USUAL_BED);
+        testBooking.setBookingDate(new Date());
+        testBooking.setOccupyDate(new Date());
+        testBooking.setReleaseDate(new Date());
+        testBooking.setBookingStatus(Booking.BookingStatus.REQUESTED);
+
+        // Mock the behavior of findAllByHospitalId
+        when(bookingRepository.findAllByHospitalId("hospitalId")).thenReturn(List.of(testBooking));
+
+        // Retrieve the Booking entities by hospitalId
+        List<Booking> bookings = bookingRepository.findAllByHospitalId("hospitalId");
+
+        // Verify that the list contains the expected Booking entity
+        assertEquals(1, bookings.size());
+        assertEquals(testBooking, bookings.get(0));
+    }
+
+    
+}

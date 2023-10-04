@@ -36,30 +36,32 @@ public class PatientControllerTest {
 				.build();
 	}
 
+    // Test case to validate adding a patient with a valid request
 	@Test
 	void testAddPatient_ValidRequest() throws Exception {
-		// Arrange: Create a valid AddPatientRequest and an expected Patient object.
+		// Arrange
 		AddPatientRequest request = createAddPatientRequest();
 		Patient expectedPatient = createPatient();
 
-		// Mock the service method to return the expected Patient.
+		// Mock
 		when(patientService.addPatient(any(AddPatientRequest.class))).thenReturn(expectedPatient);
 
-		// Act: Perform a POST request to add a patient and verify the response.
+		// Act + Assert
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/patients/add").contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(request))).andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.id").value(expectedPatient.getId()))
 				.andExpect(jsonPath("$.firstName").value(expectedPatient.getFirstName()));
+		
 	}
 
+    // Test case to validate adding a patient with an invalid request
 	@Test
 	void testAddPatient_InvalidRequest() throws Exception {
-		// Arrange: Create an invalid AddPatientRequest with missing fields.
+		// Arrange
 		AddPatientRequest request = new AddPatientRequest();
 
-		// Act: Perform a POST request to add a patient and validate the response for
-		// errors.
+		// Act and Assert
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/patients/add").contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(request))).andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.firstName").value("First Name is required"))
@@ -70,17 +72,18 @@ public class PatientControllerTest {
 
 	}
 
+    // Test case to validate updating a patient with a valid request
 	@Test
 	void testUpdatePatient_ValidRequest() throws Exception {
-		// Arrange: Prepare the patient ID, request, and expected result.
+		// Arrange
 		String patientId = "1";
 		AddPatientRequest request = createAddPatientRequest();
 		Patient expectedPatient = createPatient();
 
-		// Mock the service method to return the expected Patient.
+		// Mock
 		when(patientService.updatePatient(eq(patientId), any(AddPatientRequest.class))).thenReturn(expectedPatient);
 
-		// Act: Perform a PUT request to update a patient and verify the response.
+		// Act and Assert
 		mockMvc.perform(MockMvcRequestBuilders.put("/api/patients/update/{id}", patientId)
 				.contentType(MediaType.APPLICATION_JSON).content(asJsonString(request))).andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -88,14 +91,14 @@ public class PatientControllerTest {
 				.andExpect(jsonPath("$.firstName").value(expectedPatient.getFirstName()));
 	}
 
+    // Test case to validate updating a patient with an invalid request
 	@Test
 	void testUpdatePatient_InvalidRequest() throws Exception {
-		// Arrange: Prepare the patient ID and an invalid request with missing fields.
+		// Arrange
 		String patientId = "1";
-		AddPatientRequest request = new AddPatientRequest(); // Empty request
+		AddPatientRequest request = new AddPatientRequest();
 
-		// Act: Perform a PUT request to update a patient and validate the response for
-		// errors.
+		// Act and Assert
 		mockMvc.perform(MockMvcRequestBuilders.put("/api/patients/update/{id}", patientId)
 				.contentType(MediaType.APPLICATION_JSON).content(asJsonString(request)))
 				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.firstName").value("First Name is required"))
@@ -105,57 +108,58 @@ public class PatientControllerTest {
 				.andExpect(jsonPath("$.address").value("Address is required"));
 	}
 
+    // Test case to validate finding a patient by a valid ID
 	@Test
 	void testFindPatientById_ValidId() throws Exception {
-		// Arrange: Prepare the patient ID and the expected patient result.
+		// Arrange
 		String patientId = "1";
 		Patient expectedPatient = createPatient();
 
-		// Mock the service method to return the expected Patient.
+		// Mock
 		when(patientService.findPatientById(eq(patientId))).thenReturn(expectedPatient);
 
-		// Act: Perform a GET request to retrieve a patient by ID and verify the
-		// response.
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/patients/find/{id}", patientId)
+		// Act and Assert
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/patients/findById/{id}", patientId)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.id").value(expectedPatient.getId()))
 				.andExpect(jsonPath("$.firstName").value(expectedPatient.getFirstName()));
 	}
 
+    // Test case to validate finding a patient by an invalid ID
 	@Test
 	void testFindPatientById_InvalidId() throws Exception {
-		// Arrange: Prepare an invalid patient ID.
-		String id = "2"; // Invalid ID format
+		// Arrange
+		String id = "2";
 
-		// Mock the service method to throw a PatientNotFoundException.
+		// Mock
 		when(patientService.findPatientById(eq(id))).thenThrow(new PatientNotFoundException(id));
 
-		// Act: Perform a GET request to retrieve a patient by an invalid ID and verify
-		// the response.
+		// Act + Assert
 		mockMvc.perform(
-				MockMvcRequestBuilders.get("/api/patients/find/{id}", id).contentType(MediaType.APPLICATION_JSON))
+				MockMvcRequestBuilders.get("/api/patients/findById/{id}", id).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound()).andExpect(jsonPath("$.error").value("Patient not found for : " + id));
 	}
 
+    // Test case to validate finding a patient by an invalid ID
 	private static AddPatientRequest createAddPatientRequest() {
 		AddPatientRequest request = new AddPatientRequest();
-		request.setFirstName("John");
-		request.setLastName("Doe");
+		request.setFirstName("Prateek");
+		request.setLastName("Singh");
 		request.setContactNumber(7270043813L);
-		request.setAadharNumber(123456789012L);
-		request.setAddress(new Patient.Address("City", "State", 123456L));
+		request.setAadharNumber(867343001999L);
+		request.setAddress(new Patient.Address("Lucknow", "Uttar Pradesh", 226022L));
 		return request;
 	}
 
 	private static Patient createPatient() {
 		Patient patient = new Patient();
 		patient.setId("1");
-		patient.setFirstName("John");
-		patient.setLastName("Doe");
+		patient.setFirstName("Prateek");
+		patient.setLastName("Singh");
 		patient.setContactNumber(7270043813L);
-		patient.setAadharCard(123456789012L);
-		patient.setAddress(new Patient.Address("City", "State", 123456L));
+		patient.setAadharCard(867343001999L);
+		patient.setAddress(new Patient.Address("Lucknow", "Uttar Pradesh", 226022L));
 		return patient;
 	}
 

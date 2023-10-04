@@ -1,0 +1,97 @@
+package com.hms.hospitalms.repository;
+
+import com.hms.hospitalms.entities.Hospital;
+import com.hms.hospitalms.entities.Hospital.HospitalType;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+
+//@DataMongoTest
+public class HospitalRepositoryTest {
+
+    @Autowired
+    private IHospitalRepository hospitalRepository;
+
+    @MockBean
+    private IHospitalRepository hospitalRepositoryMock;
+
+    // Test case for finding a hospital by ID when the hospital exists (asserts the ID)
+    @Test
+    public void testFindById() {
+        // Arrange
+        Hospital existingHospital = new Hospital();
+        existingHospital.setId("1");
+        existingHospital.setName("Sample Hospital");
+        existingHospital.setHospitalType(HospitalType.PRIVATE);
+
+        // Mock
+        Mockito.when(hospitalRepositoryMock.findById(anyString())).thenReturn(Optional.of(existingHospital));
+
+        // Act
+        Optional<Hospital> actualHospital = hospitalRepository.findById("1");
+
+        // Assert
+        assertEquals("1", actualHospital.orElseThrow().getId());
+    }
+
+    // Test case for finding a hospital by ID when the hospital doesn't exist (asserts optional empty)
+    @Test
+    public void testFindByIdNotFound() {
+        // Mock
+        Mockito.when(hospitalRepositoryMock.findById(anyString())).thenReturn(Optional.empty());
+
+        // Act
+        Optional<Hospital> hospital = hospitalRepository.findById("2");
+
+        // Assert
+        assertEquals(Optional.empty(), hospital);
+    }
+
+    // Test case for finding hospitals by pincode range (asserts the number of hospitals)
+    @Test
+    public void testFindHospitalsByPincodeRange() {
+        // Arrange
+        Hospital hospital1 = new Hospital();
+        hospital1.setId("1");
+        hospital1.setName("Hospital A");
+        hospital1.setAddress(new Hospital.Address("CityA", "StateA", 123456L));
+
+        Hospital hospital2 = new Hospital();
+        hospital2.setId("2");
+        hospital2.setName("Hospital B");
+        hospital2.setAddress(new Hospital.Address("CityB", "StateB", 789012L));
+
+        List<Hospital> hospitalsInRange = List.of(hospital1, hospital2);
+
+        // Mock
+        Mockito.when(hospitalRepositoryMock.findByAddressPincodeBetween(anyLong(), anyLong())).thenReturn(hospitalsInRange);
+
+        // Act
+        List<Hospital> actualHospitals = hospitalRepository.findByAddressPincodeBetween(100000L, 800000L);
+
+        // Assert
+        assertEquals(2, actualHospitals.size());
+    }
+
+    // Test case for finding hospitals by pincode range when no hospitals are found (asserts an empty list)
+    @Test
+    public void testFindHospitalsByPincodeRangeNoResults() {
+        // Mock
+        Mockito.when(hospitalRepositoryMock.findByAddressPincodeBetween(anyLong(), anyLong())).thenReturn(List.of());
+
+        // Act
+        List<Hospital> hospitals = hospitalRepository.findByAddressPincodeBetween(100000L, 800000L);
+
+        // Assert
+        assertEquals(0, hospitals.size());
+    }
+}

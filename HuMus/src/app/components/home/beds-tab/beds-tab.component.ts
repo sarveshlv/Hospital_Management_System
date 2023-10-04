@@ -71,7 +71,9 @@ export class BedsTabComponent implements OnInit {
     this.addBedRequest.hospitalId = this.userDetails.referenceId;
 
     this.loadbeds();
-    this.gethospitalList();
+    if(!this.isManager){
+      this.gethospitalList();
+    }
   }
 
   //loading beds based on profile
@@ -158,8 +160,11 @@ export class BedsTabComponent implements OnInit {
       next: (response: Bed[]) => {
         console.log('Fetched beds:', response);
         this.filteredBeds = response;
+        if(this.isManager){
+          this.addBedPopup = this.filteredBeds.length === 0 ;
+        }
         this.toast.info({
-          detail: 'Successfully fetched of hospital',
+          detail: 'Successfully fetched beds of hospital',
           summary: `Fetched ${this.filteredBeds.length} beds`,
           duration: 3000,
         });
@@ -250,7 +255,7 @@ export class BedsTabComponent implements OnInit {
         this.uniqueBeds.push({ bed, count: 1 });
       }
     });
-    this.addBedPopup = this.refreshUniqueBed.length !== 0;
+    // this.addBedPopup = this.refreshUniqueBed.length !== 0;
   }
 
   //utitilty beds to check beds to be similiar

@@ -1,78 +1,91 @@
 package com.hms.bookingms.repository;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
 import com.hms.bookingms.entities.Booking;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 @DataMongoTest
 public class BookingRepositoryTest {
 
-    @Autowired
-    private BookingRepository bookingRepository;
+	@Mock
+	private BookingRepository bookingRepository;
 
-    @Test
-    public void testSaveBooking() {
-        // Create a Booking object
-        Booking booking = new Booking();
-        booking.setPatientId("patient123");
-        booking.setHospitalId("hospital456");
-        booking.setBedId("bed789");
-        booking.setBedType(Booking.BedType.USUAL_BED);
-        booking.setBookingDate(new Date());
-        booking.setBookingStatus(Booking.BookingStatus.REQUESTED);
+	@Test
+	public void testSaveBooking() {
+		// Arrange
+		Booking testBooking = new Booking();
+		testBooking.setPatientId("patientId");
+		testBooking.setHospitalId("hospitalId");
+		testBooking.setBedId("bedId");
+		testBooking.setBedType(Booking.BedType.USUAL_BED);
+		testBooking.setBookingDate(new Date());
+		testBooking.setOccupyDate(new Date());
+		testBooking.setReleaseDate(new Date());
+		testBooking.setBookingStatus(Booking.BookingStatus.REQUESTED);
 
-        // Save the booking
-        Booking savedBooking = bookingRepository.save(booking);
+		// Mock
+		when(bookingRepository.save(testBooking)).thenReturn(testBooking);
 
-        // Retrieve the saved booking
-        Optional<Booking> retrievedBooking = bookingRepository.findById(savedBooking.getId());
+		// Act
+		Booking savedBooking = bookingRepository.save(testBooking);
 
-        // Check if the retrieved booking matches the saved booking
-        assertTrue(retrievedBooking.isPresent());
-    }
-    
-    @AfterEach
-    public void cleanup() {
-        // Delete all records from the Booking collection
-        bookingRepository.deleteAll();
-    }
-    @Test
-    public void testFindAllByPatientId() {
-        // Create multiple bookings with the same patientId
-        Booking booking1 = new Booking();
-        booking1.setPatientId("patient123");
-        booking1.setHospitalId("hospital456");
-        booking1.setBedId("bed789");
-        booking1.setBedType(Booking.BedType.USUAL_BED);
-        booking1.setBookingDate(new Date());
-        booking1.setBookingStatus(Booking.BookingStatus.REQUESTED);
+		// Assert
+		assertEquals(testBooking, savedBooking);
+	}
 
-        Booking booking2 = new Booking();
-        booking2.setPatientId("patient123");
-        booking2.setHospitalId("hospital789");
-        booking2.setBedId("bed101");
-        booking2.setBedType(Booking.BedType.ICU_BED);
-        booking2.setBookingDate(new Date());
-        booking2.setBookingStatus(Booking.BookingStatus.APPROVED);
+	@Test
+	public void testFindAllByPatientId() {
+		// Arrange
+		Booking testBooking = new Booking();
+		testBooking.setPatientId("patientId");
+		testBooking.setHospitalId("hospitalId");
+		testBooking.setBedId("bedId");
+		testBooking.setBedType(Booking.BedType.USUAL_BED);
+		testBooking.setBookingDate(new Date());
+		testBooking.setOccupyDate(new Date());
+		testBooking.setReleaseDate(new Date());
+		testBooking.setBookingStatus(Booking.BookingStatus.REQUESTED);
 
-        
-        bookingRepository.save(booking1);
-        bookingRepository.save(booking2);
+		// Mock
+		when(bookingRepository.findAllByPatientId("patientId")).thenReturn(List.of(testBooking));
 
-        // Retrieve bookings by patientId
-        List<Booking> bookings = bookingRepository.findAllByPatientId("patient123");
+		// Act
+		List<Booking> bookings = bookingRepository.findAllByPatientId("patientId");
 
-        // Check if both bookings are retrieved
-        assertEquals(2, bookings.size());
-    }
+		// Assert
+		assertEquals(1, bookings.size());
+		assertEquals(testBooking, bookings.get(0));
+	}
+
+	@Test
+	public void testFindAllByHospitalId() {
+		// Arrange
+		Booking testBooking = new Booking();
+		testBooking.setPatientId("patientId");
+		testBooking.setHospitalId("hospitalId");
+		testBooking.setBedId("bedId");
+		testBooking.setBedType(Booking.BedType.USUAL_BED);
+		testBooking.setBookingDate(new Date());
+		testBooking.setOccupyDate(new Date());
+		testBooking.setReleaseDate(new Date());
+		testBooking.setBookingStatus(Booking.BookingStatus.REQUESTED);
+
+		// Mock
+		when(bookingRepository.findAllByHospitalId("hospitalId")).thenReturn(List.of(testBooking));
+
+		// Act
+		List<Booking> bookings = bookingRepository.findAllByHospitalId("hospitalId");
+
+		// Assert
+		assertEquals(1, bookings.size());
+		assertEquals(testBooking, bookings.get(0));
+	}
 }

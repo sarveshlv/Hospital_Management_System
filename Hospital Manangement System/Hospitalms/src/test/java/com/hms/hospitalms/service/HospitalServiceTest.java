@@ -1,6 +1,3 @@
-/**
- * This package contains test cases for the HospitalService class.
- */
 package com.hms.hospitalms.service;
 
 import com.hms.hospitalms.dto.AddHospitalRequest;
@@ -22,318 +19,298 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/**
- * Unit tests for the HospitalService class. Author: @prateek
- */
 @SpringBootTest
 public class HospitalServiceTest {
 
-	@Mock
-	private IHospitalRepository hospitalRepository;
+    @Mock
+    private IHospitalRepository hospitalRepository;
 
+    @InjectMocks
+    private HospitalService hospitalService;
 
-	@InjectMocks
-	private HospitalService hospitalService;
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
 
-	@BeforeEach
-	void setUp() {
-		// Initialize Mockito mocks before each test method.
-		MockitoAnnotations.openMocks(this);
-	}
+    // Test case for adding a new hospital
+    @Test
+    void testAddHospital() {
+        // Arrange
+        AddHospitalRequest request = createAddHospitalRequest();
+        Hospital expectedHospital = createHospital();
 
-	/**
-	 * Test case for adding a new hospital.
-	 */
-	@Test
-	void testAddHospital() {
-		// Prepare test data
-		AddHospitalRequest request = createAddHospitalRequest();
-		Hospital expectedHospital = createHospital();
+        // Mock
+        when(hospitalRepository.save(any(Hospital.class)))
+            .thenReturn(expectedHospital);
 
-		// Mock the behavior of the hospitalRepository
-		when(hospitalRepository.save(any(Hospital.class)))
-			.thenReturn(expectedHospital);
+        // Act and Assert
+        assertEquals(expectedHospital, hospitalService.addHospital(request));
 
-		// Invoke the service method and assert the result
-		assertEquals(expectedHospital, hospitalService.addHospital(request));
+        // Verify that the hospitalRepository.save method was called once
+        verify(hospitalRepository, times(1)).save(any(Hospital.class));
+    }
 
-		// Verify that the hospitalRepository.save method was called once
-		verify(hospitalRepository, times(1)).save(any(Hospital.class));
-	}
+    // Test case for updating an existing hospital
+    @Test
+    void testUpdateHospital() {
+        // Arrange
+        String hospitalId = "1";
+        AddHospitalRequest request = createAddHospitalRequest();
+        Hospital existingHospital = createHospital();
 
-	/**
-	 * Test case for updating an existing hospital.
-	 */
-	@Test
-	void testUpdateHospital() {
-		// Prepare test data
-		String hospitalId = "1";
-		AddHospitalRequest request = createAddHospitalRequest();
-		Hospital existingHospital = createHospital();
+        // Mock
+        when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.of(existingHospital));
+        when(hospitalRepository.save(any(Hospital.class))).thenReturn(existingHospital);
 
-		// Mock the behavior of the hospitalRepository
-		when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.of(existingHospital));
-		when(hospitalRepository.save(any(Hospital.class))).thenReturn(existingHospital);
+        // Act
+        Hospital updatedHospital = hospitalService.updateHospital(hospitalId, request);
 
-		// Invoke the service method
-		Hospital updatedHospital = hospitalService.updateHospital(hospitalId, request);
+        // Assert
+        assertEquals(request.getName(), updatedHospital.getName());
+        assertEquals(request.getHospitalType(), updatedHospital.getHospitalType().toString());
 
-		// Assert the updated fields
-		assertEquals(request.getName(), updatedHospital.getName());
-		assertEquals(request.getHospitalType(), updatedHospital.getHospitalType().toString());
+        // Verify that findById and save methods were called
+        verify(hospitalRepository, times(1)).findById(hospitalId);
+        verify(hospitalRepository, times(1)).save(any(Hospital.class));
+    }
 
-		// Verify that findById and save methods were called
-		verify(hospitalRepository, times(1)).findById(hospitalId);
-		verify(hospitalRepository, times(1)).save(any(Hospital.class));
-	}
+    // Test case for updating a hospital when it's not found
+    @Test
+    void testUpdateHospitalHospitalNotFound() {
+        // Arrange
+        String hospitalId = "1";
+        AddHospitalRequest request = createAddHospitalRequest();
 
-	/**
-	 * Test case for updating a hospital when it's not found.
-	 */
-	@Test
-	void testUpdateHospitalHospitalNotFound() {
-		// Prepare test data
-		String hospitalId = "1";
-		AddHospitalRequest request = createAddHospitalRequest();
+        // Mock
+        when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.empty());
 
-		// Mock the behavior of the hospitalRepository to return empty result
-		when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.empty());
+        // Act and Assert
+        assertThrows(HospitalNotFoundException.class, () -> hospitalService.updateHospital(hospitalId, request));
 
-		// Verify that HospitalNotFoundException is thrown
-		assertThrows(HospitalNotFoundException.class, () -> hospitalService.updateHospital(hospitalId, request));
+        // Verify that findById was called once and save was never called
+        verify(hospitalRepository, times(1)).findById(hospitalId);
+        verify(hospitalRepository, never()).save(any(Hospital.class));
+    }
 
-		// Verify that findById was called once and save was never called
-		verify(hospitalRepository, times(1)).findById(hospitalId);
-		verify(hospitalRepository, never()).save(any(Hospital.class));
-	}
+    // Test case for finding a hospital by ID
+    @Test
+    void testFindHospitalById() {
+        // Arrange
+        String hospitalId = "1";
+        Hospital expectedHospital = createHospital();
 
-	/**
-	 * Test case for finding a hospital by ID.
-	 */
-	@Test
-	void testFindHospitalById() {
-		// Prepare test data
-		String hospitalId = "1";
-		Hospital expectedHospital = createHospital();
+        // Mock
+        when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.of(expectedHospital));
 
-		// Mock the behavior of the hospitalRepository
-		when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.of(expectedHospital));
+        // Act
+        Hospital result = hospitalService.findHospitalById(hospitalId);
 
-		// Invoke the service method and assert the result
-		Hospital result = hospitalService.findHospitalById(hospitalId);
+        // Assert
+        assertEquals(expectedHospital, result);
 
-		assertEquals(expectedHospital, result);
+        // Verify that findById was called once
+        verify(hospitalRepository, times(1)).findById(hospitalId);
+    }
 
-		// Verify that findById was called once
-		verify(hospitalRepository, times(1)).findById(hospitalId);
-	}
+    // Test case for finding a hospital when it's not found
+    @Test
+    void testFindHospitalByIdHospitalNotFound() {
+        // Arrange
+        String hospitalId = "1";
 
-	/**
-	 * Test case for finding a hospital by ID when it's not found.
-	 */
-	@Test
-	void testFindHospitalByIdHospitalNotFound() {
-		// Prepare test data
-		String hospitalId = "1";
+        // Mock
+        when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.empty());
 
-		// Mock the behavior of the hospitalRepository to return empty result
-		when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.empty());
+        // Act and Assert
+        assertThrows(HospitalNotFoundException.class, () -> hospitalService.findHospitalById(hospitalId));
 
-		// Verify that HospitalNotFoundException is thrown
-		assertThrows(HospitalNotFoundException.class, () -> hospitalService.findHospitalById(hospitalId));
+        // Verify
+        verify(hospitalRepository, times(1)).findById(hospitalId);
+    }
 
-		// Verify that findById was called once
-		verify(hospitalRepository, times(1)).findById(hospitalId);
-	}
+    // Test case for checking if a hospital is verified
+    @Test
+    void testIsHospitalVerified() {
+        // Arrange
+        String hospitalId = "1";
+        Hospital hospital = createHospital();
+        hospital.setVerified(true);
 
-	
-	
-	/**
-	 * Test case for checking if a hospital is verified.
-	 */
-	@Test
-	void testIsHospitalVerified() {
-		// Prepare test data
-		String hospitalId = "1";
-		Hospital hospital = createHospital();
-		hospital.setVerified(true);
+        // Mock
+        when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.of(hospital));
 
-		// Mock the behavior of the hospitalRepository
-		when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.of(hospital));
+        // Act
+        Boolean result = hospitalService.isHospitalVerified(hospitalId);
 
-		// Invoke the service method and assert the result
-		Boolean result = hospitalService.isHospitalVerified(hospitalId);
-		assertTrue(result);
+        // Assert
+        assertTrue(result);
 
-		// Verify that findById was called once
-		verify(hospitalRepository, times(1)).findById(hospitalId);
-	}
+        // Verify
+        verify(hospitalRepository, times(1)).findById(hospitalId);
+    }
 
-	/**
-	 * Test case for checking if a hospital is not verified.
-	 */
-	@Test
-	void testIsHospitalNotVerified() {
-		// Prepare test data
-		String hospitalId = "1";
-		Hospital hospital = createHospital();
-		hospital.setVerified(false);
+    // Test case for checking if a hospital is not verified
+    @Test
+    void testIsHospitalNotVerified() {
+        // Arrange
+        String hospitalId = "1";
+        Hospital hospital = createHospital();
+        hospital.setVerified(false);
 
-		// Mock the behavior of the hospitalRepository
-		when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.of(hospital));
+        // Mock
+        when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.of(hospital));
 
-		// Invoke the service method and assert the result
-		Boolean result = hospitalService.isHospitalVerified(hospitalId);
-		assertFalse(result);
+        // Act
+        Boolean result = hospitalService.isHospitalVerified(hospitalId);
 
-		// Verify that findById was called once
-		verify(hospitalRepository, times(1)).findById(hospitalId);
-	}
+        // Assert
+        assertFalse(result);
 
-	/**
-	 * Test case for checking if a hospital is verified when it's not found.
-	 */
-	@Test
-	void testIsHospitalVerifiedHospitalNotFound() {
-		// Prepare test data
-		String hospitalId = "1";
+        // Verify
+        verify(hospitalRepository, times(1)).findById(hospitalId);
+    }
 
-		// Mock the behavior of the hospitalRepository to return empty result
-		when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.empty());
+    // Test case for checking if a hospital is verified when it's not found
+    @Test
+    void testIsHospitalVerifiedHospitalNotFound() {
+        // Arrange
+        String hospitalId = "1";
 
-		// Verify that HospitalNotFoundException is thrown
-		assertThrows(HospitalNotFoundException.class, () -> hospitalService.isHospitalVerified(hospitalId));
+        // Mock
+        when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.empty());
 
-		// Verify that findById was called once
-		verify(hospitalRepository, times(1)).findById(hospitalId);
-	}
+        // Act and Assert
+        assertThrows(HospitalNotFoundException.class, () -> hospitalService.isHospitalVerified(hospitalId));
 
-	/**
-	 * Test case for verifying a hospital.
-	 */
-	@Test
-	void testVerifyHospital() {
-		// Prepare test data
-		String hospitalId = "1";
-		Hospital hospital = createHospital();
+        // Verify
+        verify(hospitalRepository, times(1)).findById(hospitalId);
+    }
 
-		// Mock the behavior of the hospitalRepository
-		when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.of(hospital));
-		when(hospitalRepository.save(any(Hospital.class))).thenReturn(hospital);
+    // Test case for verifying a hospital
+    @Test
+    void testVerifyHospital() {
+        // Arrange
+        String hospitalId = "1";
+        Hospital hospital = createHospital();
 
-		// Invoke the service method and assert the result
-		Hospital verifiedHospital = hospitalService.verifyHospital(hospitalId);
+        // Mock
+        when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.of(hospital));
+        when(hospitalRepository.save(any(Hospital.class))).thenReturn(hospital);
 
-		assertTrue(verifiedHospital.getVerified());
+        // Act
+        Hospital verifiedHospital = hospitalService.verifyHospital(hospitalId);
 
-		// Verify that findById and save methods were called
-		verify(hospitalRepository, times(1)).findById(hospitalId);
-		verify(hospitalRepository, times(1)).save(any(Hospital.class));
-	}
+        // Assert
+        assertTrue(verifiedHospital.getVerified());
 
-	/**
-	 * Test case for verifying a hospital when it's not found.
-	 */
-	@Test
-	void testVerifyHospitalHospitalNotFound() {
-		// Prepare test data
-		String hospitalId = "1";
+        // Verify that findById and save methods were called
+        verify(hospitalRepository, times(1)).findById(hospitalId);
+        verify(hospitalRepository, times(1)).save(any(Hospital.class));
+    }
 
-		// Mock the behavior of the hospitalRepository to return empty result
-		when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.empty());
+    // Test case for verifying a hospital when it's not found
+    @Test
+    void testVerifyHospitalHospitalNotFound() {
+        // Arrange
+        String hospitalId = "1";
 
-		// Verify that HospitalNotFoundException is thrown
-		assertThrows(HospitalNotFoundException.class, () -> hospitalService.verifyHospital(hospitalId));
+        // Mock
+        when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.empty());
 
-		// Verify that save was never called
-		verify(hospitalRepository, never()).save(any(Hospital.class));
-	}
+        // Act and Assert
+        assertThrows(HospitalNotFoundException.class, () -> hospitalService.verifyHospital(hospitalId));
 
-	/**
-	 * Test case for getting nearby hospitals.
-	 */
-	@Test
-	void testGetNearbyHospitals() {
-		// Prepare test data
-		Long pincode = 226022L;
-		List<Hospital> nearbyHospitals = createAndSaveHospitalList();
+        // Verify
+        verify(hospitalRepository, never()).save(any(Hospital.class));
+    }
 
-		// Mock the behavior of the hospitalRepository
-		when(hospitalRepository.findByAddressPincodeBetween(pincode - 2, pincode + 2)).thenReturn(nearbyHospitals);
+    // Test case for getting nearby hospitals
+    @Test
+    public void testGetNearbyHospitals_Success() {
+        // Arrange
+        Long pincode = 226025L;
+        Hospital hospital1 = new Hospital();
+        hospital1.setId("1");
+        hospital1.setName("Apollo Hospital");
+        hospital1.setHospitalType(HospitalType.PRIVATE);
+        hospital1.setContactNo(7270043813L);
+        hospital1.setAddress(new Hospital.Address("City", "Uttar Pradesh", 226022L));
 
-		// Invoke the service method and assert the result
-		assertEquals(nearbyHospitals, hospitalService.getNearbyHospitals(pincode));
+        Hospital hospital2 = new Hospital();
+        hospital2.setId("2");
+        hospital2.setName("Medanta Hospital");
+        hospital2.setHospitalType(HospitalType.GOVT);
+        hospital2.setContactNo(7270043813L);
+        hospital2.setAddress(new Hospital.Address("City", "Uttar Pradesh", 226024L));
 
-		// Verify that findByAddressPincodeBetween was called once
-		verify(hospitalRepository, times(1)).findByAddressPincodeBetween(pincode - 2, pincode + 2);
-	}
+        hospitalRepository.saveAll(List.of(hospital1, hospital2));
 
-	/**
-	 * Helper method for creating an AddHospitalRequest object.
-	 * 
-	 * This method creates and returns an AddHospitalRequest object with predefined
-	 * attributes for testing purposes. It sets the name, hospital type, contact
-	 * number, and address for the request.
-	 *
-	 * @return An AddHospitalRequest object with predefined attributes.
-	 */
-	private static AddHospitalRequest createAddHospitalRequest() {
-		AddHospitalRequest request = new AddHospitalRequest();
-		request.setName("Apollo Hospital");
-		request.setHospitalType("PRIVATE");
-		request.setContactNo(7270043813L);
-		request.setAddress(new Hospital.Address("Lucknow", "Uttar Pradesh", 226022L));
-		return request;
-	}
+        List<Hospital> nearbyHospitals = List.of(hospital1, hospital2);
 
-	/**
-	 * Helper method for creating a Hospital object.
-	 * 
-	 * This method creates and returns a Hospital object with predefined attributes
-	 * for testing purposes. It sets the hospital ID, name, type, contact number,
-	 * and address.
-	 *
-	 * @return A Hospital object with predefined attributes.
-	 */
-	private static Hospital createHospital() {
-		Hospital hospital = new Hospital();
-		hospital.setId("1");
-		hospital.setName("Apollo Hospital");
-		hospital.setHospitalType(HospitalType.PRIVATE);
-		hospital.setContactNo(7270043813L);
-		hospital.setAddress(new Hospital.Address("City", "Uttar Pradesh", 226022L));
-		return hospital;
-	}
+        // Mock
+        when(hospitalRepository.findByAddressPincodeBetween(eq(226005L), eq(226045L))).thenReturn(nearbyHospitals);
 
-	/**
-	 * Helper method for creating and saving a list of hospitals.
-	 * 
-	 * This method creates a list of Hospital objects, saves them to the hospital
-	 * repository, and returns the list of hospitals. It is used to simulate the
-	 * presence of multiple hospitals in the repository for testing.
-	 *
-	 * @return A list of Hospital objects that have been created and saved.
-	 */
-	private List<Hospital> createAndSaveHospitalList() {
-		List<Hospital> hospitals = new ArrayList<>();
-		Hospital hospital1 = new Hospital();
-		hospital1.setId("1");
-		hospital1.setName("Apollo Hospital");
-		hospital1.setHospitalType(HospitalType.PRIVATE);
-		hospital1.setContactNo(7270043813L);
-		hospital1.setAddress(new Hospital.Address("City", "Uttar Pradesh", 226022L));
+        // Act
+        List<Hospital> hospitals = hospitalService.getNearbyHospitals(pincode);
 
-		Hospital hospital2 = new Hospital();
-		hospital2.setId("2");
-		hospital2.setName("Medanta Hospital");
-		hospital2.setHospitalType(HospitalType.GOVT);
-		hospital2.setContactNo(7270043813L);
-		hospital2.setAddress(new Hospital.Address("City", "Uttar Pradesh", 226024L));
+        // Assert
+        assertNotNull(hospitals);
+        assertEquals(2, hospitals.size());
+    }
 
-		hospitalRepository.saveAll(List.of(hospital1, hospital2));
+    @Test
+    void testGetAllHospitals() {
+        // Arrange
+        List<Hospital> expectedHospitals = new ArrayList<>();
+        Hospital hospital1 = new Hospital();
+        hospital1.setId("1");
+        hospital1.setName("Apollo Hospital");
+        hospital1.setHospitalType(HospitalType.PRIVATE);
+        hospital1.setContactNo(7270043813L);
+        hospital1.setAddress(new Hospital.Address("City", "Uttar Pradesh", 226022L));
+       
+        Hospital hospital2 = new Hospital();
+        hospital2.setId("2");
+        hospital2.setName("MEDANTA Hospital");
+        hospital2.setHospitalType(HospitalType.GOVT);
+        hospital2.setContactNo(7270043813L);
+        hospital2.setAddress(new Hospital.Address("City", "Uttar Pradesh", 226022L));
+        
+        expectedHospitals.add(hospital1);
+        expectedHospitals.add(hospital2);
 
-		hospitals.add(hospital1);
-		hospitals.add(hospital2);
-		return hospitals;
-	}
+        // Mock
+        when(hospitalRepository.findAll()).thenReturn(expectedHospitals);
+
+        // Act
+        List<Hospital> hospitals = hospitalService.getAllHositals();
+
+        // Assert
+        assertNotNull(hospitals);
+        assertEquals(expectedHospitals.size(), hospitals.size());
+        assertEquals(expectedHospitals, hospitals);
+
+        // Verify that findAll was called once
+        verify(hospitalRepository, times(1)).findAll();
+    }
+    
+    private static AddHospitalRequest createAddHospitalRequest() {
+        AddHospitalRequest request = new AddHospitalRequest();
+        request.setName("Apollo Hospital");
+        request.setHospitalType("PRIVATE");
+        request.setContactNo(7270043813L);
+        request.setAddress(new Hospital.Address("Lucknow", "Uttar Pradesh", 226022L));
+        return request;
+    }
+
+    private static Hospital createHospital() {
+        Hospital hospital = new Hospital();
+        hospital.setId("1");
+        hospital.setName("Apollo Hospital");
+        hospital.setHospitalType(HospitalType.PRIVATE);
+        hospital.setContactNo(7270043813L);
+        hospital.setAddress(new Hospital.Address("City", "Uttar Pradesh", 226022L));
+        return hospital;
+    }
 }

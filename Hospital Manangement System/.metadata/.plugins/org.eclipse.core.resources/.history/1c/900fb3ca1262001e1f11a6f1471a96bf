@@ -1,0 +1,57 @@
+package com.hms.bookingms.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hms.bookingms.dto.AddBookingRequest;
+import com.hms.bookingms.entities.Booking;
+import com.hms.bookingms.exceptions.BookingNotFoundException;
+import com.hms.bookingms.exceptions.InvalidBookingRequest;
+import com.hms.bookingms.exceptions.InvalidDatesException;
+import com.hms.bookingms.exceptions.PatientNotFoundException;
+import com.hms.bookingms.service.BookingService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+public class BookingControllerTest {
+
+    private MockMvc mockMvc;
+
+    @InjectMocks
+    private BookingController bookingController;
+
+    @Mock
+    private BookingService bookingService;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(bookingController)
+                .setControllerAdvice(new CentralExceptionHandler())
+                .build();
+    }
+      
+    private static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+}

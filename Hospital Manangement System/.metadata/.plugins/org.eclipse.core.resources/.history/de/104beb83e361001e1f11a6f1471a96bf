@@ -1,0 +1,282 @@
+package com.hms.hospitalms.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hms.hospitalms.dto.AddHospitalRequest;
+import com.hms.hospitalms.entities.Hospital;
+import com.hms.hospitalms.exception.HospitalNotFoundException;
+import com.hms.hospitalms.service.IHospitalService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+public class HospitalControllerTest {
+
+    private MockMvc mockMvc;
+
+    @Mock
+    private IHospitalService hospitalService;
+
+    @InjectMocks
+    private HospitalController hospitalController;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(hospitalController).build();
+    }
+
+    @Test
+    void testAddHospital() throws Exception {
+        AddHospitalRequest request = createAddHospitalRequest();
+        Hospital expectedHospital = createHospital("1", "Apollo Hospital");
+
+        when(hospitalService.addHospital(request)).thenReturn(expectedHospital);
+
+        MvcResult result = mockMvc.perform(post("/api/hospitals/add")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"name\": \"Apollo Hospital\",\n" +
+                        "    \"hospitalType\": \"PRIVATE\",\n" +
+                        "    \"contactNo\": 7270043813,\n" +
+                        "    \"address\": {\n" +
+                        "        \"city\": \"Lucknow\",\n" +
+                        "        \"state\": \"Uttar Pradesh\",\n" +
+                        "        \"pincode\": 226022\n" +
+                        "    }\n" +
+                        "}"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        MockHttpServletResponse response = result.getResponse();
+        String content = response.getContentAsString();
+        Hospital actualHospital = new Hospital();
+        actualHospital = actualHospital.fromJson(content, Hospital.class);
+
+        assertNotNull(actualHospital);
+        assertEquals(expectedHospital.getId(), actualHospital.getId());
+        assertEquals(expectedHospital.getName(), actualHospital.getName());
+        assertEquals(expectedHospital.getHospitalType(), actualHospital.getHospitalType());
+
+        verify(hospitalService, times(1)).addHospital(request);
+    }
+
+    @Test
+    void testUpdateHospital() throws Exception {
+        String hospitalId = "1";
+        AddHospitalRequest request = createAddHospitalRequest();
+        Hospital expectedHospital = createHospital(hospitalId, "Apollo Hospital");
+
+        when(hospitalService.updateHospital(hospitalId, request)).thenReturn(expectedHospital);
+
+        MvcResult result = mockMvc.perform(put("/api/hospitals/update/{id}", hospitalId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"name\": \"Apollo Hospital\",\n" +
+                        "    \"hospitalType\": \"PRIVATE\",\n" +
+                        "    \"contactNo\": 7270043813,\n" +
+                        "    \"address\": {\n" +
+                        "        \"city\": \"Lucknow\",\n" +
+                        "        \"state\": \"Uttar Pradesh\",\n" +
+                        "        \"pincode\": 226022\n" +
+                        "    }\n" +
+                        "}"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        MockHttpServletResponse response = result.getResponse();
+        String content = response.getContentAsString();
+        Hospital actualHospital = new Hospital();
+        actualHospital = actualHospital.fromJson(content, Hospital.class);
+
+        assertNotNull(actualHospital);
+        assertEquals(expectedHospital.getId(), actualHospital.getId());
+        assertEquals(expectedHospital.getName(), actualHospital.getName());
+        assertEquals(expectedHospital.getHospitalType(), actualHospital.getHospitalType());
+
+        verify(hospitalService, times(1)).updateHospital(hospitalId, request);
+    }
+
+    @Test
+    void testUpdateHospitalHospitalNotFound() throws Exception {
+        String hospitalId = "1";
+        AddHospitalRequest request = createAddHospitalRequest();
+
+        when(hospitalService.updateHospital(hospitalId, request)).thenThrow(HospitalNotFoundException.class);
+
+        mockMvc.perform(put("/api/hospitals/update/{id}", hospitalId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"name\": \"Apollo Hospital\",\n" +
+                        "    \"hospitalType\": \"PRIVATE\",\n" +
+                        "    \"contactNo\": 7270043813,\n" +
+                        "    \"address\": {\n" +
+                        "        \"city\": \"Lucknow\",\n" +
+                        "        \"state\": \"Uttar Pradesh\",\n" +
+                        "        \"pincode\": 226022\n" +
+                        "}"))
+                .andExpect(status().isNotFound());
+
+        verify(hospitalService, times(1)).updateHospital(hospitalId, request);
+    }
+
+    @Test
+    void testGetHospitalById() throws Exception {
+        String hospitalId = "1";
+        Hospital expectedHospital = createHospital(hospitalId, "Apollo Hospital");
+
+        when(hospitalService.findHospitalById(hospitalId)).thenReturn(expectedHospital);
+
+        MvcResult result = mockMvc.perform(get("/api/hospitals/findById/{id}", hospitalId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        MockHttpServletResponse response = result.getResponse();
+        String content = response.getContentAsString();
+        Hospital actualHospital = new Hospital();
+        actualHospital = actualHospital.fromJson(content, Hospital.class);
+
+        assertNotNull(actualHospital);
+        assertEquals(expectedHospital.getId(), actualHospital.getId());
+        assertEquals(expectedHospital.getName(), actualHospital.getName());
+        assertEquals(expectedHospital.getHospitalType(), actualHospital.getHospitalType());
+
+        verify(hospitalService, times(1)).findHospitalById(hospitalId);
+    }
+
+    @Test
+    void testGetHospitalByIdHospitalNotFound() throws Exception {
+        String hospitalId = "1";
+
+        when(hospitalService.findHospitalById(hospitalId)).thenThrow(HospitalNotFoundException.class);
+
+        mockMvc.perform(get("/api/hospitals/findById/{id}", hospitalId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+
+        verify(hospitalService, times(1)).findHospitalById(hospitalId);
+    }
+
+    @Test
+    void testGetAllHospitals() throws Exception {
+        List<Hospital> expectedHospitals = new ArrayList<>();
+        Hospital hospital1 = createHospital("1", "Apollo Hospital");
+        Hospital hospital2 = createHospital("2", "Medanta Hospital");
+        expectedHospitals.add(hospital1);
+        expectedHospitals.add(hospital2);
+
+        when(hospitalService.getAllHositals()).thenReturn(expectedHospitals);
+
+        MvcResult result = mockMvc.perform(get("/api/hospitals/getAllHospitals")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        MockHttpServletResponse response = result.getResponse();
+        String content = response.getContentAsString();
+        Hospital[] actualHospitals = Hospital.fromJsonArray(content);
+
+        assertNotNull(actualHospitals);
+        assertEquals(expectedHospitals.size(), actualHospitals.length);
+
+        verify(hospitalService, times(1)).getAllHositals();
+    }
+
+    @Test
+    void testIsHospitalVerified() throws Exception {
+        String hospitalId = "1";
+
+        when(hospitalService.isHospitalVerified(hospitalId)).thenReturn(true);
+
+        MvcResult result = mockMvc.perform(get("/api/hospitals/isVerified/{id}", hospitalId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        MockHttpServletResponse response = result.getResponse();
+        String content = response.getContentAsString();
+        Boolean isVerified = Boolean.parseBoolean(content);
+
+        assertTrue(isVerified);
+
+        verify(hospitalService, times(1)).isHospitalVerified(hospitalId);
+    }
+
+    @Test
+    void testVerifyHospital() throws Exception {
+        String hospitalId = "1";
+        Hospital expectedHospital = createHospital(hospitalId, "Apollo Hospital");
+        expectedHospital.setVerified(true);
+
+        when(hospitalService.verifyHospital(hospitalId)).thenReturn(expectedHospital);
+
+        MvcResult result = mockMvc.perform(put("/api/hospitals/verify/{id}", hospitalId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        MockHttpServletResponse response = result.getResponse();
+        String content = response.getContentAsString();
+        Hospital actualHospital = new Hospital();
+        actualHospital = actualHospital.fromJson(content, Hospital.class);
+
+        assertNotNull(actualHospital);
+        assertTrue(actualHospital.isVerified());
+
+        verify(hospitalService, times(1)).verifyHospital(hospitalId);
+    }
+
+    @Test
+    void testVerifyHospitalHospitalNotFound() throws Exception {
+        String hospitalId = "1";
+
+        when(hospitalService.verifyHospital(hospitalId)).thenThrow(HospitalNotFoundException.class);
+
+        mockMvc.perform(put("/api/hospitals/verify/{id}", hospitalId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+
+        verify(hospitalService, times(1)).verifyHospital(hospitalId);
+    }
+
+    private AddHospitalRequest createAddHospitalRequest() {
+        AddHospitalRequest request = new AddHospitalRequest();
+        request.setName("Apollo Hospital");
+        request.setHospitalType("PRIVATE");
+        request.setContactNo(7270043813L);
+        request.setAddress(new Hospital.Address("Lucknow", "Uttar Pradesh", 226022L));
+        return request;
+    }
+
+    private Hospital createHospital(String id, String name) {
+        Hospital hospital = new Hospital();
+        hospital.setId(id);
+        hospital.setName(name);
+        hospital.setHospitalType(Hospital.HospitalType.PRIVATE);
+        hospital.setContactNo(7270043813L);
+        hospital.setAddress(new Hospital.Address("City", "Uttar Pradesh", 226022L));
+        return hospital;
+    }
+    private String fromJson(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+}

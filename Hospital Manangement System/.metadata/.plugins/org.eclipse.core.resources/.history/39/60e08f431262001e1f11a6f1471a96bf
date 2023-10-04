@@ -1,0 +1,309 @@
+package com.hms.bookingms.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hms.bookingms.dto.AddBookingRequest;
+import com.hms.bookingms.entities.Booking;
+import com.hms.bookingms.exceptions.BookingNotFoundException;
+import com.hms.bookingms.exceptions.InvalidBookingRequest;
+import com.hms.bookingms.exceptions.InvalidDatesException;
+import com.hms.bookingms.exceptions.PatientNotFoundException;
+import com.hms.bookingms.service.BookingService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import com.hms.bookingms.controller.BookingController;
+import com.hms.bookingms.dto.AddBookingRequest;
+import com.hms.bookingms.entities.Booking;
+import com.hms.bookingms.exceptions.*;
+import com.hms.bookingms.service.BookingService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import javax.validation.ValidationException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+public class BookingControllerTest {
+
+    @Mock
+    private BookingService bookingService;
+
+    @InjectMocks
+    private BookingController bookingController;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void testAddBooking_ValidRequest() throws PatientNotFoundException, HospitalNotFoundException, InvalidDatesException {
+        // Arrange
+        AddBookingRequest addBookingRequest = createValidAddBookingRequest();
+        Booking savedBooking = createSampleBooking();
+        when(bookingService.addBooking(anyString(), any(AddBookingRequest.class))).thenReturn(savedBooking);
+
+        // Act
+        ResponseEntity<Booking> response = bookingController.addBooking("AuthorizationHeader", addBookingRequest);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(savedBooking, response.getBody());
+    }
+
+    @Test
+    void testAddBooking_InvalidRequest() throws PatientNotFoundException, HospitalNotFoundException, InvalidDatesException {
+        // Arrange
+        AddBookingRequest addBookingRequest = createInvalidAddBookingRequest();
+        when(bookingService.addBooking(anyString(), any(AddBookingRequest.class)))
+                .thenThrow(new ValidationException("Validation failed"));
+
+        // Act
+        ResponseEntity<Booking> response = bookingController.addBooking("AuthorizationHeader", addBookingRequest);
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    @Test
+    void testGetBookingById_BookingFound() throws BookingNotFoundException {
+        // Arrange
+        Booking sampleBooking = createSampleBooking();
+        when(bookingService.findBookingById(anyString())).thenReturn(sampleBooking);
+
+        // Act
+        ResponseEntity<Booking> response = bookingController.getBookingById("bookingId");
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(sampleBooking, response.getBody());
+    }
+
+    @Test
+    void testGetBookingById_BookingNotFound() throws BookingNotFoundException {
+        // Arrange
+        when(bookingService.findBookingById(anyString())).thenThrow(new BookingNotFoundException("Booking not found"));
+
+        // Act
+        ResponseEntity<Booking> response = bookingController.getBookingById("nonexistentBookingId");
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    @Test
+    void testGetBookingsByPatientId_PatientFound() throws PatientNotFoundException {
+        // Arrange
+        List<Booking> sampleBookings = createSampleBookingList();
+        when(bookingService.getBookingByPatientId(anyString())).thenReturn(sampleBookings);
+
+        // Act
+        ResponseEntity<List<Booking>> response = bookingController.getBookingsByPatientId("patientId");
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(sampleBookings, response.getBody());
+    }
+
+    @Test
+    void testGetBookingsByPatientId_PatientNotFound() throws PatientNotFoundException {
+        // Arrange
+        when(bookingService.getBookingByPatientId(anyString())).thenThrow(new PatientNotFoundException("Patient not found"));
+
+        // Act
+        ResponseEntity<List<Booking>> response = bookingController.getBookingsByPatientId("nonexistentPatientId");
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    @Test
+    void testApproveBooking_BookingRequested() throws BookingNotFoundException, InvalidBookingRequest {
+        // Arrange
+        Booking sampleBooking = createSampleBooking();
+        when(bookingService.approveBooking(anyString(), anyString())).thenReturn(sampleBooking);
+
+        // Act
+        ResponseEntity<Booking> response = bookingController.approveBooking("AuthorizationHeader", "bookingId");
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(sampleBooking, response.getBody());
+    }
+
+    @Test
+    void testApproveBooking_BookingNotRequested() throws BookingNotFoundException, InvalidBookingRequest {
+        // Arrange
+        when(bookingService.approveBooking(anyString(), anyString()))
+                .thenThrow(new InvalidBookingRequest("Invalid booking request"));
+
+        // Act
+        ResponseEntity<Booking> response = bookingController.approveBooking("AuthorizationHeader", "bookingId");
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    @Test
+    void testRejectBooking_BookingRequested() throws BookingNotFoundException, InvalidBookingRequest {
+        // Arrange
+        Booking sampleBooking = createSampleBooking();
+        when(bookingService.rejectBooking(anyString())).thenReturn(sampleBooking);
+
+        // Act
+        ResponseEntity<Booking> response = bookingController.rejectBooking("bookingId");
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(sampleBooking, response.getBody());
+    }
+
+    @Test
+    void testRejectBooking_BookingNotRequested() throws BookingNotFoundException, InvalidBookingRequest {
+        // Arrange
+        when(bookingService.rejectBooking(anyString())).thenThrow(new InvalidBookingRequest("Invalid booking request"));
+
+        // Act
+        ResponseEntity<Booking> response = bookingController.rejectBooking("bookingId");
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    @Test
+    void testCancelBooking_BookingRequested() throws BookingNotFoundException, InvalidBookingRequest {
+        // Arrange
+        Booking sampleBooking = createSampleBooking();
+        when(bookingService.cancelBooking(anyString(), anyString())).thenReturn(sampleBooking);
+
+        // Act
+        ResponseEntity<Booking> response = bookingController.cancelBooking("AuthorizationHeader", "bookingId");
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(sampleBooking, response.getBody());
+    }
+
+    @Test
+    void testCancelBooking_BookingNotRequested() throws BookingNotFoundException, InvalidBookingRequest {
+        // Arrange
+        when(bookingService.cancelBooking(anyString(), anyString()))
+                .thenThrow(new InvalidBookingRequest("Invalid booking request"));
+
+        // Act
+        ResponseEntity<Booking> response = bookingController.cancelBooking("AuthorizationHeader", "bookingId");
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    @Test
+    void testCompleteBooking_BookingApproved() throws BookingNotFoundException {
+        // Arrange
+        Booking sampleBooking = createSampleBooking();
+        sampleBooking.setBookingStatus(Booking.BookingStatus.APPROVED);
+        when(bookingService.completeBooking(anyString(), anyString())).thenReturn(sampleBooking);
+
+        // Act
+        ResponseEntity<Booking> response = bookingController.completeBooking("AuthorizationHeader", "bookingId");
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(sampleBooking, response.getBody());
+    }
+
+    @Test
+    void testCompleteBooking_BookingNotApproved() throws BookingNotFoundException {
+        // Arrange
+        Booking sampleBooking = createSampleBooking();
+        when(bookingService.completeBooking(anyString(), anyString()))
+                .thenThrow(new InvalidBookingRequest("Booking is not approved"));
+
+        // Act
+        ResponseEntity<Booking> response = bookingController.completeBooking("AuthorizationHeader", "bookingId");
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    // Helper methods to create sample objects
+    private AddBookingRequest createValidAddBookingRequest() {
+        AddBookingRequest request = new AddBookingRequest();
+        request.setPatientId("patientId");
+        request.setHospitalId("hospitalId");
+        request.setBedType("USUAL_BED");
+        request.setOccupyDate(new Date(System.currentTimeMillis() + 3600000)); // One hour from now
+        request.setReleaseDate(new Date(System.currentTimeMillis() + 7200000)); // Two hours from now
+        return request;
+    }
+
+    private AddBookingRequest createInvalidAddBookingRequest() {
+        AddBookingRequest request = new AddBookingRequest();
+        request.setPatientId(null); // Invalid, should not be null
+        request.setHospitalId("hospitalId");
+        request.setBedType("INVALID_BED"); // Invalid bed type
+        request.setOccupyDate(new Date(System.currentTimeMillis() + 3600000));
+        request.setReleaseDate(new Date(System.currentTimeMillis() + 7200000));
+        return request;
+    }
+
+    private Booking createSampleBooking() {
+        Booking booking = new Booking();
+        booking.setId("bookingId");
+        booking.setPatientId("patientId");
+        booking.setHospitalId("hospitalId");
+        booking.setBedType("USUAL_BED");
+        booking.setOccupyDate(new Date(System.currentTimeMillis() + 3600000));
+        booking.setReleaseDate(new Date(System.currentTimeMillis() + 7200000));
+        booking.setBookingStatus(Booking.BookingStatus.REQUESTED);
+        return booking;
+    }
+
+    private List<Booking> createSampleBookingList() {
+        List<Booking> bookings = new ArrayList<>();
+        bookings.add(createSampleBooking());
+        return bookings;
+    }
+}

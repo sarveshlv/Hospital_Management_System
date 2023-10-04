@@ -1,0 +1,108 @@
+package com.hms.billingms.service;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Date;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import com.hms.billingms.clients.IBedServiceClient;
+import com.hms.billingms.clients.IBookingServiceClient;
+import com.hms.billingms.dto.Bed;
+import com.hms.billingms.dto.Booking;
+import com.hms.billingms.entities.Billing;
+import com.hms.billingms.exceptions.BillingNotFoundException;
+import com.hms.billingms.exceptions.BookingNotFoundException;
+
+import com.hms.billingms.repository.BillingRepository;
+
+
+public class BillingServiceTest {
+
+    @Mock
+    private BillingRepository billingRepository;
+
+    @Mock
+    private IBookingServiceClient bookingServiceClient;
+
+    @Mock
+    private IBedServiceClient bedServiceClient;
+
+    @InjectMocks
+    private BillingService billingService;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void testGenerateBill_ValidRequest_ReturnsBilling() throws BookingNotFoundException {
+        // Arrange
+        String authorizationHeader = "validAuthorizationHeader";
+        String bookingId = "validBookingId";
+        
+        //Mock
+        Booking booking = new Booking();
+        booking.setId("validBookingId");
+        booking.setPatientId("validPatientId");
+        booking.setHospitalId("validHospitalId");
+        booking.setBedId("validBedId");
+        booking.setBedType("USUAL_BED");
+        booking.setOccupyDate(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000));
+        booking.setReleaseDate(new Date(System.currentTimeMillis() + 48 * 60 * 60 * 1000));
+        booking.setBookingStatus("REQUESTED");
+        
+        Bed bed = new Bed();
+        bed.setId("validBedId");
+        bed.setHospitalId("validHospitalId");
+        bed.setBedType("USUAL_BED");
+        bed.setBedStatus("AVAILABLE");
+        bed.setCostPerDay(100.0);
+        when(bookingServiceClient.completeBooking(authorizationHeader, bookingId)).thenReturn(booking);
+        when(bedServiceClient.makeBedAvaialbe(authorizationHeader, booking.getBedId())).thenReturn(bed);
+        
+        // Act
+        Billing billing = billingService.generateBill(authorizationHeader, bookingId);
+
+        // Assert
+        assertNotNull(billing);
+        assertEquals(bookingId, billing.getBookingId());
+    }
+
+    @Test
+    public void testGenerateBill_InvalidBooking_ThrowsBookingNotFoundException() throws BookingNotFoundException {
+        // Arrange
+        String authorizationHeader = "validAuthorizationHeader";
+        String bookingId = "invalidBookingId";
+        
+        // Mocking behavior of bookingServiceClient to throw BookingNotFoundException
+        when(bookingServiceClient.completeBooking(authorizationHeader, bookingId)).thenThrow(BookingNotFoundException.class);
+
+        // Act and Assert
+        assertThrows(BookingNotFoundException.class, () -> billingService.generateBill(authorizationHeader, bookingId));
+    }
+
+    @Test
+    public void testGenerateBill_InvalidBed_ThrowsBedNotFoundException() throws BookingNotFoundException {
+        // Arrange
+        String authorizationHeader = "validAuthorizationHeader";
+        String bookingId = "validBookingId";
+        Booking booking = new Booking();
+        
+        // Mocking behavior of bookingServiceClient
+        when(bookingServiceClient.completeBooking(authorizationHeader, bookingId)).thenReturn(booking);
+        
+        // Mocking behavior of bedServiceClient to throw BedNotFoundException
+        when(bedServiceClient.makeBedAvaialbe(authorizationHeader, booking.getBedId())).thenThrow(BookingNotFoundException.class);
+
+        // Act and Assert
+        assertThrows(BookingNotFoundException.class, () -> billingService.generateBill(authorizationHeader, bookingId));
+    }
+
+}

@@ -1,0 +1,65 @@
+package com.hms.billingms.repository;
+
+import com.hms.billingms.entities.Billing;
+import com.hms.billingms.repository.BillingRepository;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+@DataMongoTest
+public class BillingRepositoryTest {
+
+    @Autowired
+    private BillingRepository billingRepository;
+
+    @Test
+    public void testSaveBilling() {
+        // Arrange
+        Billing billing = new Billing();
+        billing.setBookingId("sampleBookingId");
+        billing.setBillAmount(100.0);
+        billing.setPaymentStatus(Billing.PaymentStatus.PENDING);
+
+        // Act
+        Billing savedBilling = billingRepository.save(billing);
+
+        // Assert
+        assertNotNull(savedBilling);
+        assertEquals("sampleBookingId", savedBilling.getBookingId());
+        assertEquals(100.0, savedBilling.getBillAmount());
+        assertEquals(Billing.PaymentStatus.PENDING, savedBilling.getPaymentStatus());
+    }
+
+    @Test
+    public void testFindByBookingId() {
+        // Arrange
+        Billing billing = new Billing();
+        billing.setBookingId("sampleBookingId");
+        billing.setBillAmount(100.0);
+        billing.setPaymentStatus(Billing.PaymentStatus.PENDING);
+        billingRepository.save(billing);
+
+        // Act
+        Billing foundBilling = billingRepository.findByBookingId("sampleBookingId");
+
+        // Assert
+        assertNotNull(foundBilling);
+        assertEquals("sampleBookingId", foundBilling.getBookingId());
+        assertEquals(100.0, foundBilling.getBillAmount());
+        assertEquals(Billing.PaymentStatus.PENDING, foundBilling.getPaymentStatus());
+    }
+
+    @Test
+    public void testFindByBookingId_InvalidBookingId() {
+        // Arrange: No billing with this bookingId should exist
+
+        // Act
+        Billing foundBilling = billingRepository.findByBookingId("nonExistentBookingId");
+
+        // Assert
+        assertEquals(null, foundBilling);
+    }
+}

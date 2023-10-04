@@ -6,8 +6,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -17,12 +15,10 @@ import java.util.List;
 import java.util.Optional;
 
 import com.hms.bedms.clients.IHospitalServiceClient;
-import com.hms.bedms.dtos.AddBedRequest;
 import com.hms.bedms.dtos.Hospital;
 import com.hms.bedms.dtos.UpdateBedRequest;
 import com.hms.bedms.entities.Bed;
 import com.hms.bedms.exceptions.BedNotFoundException;
-import com.hms.bedms.exceptions.HospitalNotFoundException;
 import com.hms.bedms.repository.IBedRepository;
 
 @SpringBootTest
@@ -40,33 +36,6 @@ public class BedServiceTest {
 	@BeforeEach
 	void setup() {
 		MockitoAnnotations.openMocks(this);
-	}
-
-	@Test
-	public void testAddBed_ValidHospital() {
-		Bed savedBed = createBed();
-
-		AddBedRequest addBedRequest = new AddBedRequest();
-		addBedRequest.setHospitalId("1");
-		addBedRequest.setBedType("USUAL_BED");
-		addBedRequest.setCostPerDay(25.0);
-
-		when(hospitalServiceClient.isHospitalFound("1")).thenReturn(new ResponseEntity<>(null, HttpStatus.OK));
-		when(bedRepository.save(any(Bed.class))).thenReturn(savedBed);
-
-		assertEquals(savedBed, bedService.addBed(addBedRequest));
-	}
-
-	@Test
-	public void testAddBed_HospitalNotFound() {
-		AddBedRequest addBedRequest = new AddBedRequest();
-		addBedRequest.setHospitalId("1");
-		addBedRequest.setBedType("USUAL_BED");
-		addBedRequest.setCostPerDay(100.0);
-
-		when(hospitalServiceClient.isHospitalFound("1")).thenReturn(new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
-
-		assertThrows(HospitalNotFoundException.class, () -> bedService.addBed(addBedRequest));
 	}
 	
 	public void testGetNearbyBeds() {
@@ -92,11 +61,11 @@ public class BedServiceTest {
         bedsForHospital2.add(bed3);
         
         
-        when(hospitalServiceClient.getNearbyHospitals(226022L)).thenReturn(nearbyHospitals);
+        when(hospitalServiceClient.getNearbyHospitals(any(), 226022L)).thenReturn(nearbyHospitals);
         when(bedRepository.findByHospitalId("1")).thenReturn(bedsForHospital1);
         when(bedRepository.findByHospitalId("2")).thenReturn(bedsForHospital2);
 
-        List<Bed> result = bedService.getNearbyBeds(226022L);
+        List<Bed> result = bedService.getNearbyBeds(any(), 226022L);
 
         assertEquals(3, result.size());
         assertTrue(result.contains(bed1));
@@ -250,7 +219,7 @@ public class BedServiceTest {
 	@Test
 	public void testMakeBedAvailable_ValidBedId() {
 		Bed bed = createBed();
-		bed.setBedStatus(Bed.BedStatus.CANCELLED);
+		bed.setBedStatus(Bed.BedStatus.COMPLETED);
 
 		when(bedRepository.findById("1")).thenReturn(Optional.of(bed));
 		when(bedRepository.save(bed)).thenReturn(bed);

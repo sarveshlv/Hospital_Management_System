@@ -1,0 +1,155 @@
+package com.hms.userms.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hms.userms.dto.AddUserRequest;
+import com.hms.userms.dto.UpdatePasswordRequest;
+import com.hms.userms.dto.UpdateUserRequest;
+import com.hms.userms.dto.UserDetails;
+import com.hms.userms.exception.UserNotFoundException;
+import com.hms.userms.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+public class UserControllerTest {
+
+    private MockMvc mockMvc;
+
+    @Mock
+    private UserService userService;
+    
+    @InjectMocks
+    private UserController userController;
+
+
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(userController)
+                .setControllerAdvice(new CentralExceptionHandler())
+                .build();
+    }
+
+    @Test
+    public void testAddNewUser_InvalidData() throws Exception {
+        AddUserRequest request = new AddUserRequest();
+
+        mockMvc.perform(post("/api/users/signup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testUpdateUser_InvalidData() throws Exception {
+        UpdateUserRequest request = new UpdateUserRequest();
+
+        mockMvc.perform(put("/api/users/update")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+
+    @Test
+    public void testGetUserByEmail_Success() throws Exception {
+        UserDetails userDetails = new UserDetails();
+        userDetails.setId("1");
+        userDetails.setFirstName("Prateek");
+        userDetails.setLastName("Singh");
+        userDetails.setEmail("singh.prateek2599@gmail.com");
+        userDetails.setRole("USER");
+        userDetails.setReferenceId("patientRef");
+        
+        when(userService.getUserByEmail(anyString())).thenReturn(userDetails);
+
+        mockMvc.perform(get("/api/users/findByEmail/singh.prateek2599@gmail.com"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testGetUserByEmail_UserNotFound() throws Exception {
+        when(userService.getUserByEmail(anyString())).thenThrow(UserNotFoundException.class);
+
+        mockMvc.perform(get("/api/users/findByEmail/nonexistent@example.com"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testUpdatePassword_Success() throws Exception {
+        UpdatePasswordRequest request = new UpdatePasswordRequest();
+        request.setEmail("singh.prateek2599@gmail.com");
+        request.setPassword("Pra733k@2000");
+
+        UserDetails updatedUserDetails = new UserDetails();
+        updatedUserDetails.setId("1");
+        updatedUserDetails.setFirstName("Prateek");
+        updatedUserDetails.setLastName("Singh");
+        updatedUserDetails.setEmail("singh.prateek2599@gmail.com");
+        updatedUserDetails.setRole("USER");
+        updatedUserDetails.setReferenceId("patientRef");
+        
+        // Mock the userService.updatePassword method
+        when(userService.updatePassword(any(UpdatePasswordRequest.class))).thenReturn(updatedUserDetails);
+
+        // Perform the PUT request
+        mockMvc.perform(put("/api/users/updatePassword")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(request)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testUpdatePassword_UserNotFound() throws Exception {
+        // Create an example UpdatePasswordRequest
+        UpdatePasswordRequest request = new UpdatePasswordRequest();
+        request.setEmail("nonexistent@example.com");
+
+        // Mock the userService.updatePassword method to throw UserNotFoundException
+        when(userService.updatePassword(any(UpdatePasswordRequest.class))).thenThrow(UserNotFoundException.class);
+
+        // Perform the PUT request
+        mockMvc.perform(put("/api/users/updatePassword")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(request)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testAddReference_Success() throws Exception {
+        // Create an example UserDetails response after adding reference
+        UserDetails updatedUserDetails = new UserDetails();
+        updatedUserDetails.setId("1");
+        updatedUserDetails.setFirstName("John");
+        updatedUserDetails.setLastName("Doe");
+        updatedUserDetails.setEmail("johndoe@example.com");
+        updatedUserDetails.setRole("USER");
+        updatedUserDetails.setReferenceId("ref123");  // Set as needed
+
+        // Mock the userService.addReferenceId method
+        when(userService.addReferenceId(eq("johndoe@example.com"), eq("ref123"))).thenReturn(updatedUserDetails);
+
+        // Perform the GET request
+        mockMvc.perform(get("/api/users/addReference/johndoe@example.com/ref123"))
+                .andExpect(status().isOk());
+    }
+
+    // Utility method to convert object to JSON string
+    private String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+}

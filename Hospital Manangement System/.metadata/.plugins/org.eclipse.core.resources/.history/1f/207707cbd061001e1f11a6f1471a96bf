@@ -1,0 +1,78 @@
+package com.hms.userms.service;
+
+import com.hms.userms.dto.AddUserRequest;
+import com.hms.userms.dto.UpdatePasswordRequest;
+import com.hms.userms.dto.UpdateUserRequest;
+import com.hms.userms.dto.UserDetails;
+import com.hms.userms.entity.User;
+import com.hms.userms.exception.UserNotFoundException;
+import com.hms.userms.repository.UserRepository;
+import com.hms.userms.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+
+@SpringBootTest
+public class UserServiceTest {
+	
+	@Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    @InjectMocks
+    private UserService userService;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void testSaveUser_Success() {
+        // Arrange
+        AddUserRequest request = new AddUserRequest();
+        request.setFirstName("Prateek");
+        request.setLastName("Singh");
+        request.setEmail("singh.prateek2599@gmail.com");
+        request.setPassword("Prateek@2000");
+        request.setRole("USER");
+
+        User savedUser = new User();
+        savedUser.setId("1");
+        savedUser.setFirstName(request.getFirstName());
+        savedUser.setLastName(request.getLastName());
+        savedUser.setEmail(request.getEmail());
+        savedUser.setLoggedId(false);
+        savedUser.setPassword("encoded_Prateek@2000");
+        savedUser.setRole(request.getRole());
+
+        when(passwordEncoder.encode(request.getPassword())).thenReturn("encoded_Prateek@2000");
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+
+        // Act
+        UserDetails userDetails = userService.saveUser(request);
+
+        // Assert
+        assertNotNull(userDetails);
+        assertEquals("Prateek", userDetails.getFirstName());
+        assertEquals("Singh", userDetails.getLastName());
+        assertEquals("singh.prateek2599@gmail.com", userDetails.getEmail());
+        assertEquals("USER", userDetails.getRole());
+        
+        assertEquals(savedUser, userDetails);
+    }
+
+}
