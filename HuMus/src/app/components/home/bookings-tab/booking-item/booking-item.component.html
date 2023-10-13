@@ -73,12 +73,11 @@
             </ng-container>
         </td>
 
-
-        <td *ngIf="booking.bookingStatus === BookingStatus.COMPLETED" class="text-center col">{{ billing.billAmount }}</td>
+        <!-- Bill and Payment -->
+        <td *ngIf="booking.bookingStatus === BookingStatus.COMPLETED" class="text-center col">{{ billing.billAmount}}&#8377;</td>
         <td *ngIf="booking.bookingStatus === BookingStatus.COMPLETED"
-            [ngClass]="{'text-center': true, 'col': true, 'text-warning': billing.paymentStatus === PaymentStaus.PENDING, 'text-success': billing.paymentStatus === PaymentStaus.PENDING}">
+            [ngClass]="{'text-center': true, 'col': true, 'text-warning': billing.paymentStatus === PaymentStaus.PENDING, 'text-success': billing.paymentStatus === PaymentStaus.COMPLETED}">
             {{ billing.paymentStatus }}</td>
-
         <td *ngIf="booking.bookingStatus !== BookingStatus.COMPLETED" class="text-center col"> - </td>
         <td *ngIf="booking.bookingStatus !== BookingStatus.COMPLETED" class="text-center col"> - </td>
 

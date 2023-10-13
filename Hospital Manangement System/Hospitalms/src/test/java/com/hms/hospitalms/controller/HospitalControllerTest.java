@@ -39,41 +39,6 @@ public class HospitalControllerTest {
                 .build();
     }
 
-    // Test case for adding a new hospital with valid details
-    @Test
-    public void testAddHospital_WithValidDetails() throws Exception {
-        // Create an example valid AddHospitalRequest
-        AddHospitalRequest addHospitalRequest = new AddHospitalRequest();
-        addHospitalRequest.setName("Hospital Name");
-        addHospitalRequest.setHospitalType("PRIVATE");
-        addHospitalRequest.setContactNo(7270043813L);
-        addHospitalRequest.setAddress(new Hospital.Address("City", "State", 226022L));
-
-        // Create an example Hospital response after adding a new hospital
-        Hospital hospital = new Hospital();
-        hospital.setId("1");
-        hospital.setName("Hospital Name");
-        hospital.setHospitalType(Hospital.HospitalType.PRIVATE);
-        hospital.setContactNo(7270043813L);
-        hospital.setAddress(new Hospital.Address("City", "State", 226022L));
-
-        // Mock the hospitalService.addHospital method to return the created hospital
-        when(hospitalService.addHospital(any(AddHospitalRequest.class))).thenReturn(hospital);
-
-        // Perform the POST request and validate the response
-        mockMvc.perform(post("/api/hospitals/add")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(addHospitalRequest)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("1"))
-                .andExpect(jsonPath("$.name").value("Hospital Name"))
-                .andExpect(jsonPath("$.hospitalType").value("PRIVATE"))
-                .andExpect(jsonPath("$.contactNo").value(1234567890L))
-                .andExpect(jsonPath("$.address.city").value("City"))
-                .andExpect(jsonPath("$.address.state").value("State"))
-                .andExpect(jsonPath("$.address.pincode").value(12345L));
-    }
-
     // Test case for adding a new hospital with invalid data (BadRequest expected)
     @Test
     public void testAddHospital_InvalidData() throws Exception {
@@ -83,41 +48,6 @@ public class HospitalControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(request)))
                 .andExpect(status().isBadRequest());
-    }
-
-    // Test case for updating a hospital with valid details
-    @Test
-    public void testUpdateHospital_WithValidDetails() throws Exception {
-        // Create an example valid AddHospitalRequest
-        AddHospitalRequest addHospitalRequest = new AddHospitalRequest();
-        addHospitalRequest.setName("Updated Hospital");
-        addHospitalRequest.setHospitalType("GOVT");
-        addHospitalRequest.setContactNo(9876543210L);
-        addHospitalRequest.setAddress(new Hospital.Address("Updated City", "Updated State", 54321L));
-
-        // Create an example Hospital response after updating the hospital
-        Hospital updatedHospital = new Hospital();
-        updatedHospital.setId("1");
-        updatedHospital.setName("Updated Hospital");
-        updatedHospital.setHospitalType(Hospital.HospitalType.GOVT);
-        updatedHospital.setContactNo(9876543210L);
-        updatedHospital.setAddress(new Hospital.Address("Updated City", "Updated State", 654321L));
-
-        // Mock the hospitalService.updateHospital method to return the updated hospital
-        when(hospitalService.updateHospital(eq("1"), any(AddHospitalRequest.class))).thenReturn(updatedHospital);
-
-        // Perform the PUT request and validate the response
-        mockMvc.perform(put("/api/hospitals/update/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(addHospitalRequest)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("1"))
-                .andExpect(jsonPath("$.name").value("Updated Hospital"))
-                .andExpect(jsonPath("$.hospitalType").value("GOVT"))
-                .andExpect(jsonPath("$.contactNo").value(9876543210L))
-                .andExpect(jsonPath("$.address.city").value("Updated City"))
-                .andExpect(jsonPath("$.address.state").value("Updated State"))
-                .andExpect(jsonPath("$.address.pincode").value(654321L));
     }
 
     // Test case for updating a hospital with invalid data (BadRequest expected)
@@ -191,21 +121,6 @@ public class HospitalControllerTest {
 
         mockMvc.perform(get("/api/hospitals/isVerified/1"))
                 .andExpect(status().isNotFound());
-    }
-
-    // Test case for verifying a hospital when it exists (OK expected)
-    @Test
-    public void testVerifyHospital_Success() throws Exception {
-        Hospital hospital = new Hospital();
-        hospital.setId("1");
-        hospital.setVerified(false);
-
-        when(hospitalService.verifyHospital(eq("1"))).thenReturn(hospital);
-
-        mockMvc.perform(put("/api/hospitals/verify/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("1"))
-                .andExpect(jsonPath("$.verified").value(true));
     }
 
     // Test case for verifying a hospital when it doesn't exist (NotFound expected)

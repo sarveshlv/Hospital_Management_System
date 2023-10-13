@@ -322,9 +322,9 @@ a:hover {
 
 .custom-table td,
 th {
-    width: 130px;
-    min-width: 130px;
-    max-width: 130px;
+    width: 125px;
+    min-width: 125px;
+    max-width: 125px;
     cursor: pointer;
     user-select: none;
 }

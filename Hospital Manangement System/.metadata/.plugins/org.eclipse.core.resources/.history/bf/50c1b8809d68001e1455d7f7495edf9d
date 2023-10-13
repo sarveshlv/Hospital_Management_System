@@ -1,0 +1,43 @@
+#=================================
+#Spring application Configurations
+#=================================
+server.port = 8500
+spring.application.name = billingms
+
+
+#======================
+#Mongo Db configuration
+#======================
+spring.data.mongodb.host=localhost
+spring.data.mongodb.port=27017
+spring.data.mongodb.database=billingsdb
+
+
+#======================
+#Rabit MQ configuration
+#======================
+#spring.rabbitmq.host=localhost
+#spring.rabbitmq.port=5672
+#spring.rabbitmq.username=guest
+#spring.rabbitmq.password=guest
+
+
+#==========================
+#Eureka client registeration
+#==========================
+eureka.client.service-url.defaultZone=http://localhost:8761/eureka/
+
+#===============================
+#Razor pay config key values
+#===============================
+rzp.key.id=rzp_test_jlzrMv6mg0edmQ
+rzp.key.secret=JxLyiZtAYBUhJUuQJyIrct1j
+rzp.currency=INR
+rzp.company.name=HuMuS
+
+#===============================
+#Paypal configuration key values
+#===============================
+paypal.mode = sandbox
+paypal.client.id = Abf0jMyRZANdesY3_mtktn3Nvw3veQ4tet2wkIPxCgtUYxhrQma0oeb-_Qs1W2JWmFyAK1rZBP1itAAY
+paypal.client.secret = EGmB_ff-7u_4ZeSvfhhDggNJJnpqllw_5ExxAHm0alOyZ28VsBQj7yNQyaxGkHskY6R-3qaXLdSEZVxo

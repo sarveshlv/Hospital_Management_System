@@ -12,6 +12,7 @@ import { UserService } from 'src/app/services/user.service';
 import { JwtStorageService } from 'src/app/services/jwt/jwt.storage.service';
 import { UserDetails } from 'src/app/models/user.requests';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Location } from '@angular/common';
 
 const indianStatesAndUTs: string[] = [
   'Andhra Pradesh',
@@ -66,7 +67,8 @@ export class AddHospitalComponent {
     private userService: UserService,
     private jwtStorageService: JwtStorageService,
     private toast: NgToastService,
-    private router: Router
+    private router: Router,
+    private location: Location
   ) {}
 
   ngOnInit() {
@@ -83,6 +85,11 @@ export class AddHospitalComponent {
     });
   }
 
+  disableBackButton() {
+    this.location.subscribe(() => {
+      this.location.forward();
+    });
+  }
   private handleSuccess(message: string, summary: string) {
     this.toast.success({
       detail: message,

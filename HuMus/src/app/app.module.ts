@@ -57,7 +57,7 @@ import { HospitalsTabComponent } from './components/home/dashboard/hospitals-tab
     MatDatepickerModule,
     MatNativeDateModule,
     MatInputModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
   ],
   providers: [
     {

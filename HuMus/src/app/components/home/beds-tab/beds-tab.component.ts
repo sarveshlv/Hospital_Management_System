@@ -120,20 +120,23 @@ export class BedsTabComponent implements OnInit {
 
   //method for filtering by bedType
   applyFilter() {
-    if (this.selectedBedType === 'ALL' && this.selectedBedStatus === 'ALL') {
+    if (this.selectedBedStatus === 'ALL' &&  this.selectedHospital === 'ALL' && this.selectedBedType === 'ALL') {
       this.filteredBeds = this.beds;
     } else {
       this.filteredBeds = this.beds.filter((bed) => {
-        const bedTypeMatch =
-          this.selectedBedType === 'ALL' ||
-          bed.bedType === this.selectedBedType;
         const bedStatusMatch =
           this.selectedBedStatus === 'ALL' ||
           bed.bedStatus === this.selectedBedStatus;
-        return bedStatusMatch && bedTypeMatch;
+        const hospitalMatch =
+          this.selectedHospital === 'ALL' ||
+          bed.hospitalId === this.selectedHospital;
+        const bedTypeMatch =
+          this.selectedBedType === 'ALL' ||
+          bed.bedType === this.selectedBedType;
+        return bedStatusMatch && bedTypeMatch && hospitalMatch;
       });
-      this.refreshUniqueBed();
     }
+    this.refreshUniqueBed();
   }
 
   // filtering method for filtering by hospital
@@ -159,13 +162,16 @@ export class BedsTabComponent implements OnInit {
     this.bedsService.getBedsByHospitalId(hospitalId).subscribe({
       next: (response: Bed[]) => {
         console.log('Fetched beds:', response);
-        this.filteredBeds = response;
         if(this.isManager){
+          this.beds = response;
+          this.filteredBeds = this.beds;
           this.addBedPopup = this.filteredBeds.length === 0 ;
+        } else {
+          this.filteredBeds = response;
         }
         this.toast.info({
           detail: 'Successfully fetched beds of hospital',
-          summary: `Fetched ${this.filteredBeds.length} beds`,
+          summary: `Fetched ${this.beds.length} beds`,
           duration: 3000,
         });
       },

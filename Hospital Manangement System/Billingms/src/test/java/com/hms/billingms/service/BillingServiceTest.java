@@ -21,7 +21,9 @@ import com.hms.billingms.exceptions.BillingNotFoundException;
 import com.hms.billingms.exceptions.BookingNotFoundException;
 
 import com.hms.billingms.repository.BillingRepository;
+import org.springframework.boot.test.context.SpringBootTest;
 
+@SpringBootTest
 public class BillingServiceTest {
 
 	@Mock

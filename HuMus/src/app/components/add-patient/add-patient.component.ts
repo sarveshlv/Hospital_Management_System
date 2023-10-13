@@ -8,6 +8,8 @@ import { UserDetails } from 'src/app/models/user.requests';
 import { JwtStorageService } from 'src/app/services/jwt/jwt.storage.service';
 import { PatientService } from 'src/app/services/patient.service';
 import { UserService } from 'src/app/services/user.service';
+import { Location } from '@angular/common';
+
 
 const indianStatesAndUTs: string[] = [
   'Andhra Pradesh',
@@ -61,6 +63,7 @@ export class AddPatientComponent {
     private userService: UserService,
     private jwtStorageService:JwtStorageService,
     private toast: NgToastService,
+    private location: Location,
     private router: Router
   ) {}
 
@@ -76,6 +79,13 @@ export class AddPatientComponent {
     });
   }
 
+  //disable back button
+  disableBackButton() {
+    this.location.subscribe(() => {
+      this.location.forward();
+    });
+  }
+  
   private handleSuccess(message: string, summary: string) {
     this.toast.success({
       detail: message,

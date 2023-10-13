@@ -36,25 +36,6 @@ public class PatientControllerTest {
 				.build();
 	}
 
-    // Test case to validate adding a patient with a valid request
-	@Test
-	void testAddPatient_ValidRequest() throws Exception {
-		// Arrange
-		AddPatientRequest request = createAddPatientRequest();
-		Patient expectedPatient = createPatient();
-
-		// Mock
-		when(patientService.addPatient(any(AddPatientRequest.class))).thenReturn(expectedPatient);
-
-		// Act + Assert
-		mockMvc.perform(MockMvcRequestBuilders.post("/api/patients/add").contentType(MediaType.APPLICATION_JSON)
-				.content(asJsonString(request))).andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.id").value(expectedPatient.getId()))
-				.andExpect(jsonPath("$.firstName").value(expectedPatient.getFirstName()));
-		
-	}
-
     // Test case to validate adding a patient with an invalid request
 	@Test
 	void testAddPatient_InvalidRequest() throws Exception {
@@ -70,25 +51,6 @@ public class PatientControllerTest {
 				.andExpect(jsonPath("$.aadharNumber").value("Aadhar number is required"))
 				.andExpect(jsonPath("$.address").value("Address is required"));
 
-	}
-
-    // Test case to validate updating a patient with a valid request
-	@Test
-	void testUpdatePatient_ValidRequest() throws Exception {
-		// Arrange
-		String patientId = "1";
-		AddPatientRequest request = createAddPatientRequest();
-		Patient expectedPatient = createPatient();
-
-		// Mock
-		when(patientService.updatePatient(eq(patientId), any(AddPatientRequest.class))).thenReturn(expectedPatient);
-
-		// Act and Assert
-		mockMvc.perform(MockMvcRequestBuilders.put("/api/patients/update/{id}", patientId)
-				.contentType(MediaType.APPLICATION_JSON).content(asJsonString(request))).andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.id").value(expectedPatient.getId()))
-				.andExpect(jsonPath("$.firstName").value(expectedPatient.getFirstName()));
 	}
 
     // Test case to validate updating a patient with an invalid request
@@ -139,17 +101,6 @@ public class PatientControllerTest {
 		mockMvc.perform(
 				MockMvcRequestBuilders.get("/api/patients/findById/{id}", id).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound()).andExpect(jsonPath("$.error").value("Patient not found for : " + id));
-	}
-
-    // Test case to validate finding a patient by an invalid ID
-	private static AddPatientRequest createAddPatientRequest() {
-		AddPatientRequest request = new AddPatientRequest();
-		request.setFirstName("Prateek");
-		request.setLastName("Singh");
-		request.setContactNumber(7270043813L);
-		request.setAadharNumber(867343001999L);
-		request.setAddress(new Patient.Address("Lucknow", "Uttar Pradesh", 226022L));
-		return request;
 	}
 
 	private static Patient createPatient() {

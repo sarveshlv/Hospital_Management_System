@@ -8,6 +8,7 @@ import com.hms.billingms.clients.IBookingServiceClient;
 import com.hms.billingms.dto.Bed;
 import com.hms.billingms.dto.Booking;
 import com.hms.billingms.entities.Billing;
+import com.hms.billingms.entities.Billing.PaymentStatus;
 import com.hms.billingms.exceptions.BillingNotFoundException;
 import com.hms.billingms.exceptions.BookingNotFoundException;
 import com.hms.billingms.repository.BillingRepository;
@@ -53,5 +54,12 @@ public class BillingService implements IBillingService {
 	@Override
 	public Billing findByBookingId(String bookingId) throws BookingNotFoundException{
 		return billingRepository.findByBookingId(bookingId).orElseThrow(() -> new BookingNotFoundException(bookingId));
+	}
+
+	@Override
+	public Billing paymentSuccessfull(String billingId) throws BillingNotFoundException {
+		Billing billing = findById(billingId);
+		billing.setPaymentStatus(PaymentStatus.COMPLETED);
+		return billingRepository.save(billing);
 	}
 }

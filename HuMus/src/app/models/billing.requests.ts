@@ -17,6 +17,14 @@ export class Billing {
   }
 }
 
+export interface PaymentDetails {
+  id: string;
+  keyId: string;
+  billingId: string;
+  amount: number;
+  currency: string;
+}
+
 export enum PaymentStatus {
   PENDING = 'PENDING',
   COMPLETED = 'COMPLETED',

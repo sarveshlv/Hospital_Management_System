@@ -1,17 +1,21 @@
 package com.hms.billingms.controller;
 
 import com.hms.billingms.dto.BillingRequest;
+import com.hms.billingms.dto.PaymentDetails;
 import com.hms.billingms.entities.Billing;
 import com.hms.billingms.exceptions.BillingNotFoundException;
 import com.hms.billingms.service.IBillingService;
-import com.hms.billingms.service.PaypalService;
-import com.paypal.api.payments.Links;
-import com.paypal.api.payments.Payment;
-import com.paypal.base.rest.PayPalRESTException;
+import com.razorpay.RazorpayClient;
+import com.razorpay.RazorpayException;
 
+import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 
+import com.razorpay.Order;
+
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,11 +26,17 @@ public class BillingController {
 	@Autowired
 	private IBillingService billingService;
 
-	@Autowired
-	private PaypalService paypalService;
+	@Value("${rzp.key.id}")
+	private String KEY_ID;
 
-	public static final String SUCCESS_URL = "/pay/success";
-	public static final String CANCEL_URL = "/pay/cancel";
+	@Value("${rzp.key.secret}")
+	private String KEY_SECRET;
+
+	@Value("${rzp.currency}")
+	private String CURRENCY;
+
+	@Value("${rzp.company.name}")
+	private String COMPANY;
 
 	@PostMapping("/add")
 	public Billing addBilling(@RequestHeader("Authorization") String authorizationHeader,
@@ -38,49 +48,44 @@ public class BillingController {
 	public Billing getBillingById(@PathVariable String billingId) throws BillingNotFoundException {
 		return billingService.findById(billingId);
 	}
-	
+
 	@GetMapping("/findByBookingId/{bookingId}")
-	public Billing getBillingByBookingId(@PathVariable String bookingId){
+	public Billing getBillingByBookingId(@PathVariable String bookingId) {
 		return billingService.findByBookingId(bookingId);
 	}
 
 	@GetMapping("/pay/{billingId}")
-	public String payment(@PathVariable String billingId) throws PayPalRESTException {
-		Billing billing = billingService.findById(billingId);
-		if (billing.getPaymentStatus() == Billing.PaymentStatus.COMPLETED) {
-			throw new RuntimeException();
-		}
-		Payment payment = paypalService.createPayment(billing.getBillAmount(), "USD", "paypal", "sale",
-				"Booking Charges", "http://localhost:8500/api/billings/pay/success/" + billingId,
-				"http://localhost:8500/api/billings/pay/cancel/" + billingId);
-
-		log.info("Links: {}", payment.getLinks().toString());
-		for (Links link : payment.getLinks()) {
-			if (link.getRel().equals("approval_url")) {
-				return link.getHref();
-			}
-		}
-		return "";
-	}
-
-	@GetMapping(value = CANCEL_URL)
-	public String cancelPay() {
-		throw new RuntimeException("Payment was canceled.");
-	}
-
-	@GetMapping(value = SUCCESS_URL)
-	public Billing successPay(@PathVariable String billingId, @RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) throws PayPalRESTException {
-		Payment payment = paypalService.executePayment(paymentId, payerId);
-		
-		
-		log.info("Payment details: {}", payment.toJSON());
-		if (payment.getState().equals("approved")) {
+	public PaymentDetails payment(@PathVariable String billingId) throws RazorpayException, RuntimeException {
+		try {
 			Billing billing = billingService.findById(billingId);
-			billing.setPaymentStatus(Billing.PaymentStatus.COMPLETED);	
-			return billingService.addBill(billing);
-		} else {
-			throw new RuntimeException("Payment was not approved.");
-		}
+			if (billing.getPaymentStatus() == Billing.PaymentStatus.COMPLETED) {
+				throw new RuntimeException("Billing status is already COMPLETED");
+			}
 
+			RazorpayClient razorpay = new RazorpayClient(KEY_ID, KEY_SECRET);
+			JSONObject orderRequest = new JSONObject();
+			orderRequest.put("amount", (billing.getBillAmount())*100);
+			orderRequest.put("currency", CURRENCY);
+			orderRequest.put("receipt", billing.getId());
+
+			Order order = razorpay.orders.create(orderRequest);
+			log.info(order.toString());
+			
+			PaymentDetails paymentDetails = new PaymentDetails();
+			paymentDetails.setKeyId(KEY_ID);
+			paymentDetails.setId(order.get("id"));
+			paymentDetails.setAmount(order.get("amount"));
+			paymentDetails.setCurrency(order.get("currency"));
+			paymentDetails.setBillingId(order.get("receipt"));
+			
+			return paymentDetails;
+		} catch (RazorpayException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+
+	@GetMapping("/pay/success/{billingId}")
+	public Billing successPay(@PathVariable String billingId) throws BillingNotFoundException{
+		return billingService.paymentSuccessfull(billingId);
 	}
 }

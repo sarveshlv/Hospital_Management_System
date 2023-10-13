@@ -1,15 +1,18 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgToastService } from 'ng-angular-popup';
-import { Booking } from 'src/app/models/booking.requests';
+import { Booking, BookingStatus } from 'src/app/models/booking.requests';
 import { Hospital } from 'src/app/models/hospital.requests';
 import { Patient } from 'src/app/models/patient.requests';
 import { HospitalService } from 'src/app/services/hospital.service';
 import { PatientService } from 'src/app/services/patient.service';
-import { BookingStatus } from 'src/app/models/booking.requests';
 import { BillingService } from 'src/app/services/billing.service';
-import { Billing, PaymentStatus } from 'src/app/models/billing.requests';
-import { Router } from '@angular/router';
+import { Billing, PaymentDetails, PaymentStatus } from 'src/app/models/billing.requests';
+import { UserDetails } from 'src/app/models/user.requests';
+import { JwtStorageService } from 'src/app/services/jwt/jwt.storage.service';
+// import * as  Razorpay from 'razorpay'
+
+declare var Razorpay: any;
 
 @Component({
   selector: 'app-booking-item',
@@ -29,13 +32,18 @@ export class BookingItemComponent implements OnInit {
 
   BookingStatus = BookingStatus;
   PaymentStaus = PaymentStatus;
+  
+  
+  userDetails: UserDetails;
   patient: Patient;
   hospital: Hospital;
   billing: Billing;
+
   selectedColumn: string;
   selectedOrder: string;
 
   constructor(
+    private jwtStorageService: JwtStorageService,
     private patientService: PatientService,
     private hospitalService: HospitalService,
     private billingService: BillingService,
@@ -43,43 +51,45 @@ export class BookingItemComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (this.booking.bookingStatus === BookingStatus.COMPLETED) {
-      this.billingService.findByBookingId(this.booking.id).subscribe({
-        next: (response: Billing) => {
-          console.log(response);
-          this.billing = response;
-        },
-        error: (error: HttpErrorResponse) =>
-          this.toast.error({
-            detail: 'Unable to find billing details',
-            summary: error.error.error,
-            duration: 3000,
-          }),
-      });
+    this.userDetails = this.jwtStorageService.getUserDetails();
+    if (this.idx != -1) {
+      if (this.booking.bookingStatus === BookingStatus.COMPLETED) {
+        this.billingService.findByBookingId(this.booking.id).subscribe({
+          next: (response: Billing) => {
+            console.log(response);
+            this.billing = response;
+          },
+          error: (error: HttpErrorResponse) =>
+            this.toast.error({
+              detail: 'Unable to find billing details',
+              summary: error.error.error,
+              duration: 3000,
+            }),
+        });
+      }
+
+      if (this.isManager || this.isAdmin)
+        this.fetchPatientDetails(this.booking.patientId);
+
+      if (this.isPatient || this.isAdmin)
+        this.fetchHospitalDetails(this.booking.hospitalId);      
+      if (
+        this.booking.bookingStatus === BookingStatus.REQUESTED &&
+        new Date(this.booking.occupyDate) <= new Date()
+      ) {
+        //auto reject booking as booking date has already passed
+        this.rejectClick.emit(this.booking.id);
+      }
+
+      if (
+        this.booking.bookingStatus === BookingStatus.APPROVED &&
+        new Date(this.booking.releaseDate) <= new Date()
+      ) {
+        //booking should be marked completed as, today is the release date
+        this.completeClick.emit(this.booking);
+      }
     }
-
-    if (this.isManager || this.isAdmin)
-      this.fetchPatientDetails(this.booking.patientId);
-
-    if (this.isPatient || this.isAdmin)
-      this.fetchHospitalDetails(this.booking.hospitalId);
-
-    if (
-      this.booking.bookingStatus === BookingStatus.REQUESTED &&
-      this.booking.occupyDate < new Date()
-    ) {
-      //auto reject booking as booking date has already passed
-      this.onRejectClick(this.hospital.id);
-    }
-
-    if (
-      this.booking.bookingStatus === BookingStatus.APPROVED &&
-      this.booking.releaseDate >= new Date()
-    ) {
-      //booking should be marked completed as, today is the release date
-      this.onCompleteClick(this.booking);
-    }
-  }
+  } 
 
   //fetch methods
   private fetchPatientDetails(patientId: string) {
@@ -131,18 +141,81 @@ export class BookingItemComponent implements OnInit {
   }
   payBill() {
     this.billingService.initiatePayment(this.billing.id).subscribe({
-      next: (response: any) => {
+      next: (response: PaymentDetails) => {
+        console.log("Payment Details ",response);
+        var options = {
+          order_id: response.id,
+          key_id: response.keyId,
+          amount: response.amount,
+          currency: response.currency,
+          name: `${this.userDetails.firstName} ${this.userDetails.lastName}`,
+          description:`Bill for booking of ${this.booking.bedType} from ${this.booking.occupyDate} to ${this.booking.releaseDate}`,
+          // image:,
+          handler: (response: any) => {
+            if(response!=null && response.razorpay_payment_id!=null){
+              console.log("Success");
+              this.processPaymentSuccess(this.billing.id);
+            } else {
+              this.toast.error({
+                detail: 'Payment failed',
+                summary: 'Plz try again later',
+                duration: 3000,
+              });
+            }
+          },
+          prefill: {
+            name: this.userDetails.firstName + " " + this.userDetails.lastName,
+            email: this.userDetails.email,
+            // contact: :
+          },
+          // notes: {
+          //   address:
+          // },
+          themes: {
+            color: '#F3754'
+          }
+
+        };
+        console.log("Options",  options);
+        this.toast.info({
+          detail: 'Redirecting to payment page',
+          summary: 'Please complete payment',
+          duration: 3000,
+        });
+
+        var razorPayObject = new Razorpay(options);
+        razorPayObject.open();
+      },
+      error: (error: HttpErrorResponse) => {
+        console.log(error.error.text);
         this.toast.error({
-          detail: 'Unable to initiate payment',
-          summary: 'Plz try again later',
+          detail: 'Unable to start payment',
+          summary: error.error.error,
+          duration: 3000,
+        });
+      },
+    });
+    
+  }
+  processPaymentSuccess(billingId: string) {
+    this.billingService.successPay(this.billing.id).subscribe({
+      next: (response: Billing) => {
+        this.billing.paymentStatus = PaymentStatus.COMPLETED;
+        this.toast.success({
+          detail: 'Payment Succesfull',
+          summary: 'Status is being upddated in out system',
           duration: 3000,
         });
       },
       error: (error: HttpErrorResponse) => {
-        console.log(error.error.text);
-        window.open(error.error.text, '_blank');
+        this.toast.error({
+          detail: 'Unable to update payment status',
+          summary: error.error.error,
+          duration: 3000,
+        });
       },
     });
+    throw new Error('Method not implemented.');
   }
 
   //conditionals for showing td's
@@ -163,7 +236,7 @@ export class BookingItemComponent implements OnInit {
     return (
       this.isPatient &&
       booking.bookingStatus === BookingStatus.COMPLETED &&
-      this.billing.paymentStatus === PaymentStatus.PENDING
+      this.billing.paymentStatus === PaymentStatus.PENDING 
     );
   }
 

@@ -11,8 +11,4 @@ public class RouterGatewayApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(RouterGatewayApplication.class, args);
 	}
-	
-	
-	
-
 }

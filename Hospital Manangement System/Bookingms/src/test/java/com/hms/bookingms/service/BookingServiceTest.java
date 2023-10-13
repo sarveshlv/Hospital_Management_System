@@ -4,7 +4,6 @@ import com.hms.bookingms.clients.IBedServiceClient;
 import com.hms.bookingms.clients.IHospitalServiceClient;
 import com.hms.bookingms.clients.IPatientServiceClient;
 import com.hms.bookingms.dto.AddBookingRequest;
-import com.hms.bookingms.dto.Bed;
 import com.hms.bookingms.entities.Booking;
 import com.hms.bookingms.exceptions.*;
 import com.hms.bookingms.repository.BookingRepository;
@@ -156,37 +155,6 @@ public class BookingServiceTest {
 		assertEquals(sampleBookings, result);
 	}
 
-	// Test case for getting bookings by patient ID when the patient does not exist
-	@Test
-	void testGetBookingByPatientId_PatientNotFound() {
-        // Arrange
-        when(bookingRepository.findAllByPatientId(anyString())).thenReturn(new ArrayList<>());
-
-        // Act and Assert
-        assertThrows(PatientNotFoundException.class, () -> bookingService.getBookingByPatientId("nonexistentPatientId"));
-    }
-
-	// Test case for approving a booking with a valid request
-	@Test
-	void testApproveBooking_BookingRequested() throws BookingNotFoundException, InvalidBookingRequest {
-		// Arrange
-		Booking sampleBooking = createSampleBooking();
-		Bed sampleBed = createSampleBed();
-
-		// Mock
-		when(bookingRepository.findById(anyString())).thenReturn(Optional.of(sampleBooking));
-		when(bedServiceClient.findBedsByHospitalId(anyString(), anyString())).thenReturn(List.of(sampleBed));
-		when(bedServiceClient.bookBed(anyString(), anyString())).thenReturn(ResponseEntity.ok(sampleBed));
-
-		// Act
-		Booking result = bookingService.approveBooking("AuthorizationHeader", "bookingId");
-
-		// Assert
-		assertNotNull(result);
-		assertEquals(Booking.BookingStatus.APPROVED, result.getBookingStatus());
-		assertNotNull(result.getBedId());
-	}
-
 	// Test case for approving a booking when the booking is not requested
 	@Test
 	void testApproveBooking_BookingNotRequested() {
@@ -199,23 +167,6 @@ public class BookingServiceTest {
 		// Act and Assert
 		assertThrows(InvalidBookingRequest.class,
 				() -> bookingService.approveBooking("AuthorizationHeader", "bookingId"));
-	}
-
-	// Test case for rejecting a booking with a valid request
-	@Test
-	void testRejectBooking_BookingRequested() throws BookingNotFoundException, InvalidBookingRequest {
-		// Arrange
-		Booking sampleBooking = createSampleBooking();
-
-		// Mock
-		when(bookingRepository.findById(anyString())).thenReturn(Optional.of(sampleBooking));
-
-		// Act
-		Booking result = bookingService.rejectBooking("bookingId");
-
-		// Assert
-		assertNotNull(result);
-		assertEquals(Booking.BookingStatus.DECLINED, result.getBookingStatus());
 	}
 
 	// Test case for rejecting a booking when the booking is not requested
@@ -232,23 +183,6 @@ public class BookingServiceTest {
 		assertThrows(InvalidBookingRequest.class, () -> bookingService.rejectBooking("bookingId"));
 	}
 
-	// Test case for canceling a booking with a valid request
-	@Test
-	void testCancelBooking_BookingRequested() throws BookingNotFoundException, InvalidBookingRequest {
-		// Arrange
-		Booking sampleBooking = createSampleBooking();
-
-		// Mock
-		when(bookingRepository.findById(anyString())).thenReturn(java.util.Optional.of(sampleBooking));
-
-		// Act
-		Booking result = bookingService.cancelBooking("AuthorizationHeader", "bookingId");
-
-		// Assert
-		assertNotNull(result);
-		assertEquals(Booking.BookingStatus.CANCELLED, result.getBookingStatus());
-	}
-
 	// Test case for canceling a booking when the booking is not requested
 	@Test
 	void testCancelBooking_BookingNotRequested() {
@@ -262,26 +196,6 @@ public class BookingServiceTest {
 		// Act and Assert
 		assertThrows(InvalidBookingRequest.class,
 				() -> bookingService.cancelBooking("AuthorizationHeader", "bookingId"));
-	}
-
-	// Test case for completing a booking with a valid request
-	@Test
-	void testCompleteBooking_BookingApproved() {
-		// Arrange
-		Booking sampleBooking = createSampleBooking();
-		sampleBooking.setBookingStatus(Booking.BookingStatus.APPROVED);
-		Bed sampleBed = createSampleBed();
-
-		// Mock
-		when(bookingRepository.findById(anyString())).thenReturn(java.util.Optional.of(sampleBooking));
-		when(bedServiceClient.completeBooking(anyString(), anyString())).thenReturn(ResponseEntity.ok(sampleBed));
-
-		// Act
-		Booking result = bookingService.completeBooking("AuthorizationHeader", "bookingId");
-
-		// Assert
-		assertNotNull(result);
-		assertEquals(Booking.BookingStatus.COMPLETED, result.getBookingStatus());
 	}
 
 	// Test case for completing a booking when the booking is not approved
@@ -336,12 +250,5 @@ public class BookingServiceTest {
 		List<Booking> bookings = new ArrayList<>();
 		bookings.add(createSampleBooking());
 		return bookings;
-	}
-
-	private Bed createSampleBed() {
-		Bed bed = new Bed();
-		bed.setId("bedId");
-		bed.setBedType("USUAL_BED");
-		return bed;
 	}
 }

@@ -9,4 +9,5 @@ public interface IBillingService {
 	Billing findById(String billingId) throws BillingNotFoundException;
 	Billing findByBookingId(String bookingId) throws BookingNotFoundException;
 	Billing addBill(Billing billing);
+	Billing paymentSuccessfull(String billingId) throws BillingNotFoundException;
 }
