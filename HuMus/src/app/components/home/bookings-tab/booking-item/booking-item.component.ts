@@ -7,12 +7,16 @@ import { Patient } from 'src/app/models/patient.requests';
 import { HospitalService } from 'src/app/services/hospital.service';
 import { PatientService } from 'src/app/services/patient.service';
 import { BillingService } from 'src/app/services/billing.service';
-import { Billing, PaymentDetails, PaymentStatus } from 'src/app/models/billing.requests';
+import {
+  Billing,
+  PaymentDetails,
+  PaymentStatus,
+} from 'src/app/models/billing.requests';
 import { UserDetails } from 'src/app/models/user.requests';
 import { JwtStorageService } from 'src/app/services/jwt/jwt.storage.service';
 // import * as  Razorpay from 'razorpay'
 
-declare var Razorpay: any;
+declare let Razorpay: any;
 
 @Component({
   selector: 'app-booking-item',
@@ -32,8 +36,7 @@ export class BookingItemComponent implements OnInit {
 
   BookingStatus = BookingStatus;
   PaymentStaus = PaymentStatus;
-  
-  
+
   userDetails: UserDetails;
   patient: Patient;
   hospital: Hospital;
@@ -72,7 +75,7 @@ export class BookingItemComponent implements OnInit {
         this.fetchPatientDetails(this.booking.patientId);
 
       if (this.isPatient || this.isAdmin)
-        this.fetchHospitalDetails(this.booking.hospitalId);      
+        this.fetchHospitalDetails(this.booking.hospitalId);
       if (
         this.booking.bookingStatus === BookingStatus.REQUESTED &&
         new Date(this.booking.occupyDate) <= new Date()
@@ -89,7 +92,7 @@ export class BookingItemComponent implements OnInit {
         this.completeClick.emit(this.booking);
       }
     }
-  } 
+  }
 
   //fetch methods
   private fetchPatientDetails(patientId: string) {
@@ -142,18 +145,18 @@ export class BookingItemComponent implements OnInit {
   payBill() {
     this.billingService.initiatePayment(this.billing.id).subscribe({
       next: (response: PaymentDetails) => {
-        console.log("Payment Details ",response);
-        var options = {
+        console.log('Payment Details ', response);
+        let options = {
           order_id: response.id,
           key_id: response.keyId,
           amount: response.amount,
           currency: response.currency,
           name: `${this.userDetails.firstName} ${this.userDetails.lastName}`,
-          description:`Bill for booking of ${this.booking.bedType} from ${this.booking.occupyDate} to ${this.booking.releaseDate}`,
+          description: `Bill for booking of ${this.booking.bedType} from ${this.booking.occupyDate} to ${this.booking.releaseDate}`,
           // image:,
           handler: (response: any) => {
-            if(response!=null && response.razorpay_payment_id!=null){
-              console.log("Success");
+            if (response?.razorpay_payment_id) {
+              console.log('Success');
               this.processPaymentSuccess(this.billing.id);
             } else {
               this.toast.error({
@@ -164,7 +167,7 @@ export class BookingItemComponent implements OnInit {
             }
           },
           prefill: {
-            name: this.userDetails.firstName + " " + this.userDetails.lastName,
+            name: this.userDetails.firstName + ' ' + this.userDetails.lastName,
             email: this.userDetails.email,
             // contact: :
           },
@@ -172,18 +175,17 @@ export class BookingItemComponent implements OnInit {
           //   address:
           // },
           themes: {
-            color: '#F3754'
-          }
-
+            color: '#F3754',
+          },
         };
-        console.log("Options",  options);
+        console.log('Options', options);
         this.toast.info({
           detail: 'Redirecting to payment page',
           summary: 'Please complete payment',
           duration: 3000,
         });
 
-        var razorPayObject = new Razorpay(options);
+        let razorPayObject = new Razorpay(options);
         razorPayObject.open();
       },
       error: (error: HttpErrorResponse) => {
@@ -195,7 +197,6 @@ export class BookingItemComponent implements OnInit {
         });
       },
     });
-    
   }
   processPaymentSuccess(billingId: string) {
     this.billingService.successPay(this.billing.id).subscribe({
@@ -236,7 +237,7 @@ export class BookingItemComponent implements OnInit {
     return (
       this.isPatient &&
       booking.bookingStatus === BookingStatus.COMPLETED &&
-      this.billing.paymentStatus === PaymentStatus.PENDING 
+      this.billing.paymentStatus === PaymentStatus.PENDING
     );
   }
 

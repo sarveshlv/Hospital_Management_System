@@ -6,9 +6,6 @@ import { DashboardComponent } from './components/home/dashboard/dashboard.compon
 import { AddHospitalComponent } from './components/add-hospital/add-hospital.component';
 import { AddPatientComponent } from './components/add-patient/add-patient.component';
 import { AuthGuard } from './auth.guard';
-import { BookingsTabComponent } from './components/home/bookings-tab/bookings-tab.component';
-import { BedsTabComponent } from './components/home/beds-tab/beds-tab.component';
-import { ProfileComponent } from './components/home/profile/profile.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
