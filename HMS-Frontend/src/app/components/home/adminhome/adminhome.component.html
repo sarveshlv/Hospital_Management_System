@@ -1,0 +1,93 @@
+<div class="main-container">
+  <app-navbar [userName]="loggedInUserName"></app-navbar>
+
+  <!-- Navigation buttons for switching between tables -->
+  <div class="navbuttons">
+    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+      <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked (click)="showOld = false; showNew = true"/>
+      <label class="btn btn-outline-primary" for="btnradio1" id="nav">New Registrations</label>
+      <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" (click)="showNew = false; showOld = true; loadHospitals()"/>
+      <label class="btn btn-outline-primary" for="btnradio2" id="nav">Registered</label>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- New Registered Hospitals table -->
+    <div class="registrations" *ngIf="showNew">
+      <table class="table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Hospital Name</th>
+            <th>Hospital Address</th>
+            <th>Contact No</th>
+            <th>Hospital Type</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let hospital of newHospitals; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ hospital.hospitalName }}</td>
+            <td>
+              {{
+                hospital.hospitalAddress.streetAddress +
+                  ", " +
+                  hospital.hospitalAddress.cityName +
+                  "-" +
+                  hospital.pincode +
+                  ", " +
+                  hospital.hospitalAddress.stateName
+              }}
+            </td>
+            <td>{{ hospital.contactNo }}</td>
+            <td>{{ hospital.hospitalType }}</td>
+            <td>
+              <div>
+                <button type="button" class="btn btn-success" (click)="approveHospital(hospital)">Approve</button>
+                <button type="button" class="btn btn-danger" (click)="declineHospital(hospital)">Decline</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p *ngIf="newHospitals.length === 0">No records found!</p>
+    </div>
+
+    <!-- Old Registered hospitals table -->
+    <div class="registrations" *ngIf="showOld">
+      <table class="table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Hospital Name</th>
+            <th>Hospital Address</th>
+            <th>Contact No</th>
+            <th>Hospital Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let hospital of oldHospitals; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ hospital.hospitalName }}</td>
+            <td>
+              {{
+                hospital.hospitalAddress.streetAddress +
+                  ", " +
+                  hospital.hospitalAddress.cityName +
+                  "-" +
+                  hospital.pincode +
+                  ", " +
+                  hospital.hospitalAddress.stateName
+              }}
+            </td>
+            <td>{{ hospital.contactNo }}</td>
+            <td>{{ hospital.hospitalType }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p *ngIf="oldHospitals.length === 0">No records found!</p>
+    </div>
+  </div>
+</div>

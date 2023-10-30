@@ -1,0 +1,94 @@
+<div class="add-hospital-page">
+  <div class="img-card"></div>
+  <div class="form-card">
+    <h2>REGISTER HOSPITAL!</h2>
+    <form [formGroup]="hospitalForm" (ngSubmit)="onSubmit()">
+
+      <!-- Hospital Name input field -->
+      <div class="row justify-content-center">
+        <div class="form-floating mb-3" [class.error]="hospitalForm.controls['hospitalName'].dirty && hospitalForm.hasError('required','hospitalName')">
+          <input type="text" class="form-control" id="hospitalName" formControlName="hospitalName" placeholder="Name of Hospital"/>
+          <label for="hospitalName">Hospital Name</label>
+        </div>
+        <small *ngIf="hospitalForm.controls['hospitalName'].dirty && hospitalForm.hasError('required','hospitalName')" class="text-danger">Hospital Name is required</small>
+        <small *ngIf="hospitalForm.controls['hospitalName'].dirty && hospitalForm.hasError('pattern','hospitalName')" class="text-danger">Only alphabetical characters are allowed!</small>
+      </div>
+
+      <div class="row justify-content-center">
+
+        <!-- Street Address input field -->
+        <div class="col-md-6">
+          <div class="form-floating mb-3" [class.error]="hospitalForm.controls['streetAddress'].dirty && hospitalForm.hasError('required','streetAddress')">
+            <input type="text" class="form-control" id="streetAddress" formControlName="streetAddress" placeholder=""/>
+            <label for="streetAddress">Street Address</label>
+          </div>
+          <small *ngIf="hospitalForm.controls['streetAddress'].dirty && hospitalForm.hasError('required','streetAddress')" class="text-danger">Street Address is required</small>
+        </div>
+
+        <!-- City Name input field -->
+        <div class="col-md-6">
+          <div class="form-floating mb-3" [class.error]="hospitalForm.controls['city'].dirty && hospitalForm.hasError('required','city')">
+            <input type="text" class="form-control" id="city" formControlName="city" placeholder=""/>
+            <label for="city">City</label>
+          </div>
+          <small *ngIf="hospitalForm.controls['city'].dirty && hospitalForm.hasError('required','city')" class="text-danger">City Name is required</small>
+        </div>
+      </div>
+
+      <div class="row justify-content-center">
+
+        <!-- State Name input field -->
+        <div class="col-md-6">
+          <div class="form-floating mb-3" [class.error]="hospitalForm.controls['state'].dirty && hospitalForm.hasError('required','state')">
+            <select class="form-select" id="state" name="state" formControlName="state">
+              <option disabled selected>Select State</option>
+              <option *ngFor="let state of states" [value]="state">
+                {{ state }}
+              </option>
+            </select>
+            <label for="state">State</label>
+          </div>
+          <small *ngIf="hospitalForm.controls['state'].dirty && hospitalForm.hasError('required','state')" class="text-danger">State Name is required</small>
+        </div>
+
+        <!-- Pincode input field -->
+        <div class="col-md-6">
+          <div class="form-floating mb-3" [class.error]="hospitalForm.controls['pincode'].dirty && hospitalForm.hasError('required','pincode')">
+            <input type="text" class="form-control" id="pincode" formControlName="pincode" placeholder=""/>
+            <label for="pincode">Pincode</label>
+          </div>
+          <small *ngIf="hospitalForm.controls['pincode'].dirty && hospitalForm.hasError('required','pincode')" class="text-danger">Pincode is required</small>
+          <small *ngIf="hospitalForm.controls['pincode'].dirty && hospitalForm.hasError('pattern','pincode')" class="text-danger">Pincode is Invalid (should be 6 digits)</small>
+        </div>
+      </div>
+
+      <!-- Hospital type input field -->
+      <div class="row justify-content-center">
+        <div class="form-floating mb-3" [class.error]="hospitalForm.controls['hospitalType'].dirty && hospitalForm.hasError('required','hospitalType')">
+          <select class="form-control" id="hospitalType" name="hospitalType" formControlName="hospitalType">
+            <option disabled selected>Select Hospital Type</option>
+            <option *ngFor="let type of hospitalTypes" [value]="type">
+              {{ type }}
+            </option>
+          </select>
+          <label for="floatingType">Select Type</label>
+        </div>
+        <small *ngIf="hospitalForm.controls['hospitalType'].dirty && hospitalForm.hasError('required','hospitalType')" class="text-danger">Hospital type is required</small>
+      </div>
+
+      <!-- Contact Number input field -->
+      <div class="row justify-content-center">
+        <div class="form-floating mb-3" [class.error]="hospitalForm.controls['contactNo'].dirty && hospitalForm.hasError('required','contactNo')">
+          <input type="tel" class="form-control" id="contactNo" formControlName="contactNo" placeholder="Contact Number"/>
+          <label for="contactNo">Contact Number</label>
+        </div>
+        <small *ngIf="hospitalForm.controls['contactNo'].dirty && hospitalForm.hasError('required','contactNo')" class="text-danger">Contact Number is required</small>
+        <small *ngIf="hospitalForm.controls['contactNo'].dirty && hospitalForm.hasError('pattern','contactNo')" class="text-danger">Invalid Phone number</small>
+      </div>
+
+      <div class="register-btn">
+        <button type="submit">REGISTER</button>
+      </div>
+    </form>
+  </div>
+</div>

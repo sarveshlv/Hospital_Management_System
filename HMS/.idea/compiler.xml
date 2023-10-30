@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="ServiceDiscovery (1)" />
+        <module name="BedModule" />
+        <module name="Authentication" />
+        <module name="PatientModule" />
+        <module name="BillingModule" />
+        <module name="HospitalModule" />
+        <module name="UserModule" />
+        <module name="BookingModule" />
+        <module name="APIGateway" />
+        <module name="ServiceDiscovery" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="APIGateway" target="17" />
+      <module name="Authentication" target="17" />
+      <module name="BedModule" target="17" />
+      <module name="BillingModule" target="17" />
+      <module name="BookingModule" target="17" />
+      <module name="HospitalModule" target="17" />
+      <module name="PatientModule" target="17" />
+      <module name="ServiceDiscovery" target="17" />
+      <module name="ServiceDiscovery (1)" target="17" />
+      <module name="UserModule" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="APIGateway" options="-parameters" />
+      <module name="Authentication" options="-parameters" />
+      <module name="BedModule" options="-parameters" />
+      <module name="BillingModule" options="-parameters" />
+      <module name="BookingModule" options="-parameters" />
+      <module name="HospitalModule" options="-parameters" />
+      <module name="PatientModule" options="-parameters" />
+      <module name="ServiceDiscovery" options="-parameters" />
+      <module name="ServiceDiscovery (1)" options="-parameters" />
+      <module name="UserModule" options="-parameters" />
+    </option>
+  </component>
+</project>

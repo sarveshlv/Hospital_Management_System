@@ -1,0 +1,78 @@
+.container-main {
+  display: flex;
+  position: relative;
+  justify-content: center; /*Center horizontally*/
+  align-items: center; /*Center vertically*/
+  background-color: #80a9a9;
+  height: 100vh;
+}
+
+.main-card {
+  position: absolute;
+  height: 85vh;
+  width: 75vw;
+  background-color: white;
+  background-image: url(src\assets\images\Image.png);
+  background-size: cover;
+  border-radius: 1rem;
+}
+
+.login-card {
+  position: absolute;
+  height: 100%;
+  width: 45%;
+  top: 0;
+  right: 0;
+  background-color: white;
+  border-radius: 0 1rem 1rem 0;
+  padding: 5%;
+}
+
+.red-icon {
+  color: red;
+  font-size: 3.5ch;
+}
+
+label {
+  font-weight: 500;
+  padding-bottom: 5px;
+}
+
+.email-group {
+  padding-top: 1rem;
+}
+
+.password-group {
+  padding-top: 1rem;
+}
+
+.forgot-password {
+  padding-top: 1rem;
+}
+
+.submit-button {
+  margin-bottom: 2rem;
+  margin-top: 2rem;
+  text-align: center;
+}
+
+button:hover {
+  box-shadow: 0 5px 20px 5px rgba(0, 0, 0, 0.3);
+  transition: 0.1s ease;
+}
+
+#login-btn {
+  border: 3px solid #8ab6b6;
+  padding: 4%;
+  border-radius: 0.55em;
+  font-weight: 800;
+  background-color: white;
+  color: #5a7878;
+  transition: 0.2s ease-in;
+}
+
+#login-btn:hover {
+  background-color: #80a9a9;
+  border: 3px solid white;
+  color: white;
+}

@@ -1,0 +1,141 @@
+::-webkit-scrollbar {
+  display: none;
+}
+
+.bedinfo-container {
+  height: 90vh;
+  padding: 2rem;
+  position: relative;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.hospitalDetails {
+  width: 90%;
+  background-color: rgb(223, 221, 221);
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border-radius: 10px;
+  border: 2px solid #365757;
+}
+
+.cards {
+  display: flex;
+  flex-direction: row;
+  margin-top: 1rem;
+}
+
+.card {
+  height: 46vh;
+  width: 16vw;
+  margin: 1rem;
+  background-color: #a7c5c5;
+  display: flex;
+  padding: 0.85rem;
+  border: 2px solid #365757;
+}
+
+label {
+  padding-left: 3rem;
+  padding-right: 3rem;
+  padding-top: 2rem;
+  font-weight: bold;
+}
+
+p {
+  position: relative;
+  margin-bottom: 0;
+  text-align: left;
+  font-weight: bold;
+  width: 100%;
+}
+
+.card-headings {
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.img {
+  background-size: cover;
+  margin-bottom: 1rem;
+  align-self: center;
+}
+
+#img1 {
+  background-image: url(src\assets\images\bed.png);
+  width: 50%;
+  height: 30%;
+}
+
+#img2 {
+  background-image: url(src\assets\images\surgery-room.png);
+  width: 45%;
+  height: 30%;
+}
+
+#img3 {
+  background-image: url(src\assets\images\ventilator.png);
+  width: 45%;
+  height: 30%;
+}
+
+#img4 {
+  background-image: url(src\assets\images\oxygen.png);
+  width: 45%;
+  height: 30%;
+}
+
+.book-btn {
+  border: 2px solid #365757;
+  padding: 5px 10px 5px 10px;
+  border-radius: 5px;
+  width: 60%;
+  align-self: center;
+  margin-top: 1rem;
+}
+
+.book-btn:hover {
+  background-color: #365757;
+  color: white;
+  transition: 0.1s ease-in;
+}
+
+.card:hover {
+  box-shadow: 0 5px 20px 5px rgba(0, 0, 0, 0.3);
+  transition: 0.1s ease-in;
+}
+
+.card-label {
+  padding: 0;
+  display: block;
+  padding-bottom: 10px;
+  padding-right: 10px;
+  font-weight: normal;
+}
+
+.card-label.duration {
+  padding: 0;
+}
+
+.date-picker-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.input-group.date {
+  margin-right: 10px;
+  margin-left: 10px;
+  border-radius: 5px;
+}

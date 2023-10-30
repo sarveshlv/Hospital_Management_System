@@ -1,0 +1,56 @@
+.navbar {
+  background-color: #365757;
+  height: 10vh;
+  padding: 1rem;
+}
+
+#welcome-text {
+  padding-right: 0.5rem;
+  color: white;
+}
+
+.profile-icon {
+  border-radius: 50%;
+  border: none;
+}
+
+#left-heading {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: larger;
+}
+
+i {
+  color: #365757;
+}
+
+a {
+  margin-left: 1.75rem;
+  color: white;
+  background-color: transparent;
+  text-decoration: none;
+  padding-bottom: 14px;
+}
+
+a:hover {
+  transition: 0.1s ease-in;
+  border-bottom: 5px solid #93b3b3;
+  cursor: pointer;
+}
+
+.logout {
+  padding-left: 1rem;
+  color: #7a9c9c;
+}
+
+.logout:hover {
+  color: #d5e2e2;
+  transition: 0.1s ease-in;
+  cursor: pointer;
+}
+
+label {
+  display: block;
+  padding-bottom: 15px;
+}
+

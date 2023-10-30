@@ -1,0 +1,31 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(176, 233, 233);
+  height: 100vh;
+  overflow: hidden;
+}
+
+.navbuttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.content {
+  flex: 1;
+  justify-content: center;
+  display: flex;
+  padding: 1rem;
+}
+
+.registrations {
+  width: 90%;
+}
+
+p {
+  text-align: center;
+  color: red;
+}

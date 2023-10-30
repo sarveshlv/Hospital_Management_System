@@ -1,0 +1,55 @@
+<div class="status-container">
+  <h2>YOUR CURRENT BOOKINGS</h2>
+  <div class="current-booking-card">
+
+    <!-- Table to view current booking status -->
+    <table class="table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Booking Date</th>
+          <th>Hospital Name</th>
+          <th>Bed Type</th>
+          <th>From</th>
+          <th>To</th>
+          <th>Booking Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let booking of bookingDetails; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ booking.bookingDate | date : "dd-MM-yyyy" }}</td>
+          <td>
+            <button class="findName" (click)="findName(booking.hospitalId)">{{ hName }}</button>
+          </td>
+          <td>{{ booking.bedType }}</td>
+          <td>{{ booking.fromDate | date : "dd-MM-yyy" }}</td>
+          <td>{{ booking.toDate | date : "dd-MM-yyyy" }}</td>
+          <td class="col">
+            <ng-container *ngIf="booking.bookingStatus === 'APPROVED'">
+              <i class="fa fa-check-circle-o text-success"> Approved</i>
+            </ng-container>
+            <ng-container *ngIf="booking.bookingStatus === 'DECLINED'">
+              <i class="fa fa-times-circle text-danger"> Declined</i>
+            </ng-container>
+            <ng-container *ngIf="booking.bookingStatus === 'REQUESTED'">
+              <i class="fa fa-question-circle text-warning"> Pending</i>
+            </ng-container>
+            <ng-container *ngIf="booking.bookingStatus === 'CANCELLED'">
+              <i class="fa fa-question-circle text-warning"> Cancelled</i>
+            </ng-container>
+            <ng-container *ngIf="booking.bookingStatus === 'COMPLETED'">
+              <i class="fa fa-question-circle text-warning"> Completed</i>
+            </ng-container>
+          </td>
+          <td>
+            <button class="complete-btn" *ngIf="booking.bookingStatus === 'APPROVED'" (click)="completeBooking(booking)">Complete</button>
+            <button class="cancel-btn" *ngIf="booking.bookingStatus === 'REQUESTED'" (click)="cancelBooking(booking)">Cancel</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p *ngIf="bookingDetails.length === 0">No records found!</p>
+  </div>
+</div>

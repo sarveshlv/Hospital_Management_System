@@ -1,0 +1,72 @@
+::-webkit-scrollbar {
+  display: none;
+}
+
+.add-hospital-page {
+  height: 100vh;
+  background-color: #80a9a9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.img-card {
+  position: absolute;
+  height: 85vh;
+  width: 75vw;
+  background-image: url(src\assets\images\Image.png);
+  background-size: cover;
+  border-radius: 1rem;
+  filter: blur(3px);
+}
+
+.form-card {
+  position: absolute;
+  height: 90vh;
+  width: 40vw;
+  background-color: white;
+  border-radius: 0.5rem;
+  border: 2px solid rgb(176, 38, 82);
+  padding: 2%;
+  overflow: scroll;
+}
+
+h2 {
+  text-align: center;
+  padding-bottom: 5%;
+  font-weight: 600;
+}
+
+.register-btn {
+  text-align: center;
+  padding-top: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+button {
+  border: 2px solid rgb(176, 38, 82);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  transition: 0.1s ease-in;
+}
+
+button:hover {
+  background-color: rgb(176, 38, 82);
+  color: white;
+  box-shadow: 0 5px 20px 5px rgba(0, 0, 0, 0.3);
+}
+
+p {
+  padding-top: 2rem;
+}
+
+input,
+select {
+  border: 1.5px solid rgb(176, 38, 82);
+}
+
+input:focus {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}

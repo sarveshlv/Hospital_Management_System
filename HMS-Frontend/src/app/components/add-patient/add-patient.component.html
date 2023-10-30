@@ -1,0 +1,99 @@
+<div class="add-hospital-page">
+  <div class="img-card"></div>
+  <div class="form-card">
+    <h2>ADD PATIENT INFORMATION!</h2>
+    <form [formGroup]="addPatientForm" (ngSubmit)="onSubmit()">
+      <div class="row justify-content-center">
+
+        <!-- First Name input field -->
+        <div class="col-md-6">
+          <div class="form-floating mb-3" [class.error]="addPatientForm.controls['firstName'].dirty && addPatientForm.hasError('required','firstName')">
+            <input type="text" class="form-control" id="firstName" formControlName="firstName" placeholder=""/>
+            <label for="firstName">First Name</label>
+          </div>
+          <small *ngIf="addPatientForm.controls['firstName'].dirty && addPatientForm.hasError('required','firstName')" class="text-danger">First Name is required</small>
+        </div>
+
+        <!-- Last Name input field -->
+        <div class="col-md-6">
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="lastName" formControlName="lastName" placeholder=""/>
+            <label for="lastName">Last Name</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Number input field -->
+      <div class="row justify-content-center">
+        <div class="form-floating mb-3" [class.error]="addPatientForm.controls['contactNo'].dirty && addPatientForm.hasError('required','contactNo')">
+          <input type="tel" class="form-control" id="contactNo" formControlName="contactNo" placeholder=""/>
+          <label for="contactNo">Contact Number</label>
+        </div>
+        <small *ngIf="addPatientForm.controls['contactNo'].dirty && addPatientForm.hasError('required','contactNo')" class="text-danger">Contact Number is required</small>
+        <small *ngIf="addPatientForm.controls['contactNo'].dirty && addPatientForm.hasError('pattern','contactNo')" class="text-danger">Valid phone no is required</small>
+      </div>
+
+      <!-- Aadhar number input field -->
+      <div class="row justify-content-center">
+        <div class="form-floating mb-3" [class.error]="addPatientForm.controls['aadhar'].dirty && addPatientForm.hasError('required','aadhar')">
+          <input type="text" class="form-control" id="aadhar" formControlName="aadhar" placeholder=""/>
+          <label for="aadhar">Aadhar Number</label>
+        </div>
+        <small *ngIf="addPatientForm.controls['aadhar'].dirty && addPatientForm.hasError('required','aadhar')" class="text-danger">Aadhar Number is required</small>
+        <small *ngIf="addPatientForm.controls['aadhar'].dirty && addPatientForm.hasError('pattern','aadhar')" class="text-danger">Invalid Aadhar number format (should be 12 digits)</small>
+      </div>
+
+      <div class="row justify-content-center">
+
+        <!-- Street Address input field -->
+        <div class="col-md-6">
+          <div class="form-floating mb-3" [class.error]="addPatientForm.controls['streetAddress'].dirty && addPatientForm.hasError('required','streetAddress')">
+            <input type="text" class="form-control" id="streetAddress" formControlName="streetAddress" placeholder=""/>
+            <label for="streetAddress">Street Address</label>
+          </div>
+          <small *ngIf="addPatientForm.controls['streetAddress'].dirty && addPatientForm.hasError('required','streetAddress')" class="text-danger">Street Address is required</small>
+        </div>
+
+        <!-- City Name input field -->
+        <div class="col-md-6">
+          <div class="form-floating mb-3" [class.error]="addPatientForm.controls['city'].dirty && addPatientForm.hasError('required','city')">
+            <input type="text" class="form-control" id="city" formControlName="city" placeholder=""/>
+            <label for="city">City</label>
+          </div>
+          <small *ngIf="addPatientForm.controls['city'].dirty && addPatientForm.hasError('required','city')" class="text-danger">City is required</small>
+        </div>
+      </div>
+
+      <div class="row justify-content-center">
+
+        <!-- State Name input field -->
+        <div class="col-md-6">
+          <div class="form-floating mb-3" [class.error]="addPatientForm.controls['state'].dirty && addPatientForm.hasError('required','state')">
+            <select class="form-select" id="state" name="state" formControlName="state">
+              <option disabled selected>Select State</option>
+              <option *ngFor="let state of states" [value]="state">
+                {{ state }}
+              </option>
+            </select>
+            <label for="state">State</label>
+          </div>
+          <small *ngIf="addPatientForm.controls['state'].dirty && addPatientForm.hasError('required','state')" class="text-danger">State is required</small>
+        </div>
+
+        <!-- Pincode input field -->
+        <div class="col-md-6">
+          <div class="form-floating mb-3" [class.error]="addPatientForm.controls['pincode'].dirty && addPatientForm.hasError('required','pincode')">
+            <input type="text" class="form-control" id="pincode" formControlName="pincode" placeholder=""/>
+            <label for="pincode">Pincode</label>
+          </div>
+          <small *ngIf="addPatientForm.controls['pincode'].dirty && addPatientForm.hasError('required','pincode')" class="text-danger">Pincode is required</small>
+          <small *ngIf="addPatientForm.controls['pincode'].dirty && addPatientForm.hasError('pattern','pincode')" class="text-danger">Invalid Pincode (should be 6 digits)</small>
+        </div>
+      </div>
+
+      <div class="register-btn">
+        <button type="submit">SUBMIT</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<div class="container-main">
+  <div class="main-card">
+    <div class="login-card">
+      <div class="panel-heading">
+        <div class="d-flex align-items-center mb-3 pb-1">
+          <i class="fas fa-plus red-icon"></i>
+          <span class="h1 fw-bold mb-0">HMS</span>
+        </div>
+        <h5>Sign into your account</h5>
+      </div>
+
+      <div class="panel-body">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+          <!-- Email Field -->
+          <div class="email-group">
+            <label>Email ID:</label>
+            <div class="input-group" [class.error]="loginForm.controls['email'].dirty && loginForm.hasError('required', 'email')">
+              <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+              <input type="text" class="form-control" placeholder="Enter your email" formControlName="email"/>
+            </div>
+          </div>
+          <small *ngIf="loginForm.controls['email'].dirty && loginForm.hasError('required', 'email')" class="text-danger">Email ID is required</small>
+          <small *ngIf="loginForm.controls['email'].dirty && loginForm.hasError('email', 'email')" class="text-danger">Valid email required</small>
+
+          <!-- Password field -->
+          <div class="password-group">
+            <label>Password:</label>
+            <div class="input-group" [class.error]="loginForm.controls['password'].dirty && loginForm.hasError('required', 'password')">
+              <span class="input-group-text"><i class="fas fa-key"></i></span>
+              <input type="password" class="form-control" placeholder="Enter your password" formControlName="password"/>
+            </div>
+          </div>
+          <small *ngIf="loginForm.controls['password'].dirty && loginForm.hasError('required', 'password')" class="text-danger">Password is required</small>
+          <small *ngIf="loginForm.controls['password'].dirty && loginForm.hasError('minLength(8)', 'password')" class="text-danger">Length is of min 8 characters!</small>
+          <!-- Submit button -->
+          <div class="submit-button">
+            <button type="submit" id="login-btn">LOGIN</button>
+          </div>
+
+          <!-- Redirect to register page  -->
+          <p class="mb-5 pb-lg-2" style="color: #393f81">Don't have an account?
+            <a routerLink="/signup" style="color: #37a0a0; font-weight: 500">Register here</a>
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

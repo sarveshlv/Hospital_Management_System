@@ -1,0 +1,31 @@
+.history-container {
+  padding: 1rem;
+  height: 90vh;
+}
+
+.previous-booking-card {
+  padding: 1rem;
+}
+
+.findName {
+  border: none;
+  background: none;
+}
+
+.card-label {
+  display: block;
+  padding-bottom: 5px;
+}
+
+.view-bill-btn {
+  border-radius: 5px;
+  border: 2px solid rgb(71, 158, 77);
+  color: rgb(71, 158, 77);
+}
+
+.view-bill-btn:hover {
+  background-color: rgb(71, 158, 77);
+  color: white;
+  box-shadow: 0 5px 20px 5px rgba(0,0,0,0.3);
+  transition: 0.1s ease-in;
+}

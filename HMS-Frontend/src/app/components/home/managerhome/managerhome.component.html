@@ -1,0 +1,221 @@
+<div class="main-container">
+    <app-navbar [userName]="loggedInUserName"></app-navbar>
+
+    <!-- Navbuttons for switching between content windows -->
+    <div class="navbuttons">
+        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked (click)="showBeds=false; showHistory=false; showBookings=true">
+            <label class="btn btn-outline-primary" for="btnradio1" id="nav">Bookings</label>
+              
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" (click)="showBookings = false;  showHistory=false; showBeds = true;  loadBeds()">
+            <label class="btn btn-outline-primary" for="btnradio2" id="nav">Beds</label>
+              
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off" (click)="showBeds=false; showBookings=false; showHistory=true;">
+            <label class="btn btn-outline-primary" for="btnradio3" id="nav">History</label>
+        </div>
+    </div>
+
+    <!-- View window for bookings that needs approval -->
+    <div class="content">
+        <div class="bookings" *ngIf="showBookings">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Patient Name</th>
+                        <th>Booking Date</th>
+                        <th>Bed Type</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let booking of bookingsByStatus; let i=index">
+                        <td>{{ i+1 }}</td>
+                        <!-- <td>{{ booking.patientId }}</td> -->
+                        <td>{{ getPatientName(booking.patientId) }}</td>
+                        <td>{{ booking.bookingDate | date:'dd-MM-yyyy'}}</td>
+                        <td>{{ booking.bedType }}</td>
+                        <td>{{ booking.fromDate | date:'dd-MM-yyyy'}}</td>
+                        <td>{{ booking.toDate | date:'dd-MM-yyyy'}}</td>
+                        <td>
+                            <div>
+                                <button type="button" class="btn btn-success" (click)="approveBooking(booking)">Approve</button>
+                                <button type="button" class="btn btn-danger" (click)="declineBooking(booking)">Decline</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p *ngIf="bookingsByStatus.length === 0">No records found!</p>
+        </div>
+    
+        <!-- View window for viewing bed details and relavant actions -->
+        <div class="beds" *ngIf="showBeds">
+            <div class="filter-btns">
+                <button type="button" class="btn btn-primary search-filter" data-bs-toggle="modal" data-bs-target="#searchModal">Search</button>
+                <button type="button" class="btn btn-light clear-filter" (click)="loadBeds()">Clear filters</button>
+            </div>
+            
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Bed ID</th>
+                        <th>Bed Type</th>
+                        <th>Availability</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let bed of beds; let i=index">
+                        <td>{{ i+1 }}</td>
+                        <td>{{ bed.bedId }}</td>
+                        <td>{{ bed.bedType }}</td>
+                        <td>{{ bed.bedStatus }}</td>
+                        <td>
+                            <button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Edit Bed" data-bs-toggle="modal" data-bs-target="#editBedModal" (click)="editInfo(bed)"><i class="fa fa-edit"></i></button>
+                            <button class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Delete Bed" (click)="deleteBed(bed)"><i class="fa fa-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p *ngIf="beds.length === 0">No records found!</p>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBedModal" (click)="isVerifiedHospital()">ADD BED</button>
+        </div>
+
+        <!-- View window for viewing previous bookings done by patients -->
+        <div class="history" *ngIf="showHistory">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Patient Name</th>
+                        <th>Booking ID</th>
+                        <th>Booking Date</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let booking of bookings; let i=index">
+                        <td>{{ i+1 }}</td>
+                        <td>{{ getPatientName(booking.patientId) }}</td>
+                        <td>{{ booking.bookingId }}</td>
+                        <td>{{ booking.bookingDate | date:'dd-MM-yyyy'}}</td>
+                        <td>{{ booking.fromDate | date:'dd-MM-yyyy' }}</td>
+                        <td>{{ booking.toDate | date:'dd-MM-yyyy' }}</td>
+                        <td [ngSwitch]="booking.bookingStatus">
+                            <span *ngSwitchCase="'APPROVED'">ACTIVE</span>
+                            <span *ngSwitchDefault>{{ booking.bookingStatus }}</span>
+                          </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p *ngIf="bookings.length === 0">No records found!</p>
+        </div>
+    </div>
+</div>
+
+<!-- Model for adding new bed -->
+<div *ngIf="showForm" class="modal fade" id="addBedModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Bed:</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form (submit)="addBed()">
+                <div class="modal-body">
+                
+                    <div class="form-floating mb-3">
+                        <select class="form-select" id="floatingInput" name="floatingInput" [(ngModel)]="selectedBedType">
+                            <option disabled selected>Select Bed type</option>
+                            <option value="REGULAR_BED">REGULAR BED</option>
+                            <option value="VENTILATOR_BED">VENTILATOR BED</option>
+                            <option value="OXYGEN_BED">OXYGEN BED</option>
+                            <option value="ICU_BED">ICU BED</option>
+                        </select>
+                        <label for="floatingInput">Bed Type :</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="floatingInput" name="floatingInput" [(ngModel)]="costPerDay" placeholder="">
+                        <label for="floatingInput">Enter Cost/day: </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Apply</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Model for searching based on specific criteria -->
+<div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Search:</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <label>Search By : </label>
+                <input type="radio" [(ngModel)]="searchOption" value="BedType"> Bed Type
+                <input type="radio" [(ngModel)]="searchOption" value="Availability"> Availability
+
+                <ng-container [ngSwitch]="searchOption">
+                    <div *ngSwitchCase="'BedType'">
+                            <select class="form-select" id="floatingInput" name="floatingInput" [(ngModel)]="searchType">
+                                <option disabled selected>Select Bed type</option>
+                                <option value="REGULAR_BED">REGULAR BED</option>
+                                <option value="VENTILATOR_BED">VENTILATOR BED</option>
+                                <option value="OXYGEN_BED">OXYGEN BED</option>
+                                <option value="ICU_BED">ICU BED</option>
+                            </select>
+                    </div>
+                    <div *ngSwitchCase="'Availability'">
+                        <select class="form-select" id="floatingInput" name="floatingInput" [(ngModel)]="availability">
+                            <option disabled selected>Select status</option>
+                            <option value="AVAILABLE">AVAILABLE</option>
+                            <option value="BOOKED">BOOKED</option>
+                        </select>
+                    </div>
+                </ng-container>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="applyFilter()">Apply</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Model for editing bed information -->
+<div class="modal fade" id="editBedModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Bed:</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+        
+            <div class="modal-body">
+                <label class="bed-details-label">Bed ID: <span>{{ bedId }}</span></label>
+                <label class="bed-details-label">Bed Type: <span>{{ bedType }}</span></label>
+                <label class="bed-details-label">Cost per day: <span><input type="number" name="cost" [(ngModel)]="cost"></span></label>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" (click)="updateBed()">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>

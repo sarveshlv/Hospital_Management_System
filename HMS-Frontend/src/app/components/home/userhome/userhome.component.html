@@ -1,0 +1,18 @@
+<div class="main-container">
+  <app-navbar [userName]="loggedInUserName"></app-navbar>
+  <div class="content" [hidden]="isBookBedRoute()">
+    <div class="card" id="card1" routerLink="/userhome/bookbed" (click)="checkRoute('Book')">
+      <div class="img" id="img1"></div>
+      <p>RESERVE YOUR BED</p>
+    </div>
+    <div class="card" id="card2" routerLink="/userhome/history" (click)="checkRoute('History')">
+      <div class="img" id="img2"></div>
+      <p>VIEW PREVIOUS BOOKINGS</p>
+    </div>
+    <div class="card" id="card3" routerLink="/userhome/status" (click)="checkRoute('status')">
+      <div class="img" id="img3"></div>
+      <p>CHECK BOOKING STATUS</p>
+    </div>
+  </div>
+  <router-outlet></router-outlet>
+</div>

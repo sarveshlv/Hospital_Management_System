@@ -1,0 +1,72 @@
+<div class="container-main">
+  <div class="main-card">
+    <div class="login-card">
+      <div class="panel-heading">
+        <h4>Register !</h4>
+      </div>
+
+      <div class="panel-body">
+        <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+
+          <!-- First Name Field -->
+          <div class="input-group" [class.error]="signUpForm.controls['firstName'].dirty && signUpForm.hasError('required', 'firstName')">
+            <span class="input-group-text"><i class="fas fa-user"></i></span>
+            <input type="text" class="form-control" placeholder="Enter your first name" formControlName="firstName"/>
+          </div>
+          <small *ngIf="signUpForm.controls['firstName'].dirty && signUpForm.hasError('required', 'firstName')" class="text-danger">First Name is required</small>
+          <small *ngIf="signUpForm.controls['firstName'].dirty && signUpForm.hasError('pattern', 'firstName')" class="text-danger">Only alphabetical characters allowed</small>
+
+          <!-- Last Name Field -->
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-user"></i></span>
+            <input type="text" class="form-control" placeholder="Enter your last name" formControlName="lastName"/>
+          </div>
+          <small *ngIf="signUpForm.controls['lastName'].dirty && signUpForm.hasError('pattern', 'lastName')" class="text-danger">Only alphabetical characters allowed</small>
+
+          <!-- Email input field  -->
+          <div class="input-group" [class.error]="signUpForm.controls['email'].dirty && signUpForm.hasError('required', 'email')">
+            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+            <input type="text" class="form-control" placeholder="Enter your email Id" formControlName="email"/>
+          </div>
+          <small *ngIf="signUpForm.controls['email'].dirty && signUpForm.hasError('required', 'email')" class="text-danger">Email ID is required</small>
+          <small *ngIf="signUpForm.controls['email'].dirty && signUpForm.hasError('email', 'email')" class="text-danger">Valid email is required</small>
+
+          <div class="input-group">
+
+            <!-- Select role input field -->
+            <span class="input-group-text"><i class="fas fa-users"></i></span>
+            <select formControlName="role" id="role" class="form-control">
+              <option value="" disabled selected>Select a role</option>
+              <option value="MANAGER">MANAGER</option>
+              <option value="USER">USER</option>
+            </select>
+          </div>
+          <small *ngIf="signUpForm.controls['role'].dirty && signUpForm.hasError('required', 'role')" class="text-danger">Role is required</small>
+
+          <!-- Password input field  -->
+          <div class="input-group" [class.error]="signUpForm.controls['password'].dirty && signUpForm.hasError('required', 'password')">
+            <span class="input-group-text"><i class="fas fa-key"></i></span>
+            <input type="password" class="form-control" placeholder="Enter your password" formControlName="password"/>
+          </div>
+          <small *ngIf="signUpForm.controls['password'].dirty && signUpForm.hasError('required', 'password')" class="text-danger">Password is required</small>
+          <small *ngIf="signUpForm.controls['password'].dirty && signUpForm.hasError('pattern', 'password')" class="text-danger">Password must contain atleast: [1 Uppercase & lowercase character,min of 8 characters, 1 special character(@,#)]</small>
+
+          <!-- Confirm password input field -->
+          <div class="input-group" [class.error]="signUpForm.controls['confirmpassword'].dirty && signUpForm.hasError('required', 'confirmpassword')">
+            <span class="input-group-text"><i class="fas fa-key"></i></span>
+            <input type="password" class="form-control" placeholder="Confirm your password" formControlName="confirmpassword"/>
+          </div>
+          <small *ngIf="signUpForm.controls['confirmpassword'].dirty && signUpForm.hasError('required', 'confirmpassword')" class="text-danger">Confirm password is required</small>
+          
+          <div class="submit-button">
+            <button type="submit" id="signup-btn">SIGN UP</button>
+          </div>
+
+          <div class="toggle-card">
+            <p>Already have an account? <a routerLink="/login">Log in</a></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,66 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(176, 233, 233);
+  height: 100vh;
+}
+
+.navbuttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.content {
+  flex: 1;
+  justify-content: center;
+  display: flex;
+  padding: 1rem;
+}
+
+#id {
+  background-color: white;
+  color: black;
+  font-size: 2.5ch;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.bookings {
+  width: 90%;
+}
+
+.beds {
+  flex: 1;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.search-filter {
+  margin-right: 33rem;
+}
+
+.clear-filter {
+  margin-left: 33rem;
+}
+
+.beds table {
+  margin-top: 1rem;
+}
+
+.history {
+  width: 90%;
+}
+
+.bed-details-label {
+  display: block;
+  padding-bottom: 10px;
+}
+
+p {
+  text-align: center;
+  color: red;
+}

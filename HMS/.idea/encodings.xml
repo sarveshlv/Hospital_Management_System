@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/APIGateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/APIGateway/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Authentication/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Authentication/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/BedModule/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/BedModule/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/BillingModule/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/BillingModule/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/BookingModule/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/BookingModule/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/HospitalModule/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/HospitalModule/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/PatientModule/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ServiceDiscovery/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ServiceDiscovery/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/UserModule/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/UserModule/src/main/resources" charset="UTF-8" />
+  </component>
+</project>

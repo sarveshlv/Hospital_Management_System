@@ -1,0 +1,73 @@
+::-webkit-scrollbar {
+  display: none;
+}
+
+.container-main {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  background-color: #80a9a9;
+  height: 100vh;
+}
+
+.main-card {
+  position: absolute;
+  height: 85vh;
+  width: 75vw;
+  background-color: white;
+  background-image: url(src\assets\images\Image.png);
+  background-size: cover;
+  border-radius: 1rem;
+}
+
+.login-card {
+  position: absolute;
+  height: 100%;
+  width: 45%;
+  top: 0;
+  right: 0;
+  background-color: white;
+  border-radius: 0 1rem 1rem 0;
+  padding: 4%;
+  overflow: auto;
+}
+
+.panel-heading {
+  padding-bottom: 1rem;
+}
+
+.input-group {
+  margin-bottom: 0.8em !important;
+}
+
+.submit-button {
+  padding-bottom: 1rem;
+  padding-top: 1rem;
+  text-align: center;
+}
+
+#signup-btn {
+  border: 3px solid #8ab6b6;
+  padding: 4%;
+  border-radius: 0.55em;
+  font-weight: 800;
+  background-color: white;
+  color: #5a7878;
+  transition: 0.2s ease-in;
+}
+
+#signup-btn:hover {
+  background-color: #80a9a9;
+  border: 3px solid white;
+  color: white;
+}
+
+.toggle-card {
+  text-align: center;
+}
+
+a {
+  color: #37a0a0;
+  font-weight: 500;
+}

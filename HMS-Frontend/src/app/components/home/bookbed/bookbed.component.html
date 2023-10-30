@@ -1,0 +1,82 @@
+<div class="bookbed-container" *ngIf="!selectedHospital">
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#searchModal">Search</button>
+  <button type="button" id="clear-btn" class="btn btn-light" (click)="ngOnInit()">Clear filters</button>
+
+  <!-- Display Hospitals table  -->
+  <div class="table-container">
+    <h2>HOSPITALS</h2>
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th></th>
+          <th>Hospital Name</th>
+          <th>Address</th>
+          <th>Contact Number</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let hospital of filteredHospitals; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ hospital.hospitalName }}</td>
+          <td>
+            {{
+              hospital.hospitalAddress.streetAddress +
+                ", " +
+                hospital.hospitalAddress.cityName +
+                "-" +
+                hospital.pincode +
+                ", " +
+                hospital.hospitalAddress.stateName
+            }}
+          </td>
+          <td>{{ hospital.contactNo }}</td>
+          <td>
+            <button class="view-beds-btn" (click)="onViewBedsClick(hospital)">VIEW BEDS</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p *ngIf="filteredHospitals.length === 0">No records found!</p>
+  </div>
+</div>
+
+<!-- Navigate to beds in a specific hospital tab  -->
+<app-bed-info *ngIf="selectedHospital" [selectedHospital]="selectedHospital"></app-bed-info>
+
+<!-- Searching and filtering hospitals on custom parameters  -->
+<div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Search:</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <label>Search By : </label>
+        <input type="radio" [(ngModel)]="searchOption" value="Hospital" />Hospital
+        <input type="radio" [(ngModel)]="searchOption" value="Pincode" />Pincode
+
+        <ng-container [ngSwitch]="searchOption">
+          <div *ngSwitchCase="'Hospital'">
+            <input type="text" [(ngModel)]="searchText" (input)="filterNames()" placeholder="Search names"/>
+          </div>
+          <div *ngSwitchCase="'Pincode'">
+            <input type="number" [(ngModel)]="pincode" placeholder="Enter pincode"/>
+          </div>
+        </ng-container>
+
+        <div class="card-list" *ngIf="filteredNames.length > 0">
+          <div class="card" *ngFor="let name of filteredNames" (click)="selectName(name)">
+            {{ name }}
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="applyFilter()">Apply</button>
+      </div>
+    </div>
+  </div>
+</div>

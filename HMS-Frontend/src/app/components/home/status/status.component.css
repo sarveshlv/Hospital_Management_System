@@ -1,0 +1,42 @@
+.status-container {
+  padding: 1rem;
+}
+
+.current-booking-card {
+  padding: 1rem;
+}
+
+.findName {
+  border: none;
+  background: none;
+}
+
+.complete-btn {
+  border-radius: 5px;
+  border: 2px solid rgb(71, 71, 158);
+  color: rgb(71, 71, 158);
+}
+
+.complete-btn:hover {
+  background-color: rgb(71, 71, 158);
+  color: white;
+  box-shadow: 0 5px 20px 5px rgba(0,0,0,0.3);
+  transition: 0.1s ease-in;
+}
+
+.cancel-btn {
+  border-radius: 5px;
+  border: 2px solid rgb(175, 51, 51);
+  color: rgb(175, 51, 51);
+}
+
+.cancel-btn:hover {
+  background-color: rgb(175, 51, 51);
+  color: white;
+  box-shadow: 0 5px 20px 5px rgba(0,0,0,0.3);
+}
+
+p {
+  text-align: center;
+  color: red;
+}

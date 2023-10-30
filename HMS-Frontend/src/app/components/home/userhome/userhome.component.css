@@ -1,0 +1,79 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(176, 233, 233);
+  height: 100vh;
+  overflow: hidden;
+}
+
+.content {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 50px;
+}
+
+.card {
+  margin: 1rem;
+  width: 18rem;
+  height: 25rem;
+  border-radius: 10px;
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 10px 30px 5px rgba(0, 0, 0, 0.2);
+  background-color: #365757;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.img {
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin-bottom: 2rem;
+}
+
+#img1 {
+  background-image: url(src\assets\images\hospital-bed.png);
+  width: 73%;
+  height: 51%;
+}
+
+#img2 {
+  background-image: url(src\assets\images\file.png);
+  width: 64%;
+  height: 50%;
+}
+
+#img3 {
+  background-image: url(src\assets\images\application.png);
+  width: 64%;
+  height: 50%;
+}
+
+p {
+  font-weight: 700;
+  font-size: 4ch;
+  text-align: center;
+  color: white;
+}
+
+#card1:hover {
+  background-color: #527070;
+  box-shadow: 0 10px 30px 5px rgba(0, 0, 0, 0.5);
+  transition: 0.1s ease-in-out;
+}
+
+#card2:hover {
+  background-color: #527070;
+  box-shadow: 0 10px 30px 5px rgba(0, 0, 0, 0.5);
+  transition: 0.1s ease-in-out;
+}
+
+#card3:hover {
+  background-color: #527070;
+  box-shadow: 0 10px 30px 5px rgba(0, 0, 0, 0.5);
+  transition: 0.1s ease-in-out;
+}

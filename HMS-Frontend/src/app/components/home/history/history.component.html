@@ -1,0 +1,68 @@
+<div class="history-container">
+  <h2>YOUR PREVIOUS BOOKINGS</h2>
+  <div class="previous-booking-card">
+
+    <!-- Table to view booking history  -->
+    <table class="table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Booking Date</th>
+          <th>Bed Type</th>
+          <th>From</th>
+          <th>To</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let booking of bookingDetails; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ booking.bookingDate | date : "dd-MM-yyyy" }}</td>
+          <td>{{ booking.bedType }}</td>
+          <td>{{ booking.fromDate | date : "dd-MM-yyy" }}</td>
+          <td>{{ booking.toDate | date : "dd-MM-yyyy" }}</td>
+          <td class="col">
+            <ng-container *ngIf="booking.bookingStatus === 'COMPLETED'">
+              <i class="fa fa-check-circle-o text-success"> Completed</i>
+            </ng-container>
+            <ng-container *ngIf="booking.bookingStatus === 'CANCELLED'">
+              <i class="fa fa-times-circle text-danger"> Canceled</i>
+            </ng-container>
+            <ng-container *ngIf="booking.bookingStatus === 'DECLINED'">
+              <i class="fa fa-times-circle text-danger"> Declined</i>
+            </ng-container>
+          </td>
+          <td>
+            <button *ngIf="booking.bookingStatus === 'COMPLETED'" class="view-bill-btn" data-bs-toggle="modal" data-bs-target="#viewBillModal" (click)="viewBill(booking)">View Bill</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p *ngIf="bookingDetails.length === 0">No records found!</p>
+  </div>
+</div>
+
+<!-- View model for viewing the bill details -->
+<div class="modal fade" id="viewBillModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Billing Details:</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <label class="card-label">Hospital Name: {{ hName }}</label>
+        <label class="card-label">Billing ID : {{ billId }}</label>
+        <label class="card-label">Booking ID : {{ bookingId }}</label>
+        <label class="card-label">Bill Amount : {{ billAmount }}</label>
+        <label class="card-label">Payment status : {{ paymentStatus }}</label>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button *ngIf="paymentStatus === 'PENDING'" type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="payBill()">PAY</button>
+      </div>
+    </div>
+  </div>
+</div>
